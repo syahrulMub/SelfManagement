@@ -18,7 +18,8 @@ public class UserManager : IUserManager
         var user = new User
         {
             Email = model.Email,
-            UserName = model.UserName
+            UserName = model.UserName,
+            Balance = 0
         };
         var result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)

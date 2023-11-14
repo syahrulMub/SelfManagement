@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IDatabaseServices;
 using Microsoft.EntityFrameworkCore;
 using MyPrivateManager.Data;
+using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
 
 namespace DatabaseServices

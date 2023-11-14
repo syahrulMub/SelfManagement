@@ -46,7 +46,7 @@ public class UserLoginController : Controller
         catch (Exception ex)
         {
             _logger.LogError("error while process registered : " + ex.Message);
-            return StatusCode(500, "error while process registered : " + ex.Message);
+            return View("error while process registered : " + ex.Message);
         }
     }
     [AllowAnonymous]
@@ -69,7 +69,7 @@ public class UserLoginController : Controller
         catch (Exception ex)
         {
             _logger.LogError("error while processing LogIn : " + ex.Message);
-            return StatusCode(500, "error while processing LogIn : " + ex.Message);
+            return View("error while processing LogIn : " + ex.Message);
         }
     }
 }

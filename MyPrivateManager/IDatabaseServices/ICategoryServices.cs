@@ -1,5 +1,5 @@
 using MyPrivateManager.Models;
-namespace IDatabaseServices;
+namespace MyPrivateManager.IDatabaseServices;
 
 public interface ICategoryServices
 {

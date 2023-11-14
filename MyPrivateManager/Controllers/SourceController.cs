@@ -14,8 +14,8 @@ public class SourceController : Controller
         _logger = logger;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Source>>> GetSources()
+    [HttpGet("/sources")]
+    public async Task<IActionResult> GetSources()
     {
         try
         {
@@ -25,12 +25,12 @@ public class SourceController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving sources");
-            return StatusCode(500, "Internal Server Error");
+            return View("Error");
         }
     }
 
-    [HttpGet("{sourceId}")]
-    public async Task<ActionResult<Source>> GetSource(int sourceId)
+    [HttpGet("source/{sourceId}")]
+    public async Task<IActionResult> GetSource(int sourceId)
     {
         try
         {
@@ -46,12 +46,12 @@ public class SourceController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving source");
-            return StatusCode(500, "Internal Server Error");
+            return View("Error");
         }
     }
 
     [HttpPost]
-    public async Task<ActionResult<Source>> CreateSource([FromBody] Source source)
+    public async Task<IActionResult> CreateSource([FromBody] Source source)
     {
         try
         {
@@ -64,23 +64,23 @@ public class SourceController : Controller
 
             if (await _services.CreateSourceAsync(source))
             {
-                return CreatedAtAction(nameof(GetSource), new { sourceId = source.SourceId }, source);
+                return Ok();
             }
             else
             {
                 _logger.LogError("Failed to create source");
-                return StatusCode(500, "Failed to create source");
+                return View("Failed to create source");
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating source");
-            return StatusCode(500, "Internal Server Error");
+            return View("Internal Server Error");
         }
     }
 
     [HttpPut("{sourceId}")]
-    public async Task<ActionResult<Source>> UpdateSource(int sourceId, [FromBody] Source source)
+    public async Task<IActionResult> UpdateSource(int sourceId, [FromBody] Source source)
     {
         try
         {
@@ -106,12 +106,12 @@ public class SourceController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error updating source");
-            return StatusCode(500, "Internal Server Error");
+            return View("Internal Server Error");
         }
     }
 
     [HttpDelete("{sourceId}")]
-    public async Task<ActionResult> DeleteSource(int sourceId)
+    public async Task<IActionResult> DeleteSource(int sourceId)
     {
         try
         {
@@ -130,7 +130,7 @@ public class SourceController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting source");
-            return StatusCode(500, "Internal Server Error");
+            return View("Internal Server Error");
         }
     }
 }

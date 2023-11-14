@@ -1,40 +1,40 @@
-using IDatabaseServices;
 using Microsoft.AspNetCore.Mvc;
+using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
 
 namespace MyPrivateManager.Controllers;
 
 public class CategoryController : Controller
 {
-    private readonly ICategoryServices _services;
+    private readonly ICategoryServices _categoryServices;
     private readonly ILogger<CategoryController> _logger;
 
     public CategoryController(ICategoryServices services, ILogger<CategoryController> logger)
     {
-        _services = services;
+        _categoryServices = services;
         _logger = logger;
     }
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+    [HttpGet("/categories")]
+    public async Task<IActionResult> GetCategories()
     {
         try
         {
-            var categories = await _services.GetCategoriesAsync();
+            var categories = await _categoryServices.GetCategoriesAsync();
             return Ok(categories);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving categories");
-            return StatusCode(500, "Internal Server Error");
+            return View("Error");
         }
     }
 
-    [HttpGet("{categoryId}")]
-    public async Task<ActionResult<Category>> GetCategory(int categoryId)
+    [HttpGet("category/{categoryId}")]
+    public async Task<IActionResult> GetCategory(int categoryId)
     {
         try
         {
-            var category = await _services.GetCategoryByIdAsync(categoryId);
+            var category = await _categoryServices.GetCategoryByIdAsync(categoryId);
             if (category == null)
             {
                 return NotFound();
@@ -44,12 +44,12 @@ public class CategoryController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving category");
-            return StatusCode(500, "Internal Server Error");
+            return View("Error");
         }
     }
 
     [HttpPost]
-    public async Task<ActionResult<Category>> CreateCategory([FromBody] Category category)
+    public async Task<IActionResult> CreateCategory([FromBody] Category category)
     {
         try
         {
@@ -59,22 +59,22 @@ public class CategoryController : Controller
                 return BadRequest(ModelState);
             }
 
-            var success = await _services.CreateCategoryAsync(category);
+            var success = await _categoryServices.CreateCategoryAsync(category);
 
             if (success)
             {
-                return CreatedAtAction(nameof(GetCategory), new { categoryId = category.CategoryId }, category);
+                return Ok();
             }
             else
             {
                 _logger.LogError("Failed to create category");
-                return StatusCode(500, "Failed to create category");
+                return View("Error");
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating category");
-            return StatusCode(500, "Internal Server Error");
+            return View("Error");
         }
     }
 
@@ -89,7 +89,7 @@ public class CategoryController : Controller
                 return BadRequest(ModelState);
             }
 
-            var updatedCategory = await _services.UpdateCategoryAsync(categoryId, category);
+            var updatedCategory = await _categoryServices.UpdateCategoryAsync(categoryId, category);
 
             if (updatedCategory == false)
             {
@@ -101,7 +101,7 @@ public class CategoryController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error updating category");
-            return StatusCode(500, "Internal Server Error");
+            return View("Error");
         }
     }
 
@@ -110,7 +110,7 @@ public class CategoryController : Controller
     {
         try
         {
-            var result = await _services.DeleteCategoryAsync(categoryId);
+            var result = await _categoryServices.DeleteCategoryAsync(categoryId);
 
             if (!result)
             {
@@ -122,7 +122,7 @@ public class CategoryController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting category");
-            return StatusCode(500, "Internal Server Error");
+            return View("Error");
         }
     }
 }

@@ -1,5 +1,10 @@
+using DatabaseServices;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyPrivateManager.Data;
+using MyPrivateManager.DatabaseServices;
+using MyPrivateManager.IDatabaseServices;
+using MyPrivateManager.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,11 +12,21 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DatabaseContext");
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(connectionString));
 
+builder.Services.AddScoped<ICategoryServices, CategoryServices>();
+builder.Services.AddScoped<IExpenseServices, ExpenseServices>();
+builder.Services.AddScoped<IIncomeServices, IncomeServices>();
+builder.Services.AddScoped<ISourceServices, SourceServices>();
+builder.Services.AddScoped<IUserManager, UserManager>();
+
+builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().AddEntityFrameworkStores<DatabaseContext>();
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+SetRoleOnDatabase.CreateRoleOnDatabase(app);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

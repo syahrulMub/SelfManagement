@@ -21,7 +21,7 @@ public class SourceServices : ISourceServices
 
     public async Task<Source?> GetSourceByIdAsync(int? sourceId)
     {
-        return await _dbContext.Sources.FindAsync(sourceId);
+        return await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == sourceId);
     }
 
     public async Task<bool> CreateSourceAsync(Source source)

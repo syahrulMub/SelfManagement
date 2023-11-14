@@ -9,6 +9,7 @@ public class Income
     public int IncomeId { get; set; }
 
     [Required]
+    [Column(TypeName = "decimal(18, 2)")]
     public decimal Amount { get; set; }
 
     [Required]
