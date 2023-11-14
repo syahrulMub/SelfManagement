@@ -35,12 +35,10 @@ public class CategoryController : Controller
         try
         {
             var category = await _services.GetCategoryByIdAsync(categoryId);
-
             if (category == null)
             {
                 return NotFound();
             }
-
             return Ok(category);
         }
         catch (Exception ex)
@@ -55,7 +53,6 @@ public class CategoryController : Controller
     {
         try
         {
-            // Validate input
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("Invalid input for CreateCategory");
@@ -70,7 +67,6 @@ public class CategoryController : Controller
             }
             else
             {
-                // Jika operasi membuat kategori gagal
                 _logger.LogError("Failed to create category");
                 return StatusCode(500, "Failed to create category");
             }

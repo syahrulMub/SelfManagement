@@ -70,4 +70,16 @@ public class ExpenseServices : IExpenseServices
             return false;
         }
     }
+    public async Task<decimal> GetTotalExpensesByCategoryAsync(int categoryId, string userId)
+    {
+        return await _dbContext.Expenses
+            .Where(e => e.CategoryId == categoryId && e.UserId == userId)
+            .SumAsync(e => e.Amount);
+    }
+    public async Task<IEnumerable<Expense>> GetExpensesByDateRangeAsync(DateTime startDate, DateTime endDate)
+    {
+        return await _dbContext.Expenses
+            .Where(e => e.Date >= startDate && e.Date <= endDate)
+            .ToListAsync();
+    }
 }

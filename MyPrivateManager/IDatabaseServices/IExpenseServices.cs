@@ -9,4 +9,6 @@ public interface IExpenseServices
     Task<bool> CreateExpenseAsync(Expense expense);
     Task<bool> UpdateExpenseAsync(int expenseId, Expense expense);
     Task<bool> DeleteExpenseAsync(int expenseId);
+    Task<decimal> GetTotalExpensesByCategoryAsync(int categoryId, string userId);
+    Task<IEnumerable<Expense>> GetExpensesByDateRangeAsync(DateTime startDate, DateTime endDate);
 }
