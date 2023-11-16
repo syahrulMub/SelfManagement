@@ -1,0 +1,75 @@
+@{
+    ViewData["Title"] = "Incomes";
+}
+
+<header>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+</header>
+<main>
+    <div id="main" class="main">
+        <div class="pagetitle">
+            <h1>Income</h1>
+            <nav>
+                <li class="breadcrumb-items"><a asp-controller="Home" asp-action="">Home</a></li>
+                <li class="breadcrumb-items">Income</li>
+            </nav>
+        </div>
+    </div>
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="nav nav-tabs d-flex" id="myTabJustify" role="tablist">
+                            <li class="nav-item flex-fill" role="presentation">
+                                <button class="nav-link w-100 active" id="income-page" data-bs-toggle="tab"
+                                    asp-controller="Income" asp-action="">Income</button>
+                            </li>
+                            <li class="nav-item flex-fill" role="presentation">
+                                <button class="nav-link w-100" id="source-page" data-bs-toggle="tab"
+                                    asp-controller="Source" asp-action="">Source</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content pt-2" id="myIncomeTab" role="tabpanel" aria-labelledby="income-page">
+                            <div>
+                                #create new income
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Income</h5>
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Description</th>
+                                                    <th scope="col">Source</th>
+                                                    <th scope="col">Amount</th>
+                                                    <th scope="col">Date Time</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                @foreach (var income in ViewBag.Incomes)
+                                                {
+                                                    <tr>
+                                                        <td scope="row">@income.IncomeId</td>
+                                                        <td>@income.Description</td>
+                                                        <td>@income.Income.Source.SourceName</td>
+                                                        <td>@income.Amount</td>
+                                                        <td>@income.Date</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
