@@ -10,11 +10,13 @@ public class IncomeController : Controller
 
     private readonly IIncomeServices _incomeService;
     private readonly UserManager<User> _userManager;
+    private readonly ISourceServices _sourceService;
     private readonly ILogger<IncomeController> _logger;
 
-    public IncomeController(IIncomeServices incomeService, UserManager<User> userManager, ILogger<IncomeController> logger)
+    public IncomeController(IIncomeServices incomeService, UserManager<User> userManager, ILogger<IncomeController> logger, ISourceServices sourceService)
     {
         _incomeService = incomeService;
+        _sourceService = sourceService;
         _userManager = userManager;
         _logger = logger;
     }
@@ -26,7 +28,10 @@ public class IncomeController : Controller
             var userId = _userManager.GetUserId(User);
             var incomes = await _incomeService.GetIncomesAsync();
             var userIncomes = incomes.Where(i => i.UserId == userId);
-            return View(userIncomes);
+            var sources = await _sourceService.GetSourcesAsync();
+            ViewBag.UserIncome = userIncomes;
+            ViewBag.Sources = sources;
+            return View();
         }
         catch (Exception ex)
         {

@@ -33,12 +33,12 @@ public class SourceServices : ISourceServices
 
     public async Task<bool> UpdateSourceAsync(int sourceId, Source source)
     {
-        var existingSource = await _dbContext.Sources.FindAsync(sourceId);
+        var existingSource = await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == sourceId);
 
         if (existingSource != null)
         {
             existingSource.SourceName = source.SourceName;
-            _dbContext.Sources.Update(source);
+            _dbContext.Sources.Update(existingSource);
             await _dbContext.SaveChangesAsync();
             return true;
         }

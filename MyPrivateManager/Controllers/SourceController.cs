@@ -15,12 +15,12 @@ public class SourceController : Controller
     }
 
     [HttpGet("/sources")]
-    public async Task<IActionResult> GetSources()
+    public async Task<IActionResult> Index()
     {
         try
         {
             var sources = await _services.GetSourcesAsync();
-            return Ok(sources);
+            return View(sources);
         }
         catch (Exception ex)
         {
@@ -29,7 +29,7 @@ public class SourceController : Controller
         }
     }
 
-    [HttpGet("source/{sourceId}")]
+    [HttpGet("Source/GetSource/{sourceId}")]
     public async Task<IActionResult> GetSource(int sourceId)
     {
         try
@@ -38,9 +38,10 @@ public class SourceController : Controller
 
             if (source == null)
             {
+                _logger.LogError("item not found");
                 return NotFound();
             }
-
+            _logger.LogInformation("success get source");
             return Ok(source);
         }
         catch (Exception ex)
@@ -51,26 +52,14 @@ public class SourceController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateSource([FromBody] Source source)
+    public async Task<IActionResult> CreateSource(Source source)
     {
         try
         {
             // Validate input
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Invalid input for CreateSource");
-                return BadRequest(ModelState);
-            }
 
-            if (await _services.CreateSourceAsync(source))
-            {
-                return Ok();
-            }
-            else
-            {
-                _logger.LogError("Failed to create source");
-                return View("Failed to create source");
-            }
+            await _services.CreateSourceAsync(source);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -79,58 +68,42 @@ public class SourceController : Controller
         }
     }
 
-    [HttpPut("{sourceId}")]
-    public async Task<IActionResult> UpdateSource(int sourceId, [FromBody] Source source)
+    [HttpPost("/Source/UpdateSource/{sourceId}")]
+    public async Task<IActionResult> UpdateSource(int sourceId, Source source)
     {
         try
         {
-            // Validate input
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Invalid input for UpdateSource");
-                return BadRequest(ModelState);
-            }
 
-            var success = await _services.UpdateSourceAsync(sourceId, source);
-
-            if (success)
+            bool result = await _services.UpdateSourceAsync(sourceId, source);
+            if (result)
             {
-                return Ok(source);
+                return Ok();
             }
             else
             {
-                _logger.LogError($"Source with id {sourceId} not found");
-                return NotFound($"Source with id {sourceId} not found");
+                return View("Error");
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error updating source");
-            return View("Internal Server Error");
+            return View("Error");
         }
     }
 
-    [HttpDelete("{sourceId}")]
+    [HttpDelete("/Source/DeleteSource/{sourceId}")]
     public async Task<IActionResult> DeleteSource(int sourceId)
     {
         try
         {
-            var success = await _services.DeleteSourceAsync(sourceId);
-
-            if (success)
-            {
-                return NoContent();
-            }
-            else
-            {
-                _logger.LogError($"Source with id {sourceId} not found");
-                return NotFound($"Source with id {sourceId} not found");
-            }
+            await _services.DeleteSourceAsync(sourceId);
+            _logger.LogInformation("success delete source");
+            return Ok();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting source");
-            return View("Internal Server Error");
+            return View("Error");
         }
     }
 }
