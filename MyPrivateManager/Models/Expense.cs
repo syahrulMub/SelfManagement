@@ -13,9 +13,9 @@ public class Expense
     public decimal Amount { get; set; }
 
     [Required]
+    [ForeignKey("CategoryId")]
     public int CategoryId { get; set; }
 
-    [ForeignKey("CategoryId")]
     public virtual Category Category { get; set; } = null!;
 
     [Required]
@@ -25,8 +25,8 @@ public class Expense
     public string? Description { get; set; }
 
     [Required]
+    [ForeignKey("UserId")]
     public string UserId { get; set; } = null!;
 
-    [ForeignKey("UserId")]
     public virtual User User { get; set; } = null!;
 }

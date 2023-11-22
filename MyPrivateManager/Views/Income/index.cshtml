@@ -67,16 +67,22 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.Incomes != null)
+                                            @if (ViewBag.UserIncomes != null)
                                             {
-                                                @foreach (var income in ViewBag.Incomes)
+                                                @foreach (var income in ViewBag.UserIncomes)
                                                 {
                                                     <tr>
                                                         <td scope="row">@income.IncomeId</td>
                                                         <td>@income.Description</td>
-                                                        <td>@income.Income.Source.SourceName</td>
+                                                        <td>@income.Source.SourceName</td>
                                                         <td>@income.Amount</td>
                                                         <td>@income.Date</td>
+                                                        <td>
+                                                            <button data-bs-toggle="modal"
+                                                                onclick="editIncome(@income.IncomeId)">Edit</button>
+                                                            <button data-bs-toggle="modal"
+                                                                onclick="deleteIncome(@income.IncomeId)">Delete</button>
+                                                        </td>
                                                     </tr>
                                                 }
                                             }
@@ -137,31 +143,72 @@
         </div>
     </section>
 </main>
-<div class="modal fade" id="incomeModal" tabindex="-1" aria-labelledby="incomeModalLabel" aria-hidden="true">
+<div class="modal fade" id="createIncomeModal" tabindex="-1" role="dialog" aria-labelledby="createIncomeModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="incomeModalLabel">Income Details</h5>
+                <h5 class="modal-title" id="createIncomeModalLabel">Create New Income</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Form untuk tambah/edit data -->
-                <!-- Anda dapat menyesuaikan form ini sesuai dengan kebutuhan Anda -->
-                <form id="incomeForm">
+                <form id="createIncomeForm">
                     <div class="mb-3">
                         <label for="amount">Amount</label>
                         <input type="text" class="form-control" id="amount" placeholder="Enter amount">
                     </div>
                     <div class="mb-3">
-                        <label for="source">Source</label>
-                        <input type="text" class="form-control" id="source" placeholder="Enter source">
+                        <label for="sourceId">Source</label>
+                        <select class="form-control" id="sourceId">
                     </div>
                     <div class="mb-3">
                         <label for="date">Date</label>
                         <input type="date" class="form-control" id="date">
                     </div>
+                    <div class="mb-3">
+                        <label for="description">Description</label>
+                        <input type="text" class="form-control" id="description" placeholder="Enter Description">
+                    </div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="saveIncome()">Save</button>
+                    <button type="button" class="btn btn-primary" onclick="createIncome()">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editIncomeModal" tabindex="-1" role="dialog" aria-labelledby="editIncomeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editIncomeModalLabel">Edit Income</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="editIncomeForm">
+                    <div class="form-group">
+                        <label for="editIncomeId">Income Id</label>
+                        <input type="text" class="form-control" id="editIncomeId" name="IncomeId" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editIncomeAmount">Amount</label>
+                        <input type="text" class="form-control" id="editIncomeAmount" name="amount">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSourceIdForIncome">Source</label>
+                        <select class="form-control" id="editSourceIdForIncome">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editIncomeDate">Date</label>
+                        <input type="date" class="form-control" id="editIncomeDate" name="date">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editIncomeDescription">Description</label>
+                        <input type="text" class="form-control" id="editIncomeDescription" name="Description">
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="updateIncome()">Save</button>
                 </form>
             </div>
         </div>
@@ -221,24 +268,74 @@
 <script>
     function addIncome() {
         // Menampilkan modal tambah data
-        $('#incomeModalLabel').text('Add Income');
+        $('#createIncomeModalLabel').text('Add Income');
         $('#amount').val('');
-        $('#source').val('');
+        getSourceData();
         $('#date').val('');
-        $('#incomeModal').modal('show');
+        $('#description').val('');
+        $('#createIncomeModal').modal('show');
     }
-    function editIncome(incomeId) {
-        // Logika untuk mengisi data dalam form edit
-        // Anda dapat mengganti logika ini sesuai dengan kebutuhan
+
+    function getSourceData(callback) {
         $.ajax({
-            url: '/Income/GetIncomeById/' + incomeId,
+            url: '/Source/GetSources',
             type: 'GET',
             success: function (data) {
-                $('#incomeModalLabel').text('Edit Income');
-                $('#amount').val(data.Amount);
-                $('#source').val(data.Source);
-                $('#date').val(data.Date);
-                $('#incomeModal').modal('show');
+                populateSourceDropdown(data);
+            },
+            error: function () {
+                console.error('failed to fetch data');
+            }
+        });
+    }
+    function populateSourceDropdown(sourceData) {
+        var dropdown = $('#sourceId');
+        dropdown.empty();
+
+        sourceData.forEach(function (source) {
+            var option = ($('<option></option>').val(source.sourceId).text(source.sourceName));
+            dropdown.append(option);
+        });
+    }
+
+    function getSourceDataForEdit(incomeId) {
+        $.ajax({
+            url: '/Source/GetSources',
+            type: 'GET',
+            success: function (data) {
+                populateSourceDropdownForEdit(data, incomeId);
+            },
+            error: function () {
+                console.error('Failed to fetch data');
+            }
+        });
+    }
+    function populateSourceDropdownForEdit(sourceData, incomeId) {
+        var dropdown = $('#editSourceIdForIncome');
+
+        dropdown.empty();
+
+        sourceData.forEach(function (source) {
+            dropdown.append($('<option></option>').val(source.sourceId).text(source.sourceName));
+        });
+
+        dropdown.data('incomeId', incomeId);
+    }
+
+
+    function editIncome(incomeId) {
+        $.ajax({
+            url: '/Income/GetIncome/' + incomeId,
+            type: 'GET',
+            success: function (data) {
+                $('#editIncomeModalLabel').text('Edit Income');
+                $('#editIncomeId').val(data.incomeId);
+                $('#editIncomeAmount').val(data.amount);
+                getSourceDataForEdit(data.incomeId);
+                var formattedDate = new Date(data.date).toISOString().split('T')[0];
+                $('#editIncomeDate').val(formattedDate);
+                $('#editIncomeDescription').val(data.description);
+                $('#editIncomeModal').modal('show');
             },
             error: function () {
                 console.error('Failed to fetch income details');
@@ -246,26 +343,23 @@
         });
     }
 
-    function saveIncome() {
-        // Logika untuk menyimpan data
-        // Anda dapat mengganti logika ini sesuai dengan kebutuhan
+    function createIncome() {
         var amount = $('#amount').val();
-        var source = $('#source').val();
+        var sourceId = $('#sourceId').val();
         var date = $('#date').val();
+        var description = $('#description').val();
 
-        // Validasi input
-        if (!amount || !source || !date) {
+        // validate input
+        if (!amount || !sourceId || !date) {
             alert('Please fill in all fields');
             return;
         }
 
-        // Ajax request untuk menyimpan data
         $.ajax({
-            url: '/Income/SaveIncome',
+            url: '/Income/CreateIncome',
             type: 'POST',
-            data: { Amount: amount, Source: source, Date: date },
+            data: { Amount: amount, SourceId: sourceId, Date: date, Description: description },
             success: function () {
-                // Refresh halaman atau perbarui tabel dengan data yang baru
                 location.reload();
             },
             error: function () {
@@ -273,8 +367,48 @@
             }
         });
 
-        // Menutup modal setelah menyimpan
-        $('#incomeModal').modal('hide');
+        $('#createIncomeModal').modal('hide');
+    }
+
+    function updateIncome() {
+        var incomeId = $('#editIncomeId').val();
+        var amount = $('#editIncomeAmount').val();
+        var sourceId = $('#editSourceIdForIncome').val();
+        var date = $('#editIncomeDate').val();
+        var description = $('#editIncomeDescription').val();
+
+        if (!amount || !sourceId || !date) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        $.ajax({
+            url: '/Income/UpdateIncome/' + incomeId,
+            type: 'POST',
+            data: { Amount: amount, SourceId: sourceId, Date: date, Description: description },
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                console.log('failder to update income');
+            }
+        });
+    }
+
+    function deleteIncome(incomeId) {
+        var validation = confirm("Are you sure you want to delete this income?");
+        if (validation) {
+            $.ajax({
+                url: '/Income/DeleteIncome/' + incomeId,
+                type: 'DELETE',
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    console.error('Failed to delete income');
+                }
+            });
+        }
     }
 </script>
 <script>

@@ -29,7 +29,7 @@ public class IncomeController : Controller
             var incomes = await _incomeService.GetIncomesAsync();
             var userIncomes = incomes.Where(i => i.UserId == userId);
             var sources = await _sourceService.GetSourcesAsync();
-            ViewBag.UserIncome = userIncomes;
+            ViewBag.UserIncomes = userIncomes;
             ViewBag.Sources = sources;
             return View();
         }
@@ -39,24 +39,24 @@ public class IncomeController : Controller
             return View("Error");
         }
     }
-
-    public async Task<IActionResult> Details(int? id)
+    [HttpGet("/Income/GetIncome/{incomeId}")]
+    public async Task<IActionResult> Details(int incomeId)
     {
         try
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var income = await _incomeService.GetIncomeByIdAsync(id.Value);
+            var income = await _incomeService.GetIncomeByIdAsync(incomeId);
 
             if (income == null)
             {
+                _logger.LogError("item not found");
                 return NotFound();
             }
-
-            return View(income);
+            else
+            {
+                _logger.LogInformation("success get income");
+                return Ok(income);
+            }
         }
         catch (Exception ex)
         {
@@ -70,29 +70,22 @@ public class IncomeController : Controller
         return View();
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Amount,Date,Description")] Income income)
+    [HttpPost("/Income/CreateIncome")]
+    public async Task<IActionResult> Create(Income income)
     {
         try
         {
-            if (ModelState.IsValid)
-            {
-                var userId = _userManager.GetUserId(User);
-                if (userId != null)
-                {
-                    income.UserId = userId;
-                    await _incomeService.CreateIncomeAsync(income);
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    _logger.LogError("Error creating income becouse user not found");
-                    return BadRequest("user not found");
-                }
-            }
 
-            return View(income);
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                income.UserId = userId;
+                await _incomeService.CreateIncomeAsync(income);
+                _logger.LogInformation("success create income");
+                return Ok();
+            }
+            _logger.LogWarning("user not found");
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -101,55 +94,16 @@ public class IncomeController : Controller
         }
     }
 
-    public async Task<IActionResult> Edit(int? id)
+
+    [HttpPost("/Income/UpdateIncome/{incomeId}")]
+    public async Task<IActionResult> Edit(int incomeId, Income income)
     {
         try
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var income = await _incomeService.GetIncomeByIdAsync(id.Value);
-
-            if (income == null)
-            {
-                return NotFound();
-            }
-
-            return View(income);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving income for edit");
-            return View("Error");
-        }
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Amount,Description")] Income income)
-    {
-        try
-        {
-            if (id != income.IncomeId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                var success = await _incomeService.UpdateIncomeAsync(id, income);
-
-                if (!success)
-                {
-                    return NotFound();
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(income);
+            var success = await _incomeService.UpdateIncomeAsync(incomeId, income);
+            _logger.LogInformation("Success delete income");
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -158,45 +112,15 @@ public class IncomeController : Controller
         }
     }
 
-    public async Task<IActionResult> Delete(int? id)
+    [HttpDelete("/Income/DeleteIncome/{incomeId}")]
+    public async Task<IActionResult> DeleteConfirmed(int incomeId)
     {
         try
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            await _incomeService.DeleteIncomeAsync(incomeId);
+            _logger.LogInformation("success delete income");
+            return Ok();
 
-            var income = await _incomeService.GetIncomeByIdAsync(id.Value);
-
-            if (income == null)
-            {
-                return NotFound();
-            }
-
-            return View(income);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving income for delete");
-            return View("Error");
-        }
-    }
-
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        try
-        {
-            var success = await _incomeService.DeleteIncomeAsync(id);
-
-            if (!success)
-            {
-                return NotFound();
-            }
-
-            return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)
         {

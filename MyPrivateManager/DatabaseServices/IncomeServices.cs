@@ -19,9 +19,11 @@ public class IncomeServices : IIncomeServices
         return await _dbContext.Incomes.ToListAsync();
     }
 
-    public async Task<Income?> GetIncomeByIdAsync(int incomeId)
+    public async Task<Income?> GetIncomeByIdAsync(int? incomeId)
     {
-        return await _dbContext.Incomes.FindAsync(incomeId);
+        return await _dbContext.Incomes
+                .Include(i => i.Source)
+                .FirstOrDefaultAsync(i => i.IncomeId == incomeId);
     }
 
     public async Task<bool> CreateIncomeAsync(Income income)
@@ -40,14 +42,16 @@ public class IncomeServices : IIncomeServices
 
     public async Task<bool> UpdateIncomeAsync(int incomeId, Income income)
     {
-        var existingIncome = await _dbContext.Incomes.FindAsync(incomeId);
+        var existingIncome = await _dbContext.Incomes.FirstOrDefaultAsync(i => i.IncomeId == incomeId);
 
         if (existingIncome != null)
         {
             existingIncome.Amount = income.Amount;
-            existingIncome.Date = DateTime.Now;
+            existingIncome.SourceId = income.SourceId;
+            existingIncome.Date = income.Date;
             existingIncome.Description = income.Description;
 
+            _dbContext.Incomes.Update(existingIncome);
             await _dbContext.SaveChangesAsync();
             return true;
         }
@@ -57,7 +61,7 @@ public class IncomeServices : IIncomeServices
 
     public async Task<bool> DeleteIncomeAsync(int incomeId)
     {
-        var income = await _dbContext.Incomes.FindAsync(incomeId);
+        var income = await _dbContext.Incomes.FirstOrDefaultAsync(i => i.IncomeId == incomeId);
 
         if (income != null)
         {

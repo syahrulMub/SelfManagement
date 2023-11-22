@@ -14,13 +14,14 @@ public class SourceController : Controller
         _logger = logger;
     }
 
-    [HttpGet("/sources")]
-    public async Task<IActionResult> Index()
+    [HttpGet("/Source/GetSources")]
+    public async Task<IActionResult> GetSources()
     {
         try
         {
             var sources = await _services.GetSourcesAsync();
-            return View(sources);
+            _logger.LogInformation("success get list of source");
+            return Ok(sources);
         }
         catch (Exception ex)
         {
@@ -74,13 +75,15 @@ public class SourceController : Controller
         try
         {
 
-            bool result = await _services.UpdateSourceAsync(sourceId, source);
+            var result = await _services.UpdateSourceAsync(sourceId, source);
             if (result)
             {
+                _logger.LogInformation("success update source");
                 return Ok();
             }
             else
             {
+                _logger.LogError("error while update source");
                 return View("Error");
             }
         }

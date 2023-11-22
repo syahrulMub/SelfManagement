@@ -13,9 +13,9 @@ public class Income
     public decimal Amount { get; set; }
 
     [Required]
+    [ForeignKey("SourceId")]
     public int SourceId { get; set; }
 
-    [ForeignKey("SourceId")]
     public virtual Source Source { get; set; } = null!;
 
     [Required]
@@ -25,8 +25,8 @@ public class Income
     public string? Description { get; set; }
 
     [Required]
+    [ForeignKey("UserId")]
     public string UserId { get; set; } = null!;
 
-    [ForeignKey("UserId")]
     public virtual User User { get; set; } = null!;
 }

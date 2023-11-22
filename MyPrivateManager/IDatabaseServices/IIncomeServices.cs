@@ -5,7 +5,7 @@ namespace MyPrivateManager.IDatabaseServices;
 public interface IIncomeServices
 {
     Task<IEnumerable<Income>> GetIncomesAsync();
-    Task<Income?> GetIncomeByIdAsync(int incomeId);
+    Task<Income?> GetIncomeByIdAsync(int? incomeId);
     Task<bool> CreateIncomeAsync(Income income);
     Task<bool> UpdateIncomeAsync(int incomeId, Income income);
     Task<bool> DeleteIncomeAsync(int incomeId);
