@@ -30,30 +30,22 @@ function populateSourceDropdown(sourceData) {
     });
 }
 
-function getSourceDataForEdit(incomeId) {
+function getSourceDataForEdit(sourceId) {
     $.ajax({
         url: '/Source/GetSources',
         type: 'GET',
         success: function (data) {
-            populateSourceDropdownForEdit(data, incomeId);
+            var dropdown = $('#editSourceIdForIncome');
+            data.forEach(function (source) {
+                dropdown.append($('<option></option>').val(source.sourceId).text(source.sourceName));
+            });
+            dropdown.val(sourceId);
         },
         error: function () {
             console.error('Failed to fetch data');
         }
     });
 }
-function populateSourceDropdownForEdit(sourceData, incomeId) {
-    var dropdown = $('#editSourceIdForIncome');
-
-    dropdown.empty();
-
-    sourceData.forEach(function (source) {
-        dropdown.append($('<option></option>').val(source.sourceId).text(source.sourceName));
-    });
-
-    dropdown.data('incomeId', incomeId);
-}
-
 
 function editIncome(incomeId) {
     $.ajax({
@@ -63,7 +55,7 @@ function editIncome(incomeId) {
             $('#editIncomeModalLabel').text('Edit Income');
             $('#editIncomeId').val(data.incomeId);
             $('#editIncomeAmount').val(data.amount);
-            getSourceDataForEdit(data.incomeId);
+            getSourceDataForEdit(data.sourceId);
             var localDate = new Date(data.date);
             var offset = localDate.getTimezoneOffset();
             localDate.setMinutes(localDate.getMinutes() - offset);
@@ -146,9 +138,67 @@ function deleteIncome(incomeId) {
     }
 }
 
-// function truncateDescription(description, maxLength) {
-//     if (description.length > maxLength) {
-//         return description.substring(0, maxLength) + '...';
-//     }
-//     return description;
-// }
+function migrateIncome(sourceIdFrom){
+    $('#migrateIncomeModalLabel').text('Migrate Income');
+    populateCheckboxForMigration(sourceIdFrom);
+    $('#migrateIncomeModal').data('sourceIdFrom', sourceIdFrom).modal('show');
+}
+
+function populateCheckboxForMigration(sourceIdFrom){
+    $.ajax({
+        url: '/Source/GetSources',
+        type: 'GET',
+        success: function (data) {
+            var container = $('#checkboxContainer');
+            container.empty();
+
+            data.forEach(function (source){
+                if (source.sourceId !== sourceIdFrom){
+                    
+                    var radioInput = $('<input>')
+                        .attr('type','radio')
+                        .attr('name', 'sourceOption')
+                        .attr('id', 'sourceOption' + source.SourceId)
+                        .val(source.sourceId);
+    
+                    var label = $('<label>').attr('for', 'sourceOption' + source.sourceId).text(source.sourceName);
+    
+                    container.append(radioInput);
+                    container.append(label);
+                }
+            });
+            // data.forEach(function (source){
+            //     if (source.sourceId !== sourceIdFrom){
+            //         var option = $('<option></option>')
+            //             .val(source.sourceId)
+            //             .text(source.sourceName);
+            
+            //         container.append(option);
+            //     }
+            // });
+        },
+        error: function () {
+            console.error('Failed to fetch data');
+        }
+    });
+}
+
+function submitMigration(){
+    var sourceIdFrom = $('#migrateIncomeModal').data('sourceIdFrom');
+    var sourceIdTo = $('input[name="sourceOption"]:checked').val();
+    $.ajax({
+        url : '/Source/MigrateIncome',
+        type : 'POST',
+        data : {sourceIdFrom : sourceIdFrom, sourceIdTo : sourceIdTo},
+        success : function(response){
+            if (response === 'success'){
+                console.log('success migrate data');
+            } else {
+                console.error('migrate failed');
+            }
+        },
+        error : function(){
+            console.error("error during migrate income");
+        }
+    });
+}

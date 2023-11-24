@@ -111,6 +111,30 @@ public class IncomeController : Controller
             return View("Error");
         }
     }
+    [HttpPost("/Source/MigrateIncome")]
+    public async Task<IActionResult> MigrateIncome(int sourceIdFrom, int sourceIdTo)
+    {
+        try
+        {
+            var success = await _incomeService.MigrateIncomeAsync(sourceIdFrom, sourceIdTo);
+            if (success)
+            {
+                _logger.LogInformation("success migrate income");
+                return Ok("success");
+            }
+            else
+            {
+                _logger.LogError("error while migrate income");
+                return Ok();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("error while prossesing data : " + ex);
+            return View("Error");
+        }
+
+    }
 
     [HttpDelete("/Income/DeleteIncome/{incomeId}")]
     public async Task<IActionResult> DeleteConfirmed(int incomeId)

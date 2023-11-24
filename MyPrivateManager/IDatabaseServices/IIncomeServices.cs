@@ -9,5 +9,6 @@ public interface IIncomeServices
     Task<bool> CreateIncomeAsync(Income income);
     Task<bool> UpdateIncomeAsync(int incomeId, Income income);
     Task<bool> DeleteIncomeAsync(int incomeId);
+    Task<bool> MigrateIncomeAsync(int sourceIdFrom, int sourceIdTo);
     Task<IEnumerable<Income>> GetMonthlyIncomeStatisticsAsync(DateTime startDate, DateTime endDate);
 }

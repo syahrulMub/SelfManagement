@@ -2,30 +2,7 @@
     ViewData["Title"] = "Incomes";
 }
 
-<header>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link href="~/img/favicon.png" rel="icon">
-    <link href="~/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link
-        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
-        rel="stylesheet">
-
-    <!-- Vendor CSS Files -->
-    <link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="~/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="~/vendor/quill/quill.snow.css" rel="stylesheet">
-    <link href="~/vendor/quill/quill.bubble.css" rel="stylesheet">
-    <link href="~/vendor/remixicon/remixicon.css" rel="stylesheet">
-    <link href="~/vendor/simple-datatables/style.css" rel="stylesheet">
-    <link href="~/css/style.css" rel="stylesheet">
-</header>
-
-<main id="main" class="main">
+<main class="main" style="margin-top: 6rem;">
     <div class="pagetitle">
         <h1>Income</h1>
         <nav>
@@ -35,6 +12,7 @@
             </ul>
         </nav>
     </div>
+
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
@@ -82,7 +60,7 @@
                                                                     }
                                                                     return description;
                                                                 }
-                                                                document.write(truncateDescription('@income.Description', 20));
+                                                                document.write(truncateDescription('@income.Description', 30));
                                                             </script>
                                                         </td>
                                                         <td>@income.Source.SourceName</td>
@@ -90,9 +68,11 @@
                                                         <td>@income.Date.ToString("dd-MM-yyyy")</td>
                                                         <td>
                                                             <button data-bs-toggle="modal"
-                                                                onclick="editIncome(@income.IncomeId)">Edit</button>
+                                                                onclick="editIncome(@income.IncomeId)"
+                                                                class="btn btn-warning">Edit</button>
                                                             <button data-bs-toggle="modal"
-                                                                onclick="deleteIncome(@income.IncomeId)">Delete</button>
+                                                                onclick="deleteIncome(@income.IncomeId)"
+                                                                class="btn btn-danger">Delete</button>
                                                         </td>
                                                     </tr>
                                                 }
@@ -130,9 +110,11 @@
                                                         <td>@source.SourceName</td>
                                                         <td>
                                                             <button data-bs-toggle="modal"
-                                                                onclick="editSource(@source.SourceId)">Edit</button>
+                                                                onclick="editSource(@source.SourceId)"
+                                                                class="btn btn-warning">Edit</button>
                                                             <button data-bs-toggle="modal"
-                                                                onclick="deleteSource(@source.SourceId)">Delete</button>
+                                                                onclick="migrateIncome(@source.SourceId)"
+                                                                class="btn btn-danger">Delete</button>
                                                         </td>
                                                     </tr>
                                                 }
@@ -153,129 +135,151 @@
             </div>
         </div>
     </section>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/income.js"></script>
-    <script src="~/js/source.js"></script>
+
+    <div class="modal fade" id="createIncomeModal" tabindex="-1" role="dialog" aria-labelledby="createIncomeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createIncomeModalLabel">Create New Income</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createIncomeForm">
+                        <div class="mb-3">
+                            <label for="amount">Amount</label>
+                            <input type="text" class="form-control" id="amount" placeholder="Enter amount">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sourceId">Source</label>
+                            <select class="form-control" id="sourceId"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date">Date</label>
+                            <input type="date" class="form-control" id="date">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description">Description</label>
+                            <textarea type="text" class="form-control" id="description"
+                                placeholder="Enter Description"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="createIncome()">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editIncomeModal" tabindex="-1" role="dialog" aria-labelledby="editIncomeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editIncomeModalLabel">Edit Income</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="editIncomeForm">
+                        <div class="form-group">
+                            <label for="editIncomeId">Income Id</label>
+                            <input type="text" class="form-control" id="editIncomeId" name="IncomeId" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editIncomeAmount">Amount</label>
+                            <input type="text" class="form-control" id="editIncomeAmount" name="amount">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editSourceIdForIncome">Source</label>
+                            <select class="form-control" id="editSourceIdForIncome"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editIncomeDate">Date</label>
+                            <input type="date" class="form-control" id="editIncomeDate" name="date">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editIncomeDescription">Description</label>
+                            <textarea type="text" class="form-control" id="editIncomeDescription"
+                                name="Description"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="updateIncome()">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createSourceModal" tabindex="-1" role="dialog" aria-labelledby="createSourceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createSourceModalLabel">Add Source</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createSourceForm">
+                        <div class="form-group">
+                            <label for="createSourceName">Source Name</label>
+                            <input type="text" class="form-control" id="createSourceName" name="SourceName" required />
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="createSource()">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editSourceModal" tabindex="-1" role="dialog" aria-labelledby="editSourceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSourceModalLabel">Edit Source</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editSourceForm">
+                        <div class="form-group">
+                            <label for="editSourceId">Source Id</label>
+                            <input type="text" class="form-control" id="editSourceId" name="SourceId" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label for="editSourceName">Source Name</label>
+                            <input type="text" class="form-control" id="editSourceName" name="SourceName" required />
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="updateSource()">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="migrateIncomeModal" tabindex="-1" role="dialog"
+        aria-labelledby="migrateIncomeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="migrateIncomeModalLabel">Migrate Income Source To</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <form id="migrateIncomeForm">
+                            <div id="checkboxContainer" name="checkboxContainer"></div>
+                            <button type="button" class="btn btn-primary" onclick="submitMigration()">Migrate</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
-<div class="modal fade" id="createIncomeModal" tabindex="-1" role="dialog" aria-labelledby="createIncomeModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createIncomeModalLabel">Create New Income</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="createIncomeForm">
-                    <div class="mb-3">
-                        <label for="amount">Amount</label>
-                        <input type="text" class="form-control" id="amount" placeholder="Enter amount">
-                    </div>
-                    <div class="mb-3">
-                        <label for="sourceId">Source</label>
-                        <select class="form-control" id="sourceId">
-                    </div>
-                    <div class="mb-3">
-                        <label for="date">Date</label>
-                        <input type="date" class="form-control" id="date">
-                    </div>
-                    <div class="mb-3">
-                        <label for="description">Description</label>
-                        <textarea type="text" class="form-control" id="description" placeholder="Enter Description">
-                    </div>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="createIncome()">Save</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="modal fade" id="editIncomeModal" tabindex="-1" role="dialog" aria-labelledby="editIncomeModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editIncomeModalLabel">Edit Income</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form class="editIncomeForm">
-                    <div class="form-group">
-                        <label for="editIncomeId">Income Id</label>
-                        <input type="text" class="form-control" id="editIncomeId" name="IncomeId" readonly />
-                    </div>
-                    <div class="mb-3">
-                        <label for="editIncomeAmount">Amount</label>
-                        <input type="text" class="form-control" id="editIncomeAmount" name="amount">
-                    </div>
-                    <div class="mb-3">
-                        <label for="editSourceIdForIncome">Source</label>
-                        <select class="form-control" id="editSourceIdForIncome">
-                    </div>
-                    <div class="mb-3">
-                        <label for="editIncomeDate">Date</label>
-                        <input type="date" class="form-control" id="editIncomeDate" name="date">
-                    </div>
-                    <div class="mb-3">
-                        <label for="editIncomeDescription">Description</label>
-                        <textarea type="text" class="form-control" id="editIncomeDescription" name="Description">
-                    </div>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="updateIncome()">Save</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="modal fade" id="createSourceModal" tabindex="-1" role="dialog" aria-labelledby="createSourceModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createSourceModalLabel">Add Source</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="createSourceForm">
-                    <div class="form-group">
-                        <label for="createSourceName">Source Name</label>
-                        <input type="text" class="form-control" id="createSourceName" name="SourceName" required />
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="createSource()">Create</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="editSourceModal" tabindex="-1" role="dialog" aria-labelledby="editSourceModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editSourceModalLabel">Edit Source</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="editSourceForm">
-                    <div class="form-group">
-                        <label for="editSourceId">Source Id</label>
-                        <input type="text" class="form-control" id="editSourceId" name="SourceId" readonly />
-                    </div>
-                    <div class="form-group">
-                        <label for="editSourceName">Source Name</label>
-                        <input type="text" class="form-control" id="editSourceName" name="SourceName" required />
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="updateSource()">Update</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+@section Scripts {
+    <script type="text/javascript" src="~/js/income.js"></script>
+    <script type="text/javascript" src="~/js/source.js"></script>
+}

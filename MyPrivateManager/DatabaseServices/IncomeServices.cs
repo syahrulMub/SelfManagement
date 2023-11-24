@@ -72,6 +72,27 @@ public class IncomeServices : IIncomeServices
 
         return false;
     }
+    public async Task<bool> MigrateIncomeAsync(int sourceIdFrom, int sourceIdTo)
+    {
+        var dataIncome = await _dbContext.Incomes
+                            .Where(i => i.SourceId == sourceIdFrom)
+                            .ToListAsync();
+        if (dataIncome == null)
+        {
+            return true;
+        }
+        else
+        {
+            foreach (var data in dataIncome)
+            {
+                data.SourceId = sourceIdTo;
+                _dbContext.Update(data);
+            }
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+    }
+
     public async Task<IEnumerable<Income>> GetMonthlyIncomeStatisticsAsync(DateTime startDate, DateTime endDate)
     {
         var monthlyIncomeStatistics = await _dbContext.Incomes
