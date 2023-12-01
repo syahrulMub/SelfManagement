@@ -14,7 +14,7 @@ public class CategoryController : Controller
         _categoryServices = services;
         _logger = logger;
     }
-    [HttpGet("/categories")]
+    [HttpGet("/Category/Categories")]
     public async Task<IActionResult> GetCategories()
     {
         try
@@ -29,7 +29,7 @@ public class CategoryController : Controller
         }
     }
 
-    [HttpGet("category/{categoryId}")]
+    [HttpGet("/Category/GetCategory/{categoryId}")]
     public async Task<IActionResult> GetCategory(int categoryId)
     {
         try
@@ -48,28 +48,14 @@ public class CategoryController : Controller
         }
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] Category category)
+    [HttpPost("/Category/CreateCategory")]
+    public async Task<IActionResult> CreateCategory(Category category)
     {
         try
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Invalid input for CreateCategory");
-                return BadRequest(ModelState);
-            }
-
             var success = await _categoryServices.CreateCategoryAsync(category);
-
-            if (success)
-            {
-                return Ok();
-            }
-            else
-            {
-                _logger.LogError("Failed to create category");
-                return View("Error");
-            }
+            _logger.LogInformation("success create category");
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -78,7 +64,7 @@ public class CategoryController : Controller
         }
     }
 
-    [HttpPut("{categoryId}")]
+    [HttpPut("/Category/UpdateCategory/{categoryId}")]
     public async Task<ActionResult<Category>> UpdateCategory(int categoryId, [FromBody] Category category)
     {
         try
@@ -96,7 +82,7 @@ public class CategoryController : Controller
                 return NotFound();
             }
 
-            return Ok(updatedCategory);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -105,7 +91,7 @@ public class CategoryController : Controller
         }
     }
 
-    [HttpDelete("{categoryId}")]
+    [HttpDelete("/Category/DeleteCategory/{categoryId}")]
     public async Task<ActionResult> DeleteCategory(int categoryId)
     {
         try
@@ -117,7 +103,7 @@ public class CategoryController : Controller
                 return NotFound();
             }
 
-            return NoContent();
+            return Ok();
         }
         catch (Exception ex)
         {

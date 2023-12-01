@@ -47,6 +47,29 @@ function getSourceDataForEdit(sourceId) {
     });
 }
 
+function detailIncome(incomeId){
+    $.ajax({
+        url: '/Income/GetIncome/' + incomeId,
+        type: 'GET',
+        success : function(data){
+            $('#detailIncomeModalLabel').text('Detail Income');
+            $('#detailIncomeId').val(data.incomeId);
+            $('#detailIncomeAmount').val(data.amount);
+            $('#detailIncomeSourceName').val(data.source.sourceName);
+            var localDate = new Date(data.date);
+            var offset = localDate.getTimezoneOffset();
+            localDate.setMinutes(localDate.getMinutes() - offset);
+            var formattedDate = localDate.toISOString().split('T')[0];
+            $('#detailIncomeDate').val(formattedDate);
+            $('#detailIncomeDescription').val(data.description);
+            $('#detailIncomeModal').modal('show');
+        },
+        error: function(){
+            console.log('Error proseccing data');
+        }
+    });
+}
+
 function editIncome(incomeId) {
     $.ajax({
         url: '/Income/GetIncome/' + incomeId,
@@ -152,30 +175,24 @@ function populateCheckboxForMigration(sourceIdFrom){
             var container = $('#checkboxContainer');
             container.empty();
 
+            function radioButton(source){
+                return `
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sourceOption" id="sourceOption${source.sourceId}" value="${source.sourceId}">
+                    <label class="form-check-label" for="sourceOption${source.sourceId}" >
+                        ${source.sourceName}
+                    </label>
+                </div>
+                `;
+            }
+
             data.forEach(function (source){
                 if (source.sourceId !== sourceIdFrom){
-                    
-                    var radioInput = $('<input>')
-                        .attr('type','radio')
-                        .attr('name', 'sourceOption')
-                        .attr('id', 'sourceOption' + source.SourceId)
-                        .val(source.sourceId);
-    
-                    var label = $('<label>').attr('for', 'sourceOption' + source.sourceId).text(source.sourceName);
-    
-                    container.append(radioInput);
-                    container.append(label);
+                    container.append(radioButton(source));
                 }
             });
-            // data.forEach(function (source){
-            //     if (source.sourceId !== sourceIdFrom){
-            //         var option = $('<option></option>')
-            //             .val(source.sourceId)
-            //             .text(source.sourceName);
-            
-            //         container.append(option);
-            //     }
-            // });
+
+           
         },
         error: function () {
             console.error('Failed to fetch data');
@@ -185,20 +202,37 @@ function populateCheckboxForMigration(sourceIdFrom){
 
 function submitMigration(){
     var sourceIdFrom = $('#migrateIncomeModal').data('sourceIdFrom');
-    var sourceIdTo = $('input[name="sourceOption"]:checked').val();
+    var sourceIdTo = $('input[value]:checked').val();
+    console.log(sourceIdFrom);
+    console.log('value of source Id :',sourceIdTo);
     $.ajax({
         url : '/Source/MigrateIncome',
         type : 'POST',
         data : {sourceIdFrom : sourceIdFrom, sourceIdTo : sourceIdTo},
-        success : function(response){
-            if (response === 'success'){
-                console.log('success migrate data');
-            } else {
-                console.error('migrate failed');
-            }
+        success : function(){
+            console.log("success migrate");
+            
         },
         error : function(){
             console.error("error during migrate income");
         }
     });
+    $('#migrateIncomeModal').modal('hide');
+    deleteSource(sourceIdFrom);
+}
+
+function deleteSource(sourceId) {
+    var isConfirmed = confirm('are you sure you want to delete this source?');
+    if (isConfirmed) {
+        $.ajax({
+            url: '/Source/DeleteSource/' + sourceId,
+            type: 'DELETE',
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                console.error('Failed to delete source');
+            }
+        });
+    }
 }

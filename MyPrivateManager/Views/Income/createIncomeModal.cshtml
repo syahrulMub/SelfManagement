@@ -1,0 +1,34 @@
+<div class="modal fade" id="createIncomeModal" tabindex="-1" role="dialog" aria-labelledby="createIncomeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createIncomeModalLabel">Create New Income</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createIncomeForm">
+                        <div class="mb-3">
+                            <label for="amount">Amount</label>
+                            <input type="text" class="form-control" id="amount" placeholder="Enter amount">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sourceId">Source</label>
+                            <select class="form-control" id="sourceId"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date">Date</label>
+                            <input type="date" class="form-control" id="date">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description">Description</label>
+                            <textarea type="text" class="form-control" id="description"
+                                placeholder="Enter Description"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="createIncome()">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

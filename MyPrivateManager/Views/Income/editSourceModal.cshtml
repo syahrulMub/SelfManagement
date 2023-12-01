@@ -1,0 +1,24 @@
+<div class="modal fade" id="editSourceModal" tabindex="-1" role="dialog" aria-labelledby="editSourceModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editSourceModalLabel">Edit Source</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editSourceForm">
+                    <div class="form-group">
+                        <label for="editSourceId">Source Id</label>
+                        <input type="text" class="form-control" id="editSourceId" name="SourceId" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="editSourceName">Source Name</label>
+                        <input type="text" class="form-control" id="editSourceName" name="SourceName" required />
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="updateSource()">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

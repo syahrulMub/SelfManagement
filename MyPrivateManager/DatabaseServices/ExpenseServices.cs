@@ -20,13 +20,13 @@ public class ExpenseServices : IExpenseServices
     public IEnumerable<Expense> GetExpenses()
     {
         return _dbContext.Expenses
-                    .Include(i => i.User)
+                    .Include(i => i.Category)
                     .AsEnumerable();
     }
 
     public async Task<Expense?> GetExpenseByIdAsync(int expenseId)
     {
-        return await _dbContext.Expenses.FindAsync(expenseId);
+        return await _dbContext.Expenses.FirstOrDefaultAsync(i => i.ExpenseId == expenseId);
     }
 
     public async Task<bool> CreateExpenseAsync(Expense expense)

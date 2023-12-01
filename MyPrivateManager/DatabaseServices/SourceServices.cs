@@ -50,7 +50,7 @@ public class SourceServices : ISourceServices
 
     public async Task<bool> DeleteSourceAsync(int sourceId)
     {
-        var source = await _dbContext.Sources.FindAsync(sourceId);
+        var source = await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == sourceId);
 
         if (source != null)
         {

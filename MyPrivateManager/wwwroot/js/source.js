@@ -1,3 +1,30 @@
+function openAddSource() {
+
+}
+
+function openEditSource(id) {
+
+}
+
+function openDeleteSource() {
+
+}
+
+function storeSource() {
+
+}
+
+function updateSource() {
+
+}
+
+function destroySource(id) {
+
+}
+
+
+
+
 function addSource() {
     $('#createSourceModalLabel').text('Add Source');
     $('#createSourceName').val('');
@@ -19,6 +46,7 @@ function editSource(sourceId) {
         }
     });
 }
+
 function createSource() {
     var sourceData = {
         SourceName: $('#createSourceName').val()
@@ -36,6 +64,7 @@ function createSource() {
         }
     });
 }
+
 function updateSource() {
     var sourceId = $('#editSourceId').val();
     var sourceData = {
@@ -53,19 +82,4 @@ function updateSource() {
             console.error('Something went wrong');
         }
     });
-}
-function deleteSource(sourceId) {
-    var isConfirmed = confirm('are you sure you want to delete this source?');
-    if (isConfirmed) {
-        $.ajax({
-            url: '/Source/DeleteSource/' + sourceId,
-            type: 'DELETE',
-            success: function () {
-                location.reload();
-            },
-            error: function () {
-                console.error('Failed to delete source');
-            }
-        });
-    }
 }

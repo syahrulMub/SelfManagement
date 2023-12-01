@@ -86,7 +86,7 @@ public class IncomeServices : IIncomeServices
             foreach (var data in dataIncome)
             {
                 data.SourceId = sourceIdTo;
-                _dbContext.Update(data);
+                _dbContext.Incomes.Update(data);
             }
             await _dbContext.SaveChangesAsync();
             return true;

@@ -1,0 +1,38 @@
+<div class="modal fade" id="editIncomeModal" tabindex="-1" role="dialog" aria-labelledby="editIncomeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editIncomeModalLabel">Edit Income</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="editIncomeForm">
+                    <div class="form-group">
+                        <label for="editIncomeId">Income Id</label>
+                        <input type="text" class="form-control" id="editIncomeId" name="IncomeId" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editIncomeAmount">Amount</label>
+                        <input type="text" class="form-control" id="editIncomeAmount" name="amount">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSourceIdForIncome">Source</label>
+                        <select class="form-control" id="editSourceIdForIncome"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editIncomeDate">Date</label>
+                        <input type="date" class="form-control" id="editIncomeDate" name="date">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editIncomeDescription">Description</label>
+                        <textarea type="text" class="form-control" id="editIncomeDescription"
+                            name="Description"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="updateIncome()">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

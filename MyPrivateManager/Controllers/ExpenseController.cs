@@ -7,24 +7,29 @@ namespace MyPrivateManager.Controllers;
 
 public class ExpenseController : Controller
 {
-    private readonly IExpenseServices _services;
+    private readonly IExpenseServices _expenseServices;
+    private readonly ICategoryServices _categoryServices;
     private readonly UserManager<User> _userManager;
     private readonly ILogger<ExpenseController> _logger;
 
-    public ExpenseController(IExpenseServices services, UserManager<User> userManager, ILogger<ExpenseController> logger)
+    public ExpenseController(IExpenseServices expenseServices, ICategoryServices categoryServices, UserManager<User> userManager, ILogger<ExpenseController> logger)
     {
-        _services = services;
+        _expenseServices = expenseServices;
+        _categoryServices = categoryServices;
         _userManager = userManager;
         _logger = logger;
     }
     [HttpGet]
-    public ActionResult<IEnumerable<Expense>> GetExpensesAsync()
+    public async Task<IActionResult> Index()
     {
         try
         {
             var userId = _userManager.GetUserId(User);
-            var result = _services.GetExpenses().Where(i => i.UserId == userId);
-            return Ok(result);
+            var userExpenses = _expenseServices.GetExpenses().Where(i => i.UserId == userId);
+            var category = await _categoryServices.GetCategoriesAsync();
+            ViewBag.UserExpense = userExpenses;
+            ViewBag.Category = category;
+            return View();
         }
         catch (Exception ex)
         {
@@ -32,18 +37,18 @@ public class ExpenseController : Controller
             return View("Error");
         }
     }
-    [HttpGet]
+    [HttpGet("/Expense/GetExpense/{expenseId}")]
     public async Task<IActionResult> Details(int expenseId)
     {
         try
         {
-            var expense = await _services.GetExpenseByIdAsync(expenseId);
+            var expense = await _expenseServices.GetExpenseByIdAsync(expenseId);
 
             if (expense == null)
             {
                 return NotFound();
             }
-            return View(expense);
+            return Ok(expense);
         }
         catch (Exception ex)
         {
@@ -51,35 +56,24 @@ public class ExpenseController : Controller
             return View("Error");
         }
     }
-    public IActionResult Create()
-    {
-        return View();
-    }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Amount,CategoryId,Date,Description")] Expense expense)
+    [HttpPost("/Expense/CreateExpense")]
+    public async Task<IActionResult> Create(Expense expense)
     {
         try
         {
-            // Validate input
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Invalid input for CreateExpense");
-                return View(expense);
-            }
             var userId = _userManager.GetUserId(User);
             if (userId != null)
             {
                 expense.UserId = userId;
                 expense.Date = DateTime.Now;
-                await _services.CreateExpenseAsync(expense);
-                return RedirectToAction(nameof(Index));
+                await _expenseServices.CreateExpenseAsync(expense);
+                return Ok();
             }
             else
             {
                 _logger.LogError("user not found");
-                return View("User not found");
+                return View("Error");
             }
         }
         catch (Exception ex)
@@ -95,7 +89,7 @@ public class ExpenseController : Controller
             var userId = _userManager.GetUserId(User);
             if (userId != null)
             {
-                var totalExpenses = await _services.GetTotalExpensesByCategoryAsync(categoryId, userId);
+                var totalExpenses = await _expenseServices.GetTotalExpensesByCategoryAsync(categoryId, userId);
                 return Ok(totalExpenses);
             }
             else
@@ -117,7 +111,7 @@ public class ExpenseController : Controller
             var userId = _userManager.GetUserId(User);
             if (userId != null)
             {
-                var expenses = await _services.GetExpensesByDateRangeAsync(startDate, endDate);
+                var expenses = await _expenseServices.GetExpensesByDateRangeAsync(startDate, endDate);
                 expenses = expenses.Where(e => e.UserId == userId);
                 return Ok(expenses);
             }

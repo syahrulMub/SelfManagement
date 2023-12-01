@@ -120,7 +120,7 @@ public class IncomeController : Controller
             if (success)
             {
                 _logger.LogInformation("success migrate income");
-                return Ok("success");
+                return Ok();
             }
             else
             {

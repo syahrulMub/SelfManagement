@@ -1,80 +1,81 @@
 @{
-    ViewData["Title"] = "Incomes";
+    ViewData["Title"] = "Expenses";
 }
-
 <main class="main" style="margin-top: 6rem;">
     <div class="pagetitle">
-        <h1>Income</h1>
+        <h1>Expenses</h1>
         <nav>
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a asp-controller="Home" asp-action="">Home</a></li>
-                <li class="breadcrumb-item">Income</li>
+                <li class="breadcrumb-item">Expenses</li>
             </ul>
         </nav>
     </div>
-
     <section class="section">
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
                         <ul class="nav nav-tabs d-flex" id="myTabJustify" role="tablist">
                             <li class="nav-item flex-fill" role="presentation">
-                                <button class="nav-link w-100 active" id="income-tab" data-bs-toggle="tab" type="button"
-                                    role="tab" data-bs-target="#income-content" aria-selected="true">Income</button>
+                                <button class="nav-link w-100 active" id="expense-tab" data-bs-toggle="tab"
+                                    type="button" role="tab" data-bs-target="#expense-content" aria-selected="true">
+                                    Expenses</button>
                             </li>
                             <li class="nav-item flex-fill" role="presentation">
-                                <button class="nav-link w-100" id="source-tab" data-bs-toggle="tab" type="button"
-                                    role="tab" data-bs-target="#source-content" aria-selected="false">Source</button>
+                                <button class="nav-link w-100" id="category-tab" data-bs-toggle="tab" type="button"
+                                    role="tab" data-bs-target="#category-content" aria-selected="false">
+                                    Categories
+                                </button>
                             </li>
                         </ul>
-                        <div class="tab-content pt-2" id="myIncomeTab" role="tabpanel">
-                            <div class="tab-pane fade show active" id="income-content">
-                                <button class="btn btn-primary" onclick="addIncome()">
-                                    <i class="bi bi-journal-plus"></i> Create New Income
+                        <div class="tab-content pt-2" id="myExpenseTab" role="tabpanel">
+                            <div class="tab-pane fade show active" id="expense-content">
+                                <button class="btn btn-primary" onclick="CreateExpense()">
+                                    <i class="bi bi-journal-plus">Create Expense</i>
                                 </button>
-                                <h5 class="card-title">Income</h5>
+                                <h5 class="card-title">Expense</h5>
                                 <div class="table-responsive">
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
                                                 <th scope="col">Description</th>
-                                                <th scope="col">Source</th>
+                                                <th scope="col">Category</th>
                                                 <th scope="col">Amount</th>
                                                 <th scope="col">Date Time</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.UserIncomes != null)
+                                            @if (ViewBag.UserExpenses != null)
                                             {
-                                                @foreach (var income in ViewBag.UserIncomes)
+                                                @foreach (var expense in ViewBag.UserExpenses)
                                                 {
                                                     <tr>
-                                                        <td scope="row">@income.IncomeId</td>
+                                                        <td scope="row">@expense.ExpenseId</td>
                                                         <td>
                                                             <script>
-                                                                function truncateDescription(description, maxLength) {
-                                                                    if (description.length > maxLength) {
-                                                                        return description.substring(0, maxLength) + '...';
+                                                                function truncateDescription(description, maxLenght) {
+                                                                    if (description.Length > maxLenght) {
+                                                                        return description.substring(0, maxLenght + '...');
                                                                     }
                                                                     return description;
                                                                 }
-                                                                document.write(truncateDescription('@income.Description', 40));
+                                                                document.write(truncateDescription('@expense.Description', 40));
                                                             </script>
                                                         </td>
-                                                        <td>@income.Source.SourceName</td>
-                                                        <td>@income.Amount</td>
-                                                        <td>@income.Date.ToString("dd-MM-yyyy")</td>
+                                                        <td>@expense.Category.CategoryName</td>
+                                                        <td>@expense.Amount</td>
+                                                        <td>@expense.Date.ToString("dd-MM-yyyy")</td>
                                                         <td>
-                                                            <button data-bs-toogle="modal"
-                                                                onclick="detailIncome(@income.IncomeId)"
+                                                            <button data-bs-toggle="modal"
+                                                                onclick="detailExpense(@expense.expenseId)"
                                                                 class="btn btn-info">Detail</button>
                                                             <button data-bs-toggle="modal"
-                                                                onclick="editIncome(@income.IncomeId)"
+                                                                onclick="editExpense(@expense.expenseId)"
                                                                 class="btn btn-warning">Edit</button>
                                                             <button data-bs-toggle="modal"
-                                                                onclick="deleteIncome(@income.IncomeId)"
+                                                                onclick="editExpense(@expense.expenseId)"
                                                                 class="btn btn-danger">Delete</button>
                                                         </td>
                                                     </tr>
@@ -90,34 +91,33 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="source-content">
-                                <button class="btn btn-primary my-2" onclick="addSource()" data-bs-toggle="modal">
-                                    <i class="bi bi-journal-plus"></i> Create New Source
+                            <div class="tab-pane fade" id="category-content">
+                                <button class="btn btn-primary mt-2" onclick="addCategory()" data-bs-toggle="modal">
+                                    <i class="bi bi-joural-plus"></i>Create New Category
                                 </button>
-                                <h5 class="card-title">Source</h5>
+                                <h5 class="card-title">Category</h5>
                                 <div class="table-responsive">
                                     <table class="table table-striped">
+
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Source Name</th>
+                                                <th scope="col">Category Name</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.Sources != null)
+                                            @if (ViewBag.Category != null)
                                             {
-                                                @foreach (var source in ViewBag.Sources)
+                                                @foreach (var category in ViewBag.Category)
                                                 {
                                                     <tr>
-                                                        <td scope="row">@source.SourceId</td>
-                                                        <td>@source.SourceName</td>
+                                                        <td scope="row">@category.CategoryId</td>
+                                                        <td>@category.CategoryName</td>
                                                         <td>
-                                                            <button data-bs-toggle="modal"
-                                                                onclick="editSource(@source.SourceId)"
-                                                                class="btn btn-warning">Edit</button>
-                                                            <button data-bs-toggle="modal"
-                                                                onclick="migrateIncome(@source.SourceId)"
-                                                                class="btn btn-danger">Delete</button>
+                                                            <button class="btn btn-warning" data-bs-toggle="modal"
+                                                                onclick="editCategory()@category.CategoryId">Edit</button>
+                                                            <button class="btn btn-danger" data-bs-toggle="modal"
+                                                                onclick="deleteCategory()@category.CategoryId">Delete</button>
                                                         </td>
                                                     </tr>
                                                 }
@@ -138,16 +138,10 @@
             </div>
         </div>
     </section>
-    <partial name="createIncomeModal" />
-    <partial name="detailIncomeModal" />
-    <partial name="editIncomeModal" />
-    <partial name="createSourceModal" />
-    <partial name="editSourceModal" />
-    <partial name="migrateIncomeModal" />
+    <partial name="createCategoryModal"></partial>
 </main>
 
-
-@section Scripts {
-    <script type="text/javascript" src="~/js/income.js"></script>
-    <script type="text/javascript" src="~/js/source.js"></script>
+@section scripts {
+    <script type="text/javascript" src="~/js/category.js"></script>
+    <script type="text/javascript" src="~/js/expense.js"></script>
 }
