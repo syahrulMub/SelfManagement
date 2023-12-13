@@ -41,7 +41,7 @@ public class HomeController : Controller
         try
         {
             var userId = _userManager.GetUserId(User);
-            var expenses = _expenseServices.GetExpenses();
+            var expenses = await _expenseServices.GetExpenses();
             var incomes = await _incomeServices.GetIncomesAsync();
             if (userId != null)
             {

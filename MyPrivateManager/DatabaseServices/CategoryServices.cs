@@ -38,7 +38,7 @@ namespace DatabaseServices
 
         public async Task<bool> UpdateCategoryAsync(int categoryId, Category category)
         {
-            var existingCategory = await _dbContext.Categories.FindAsync(categoryId);
+            var existingCategory = await _dbContext.Categories.FirstOrDefaultAsync(i => i.CategoryId == categoryId);
 
             if (existingCategory != null)
             {
@@ -55,7 +55,7 @@ namespace DatabaseServices
 
         public async Task<bool> DeleteCategoryAsync(int categoryId)
         {
-            var category = await _dbContext.Categories.FindAsync(categoryId);
+            var category = await _dbContext.Categories.FirstOrDefaultAsync(i => i.CategoryId == categoryId);
 
             if (category != null)
             {

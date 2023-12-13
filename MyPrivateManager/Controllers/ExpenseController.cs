@@ -25,9 +25,10 @@ public class ExpenseController : Controller
         try
         {
             var userId = _userManager.GetUserId(User);
-            var userExpenses = _expenseServices.GetExpenses().Where(i => i.UserId == userId);
+            var expense = await _expenseServices.GetExpenses();
+            var userExpenses = expense.Where(i => i.UserId == userId);
             var category = await _categoryServices.GetCategoriesAsync();
-            ViewBag.UserExpense = userExpenses;
+            ViewBag.UserExpenses = userExpenses;
             ViewBag.Category = category;
             return View();
         }
@@ -66,7 +67,6 @@ public class ExpenseController : Controller
             if (userId != null)
             {
                 expense.UserId = userId;
-                expense.Date = DateTime.Now;
                 await _expenseServices.CreateExpenseAsync(expense);
                 return Ok();
             }

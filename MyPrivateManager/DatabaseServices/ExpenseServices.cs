@@ -17,11 +17,11 @@ public class ExpenseServices : IExpenseServices
         _userManager = userManager;
     }
 
-    public IEnumerable<Expense> GetExpenses()
+    public async Task<IEnumerable<Expense>> GetExpenses()
     {
-        return _dbContext.Expenses
+        return await _dbContext.Expenses
                     .Include(i => i.Category)
-                    .AsEnumerable();
+                    .ToListAsync();
     }
 
     public async Task<Expense?> GetExpenseByIdAsync(int expenseId)
@@ -38,7 +38,7 @@ public class ExpenseServices : IExpenseServices
 
     public async Task<bool> UpdateExpenseAsync(int expenseId, Expense expense)
     {
-        var existingExpense = await _dbContext.Expenses.FindAsync(expenseId);
+        var existingExpense = await _dbContext.Expenses.FirstOrDefaultAsync(i => i.ExpenseId == expenseId);
 
         if (existingExpense != null)
         {
@@ -46,6 +46,8 @@ public class ExpenseServices : IExpenseServices
             existingExpense.CategoryId = expense.CategoryId;
             existingExpense.Date = expense.Date;
             existingExpense.Description = expense.Description;
+
+            _dbContext.Expenses.Update(existingExpense);
             await _dbContext.SaveChangesAsync();
             return true;
         }
@@ -57,7 +59,7 @@ public class ExpenseServices : IExpenseServices
 
     public async Task<bool> DeleteExpenseAsync(int expenseId)
     {
-        var expense = await _dbContext.Expenses.FindAsync(expenseId);
+        var expense = await _dbContext.Expenses.FirstOrDefaultAsync(i => i.ExpenseId == expenseId);
 
         if (expense != null)
         {

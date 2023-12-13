@@ -31,8 +31,8 @@
                         </ul>
                         <div class="tab-content pt-2" id="myExpenseTab" role="tabpanel">
                             <div class="tab-pane fade show active" id="expense-content">
-                                <button class="btn btn-primary" onclick="CreateExpense()">
-                                    <i class="bi bi-journal-plus">Create Expense</i>
+                                <button class="btn btn-primary" onclick="addExpense()">
+                                    <i class="bi bi-journal-plus"></i> Create Expense
                                 </button>
                                 <h5 class="card-title">Expense</h5>
                                 <div class="table-responsive">
@@ -69,13 +69,13 @@
                                                         <td>@expense.Date.ToString("dd-MM-yyyy")</td>
                                                         <td>
                                                             <button data-bs-toggle="modal"
-                                                                onclick="detailExpense(@expense.expenseId)"
+                                                                onclick="detailExpense(@expense.ExpenseId)"
                                                                 class="btn btn-info">Detail</button>
                                                             <button data-bs-toggle="modal"
-                                                                onclick="editExpense(@expense.expenseId)"
+                                                                onclick="editExpense(@expense.ExpenseId)"
                                                                 class="btn btn-warning">Edit</button>
                                                             <button data-bs-toggle="modal"
-                                                                onclick="editExpense(@expense.expenseId)"
+                                                                onclick="editExpense(@expense.ExpenseId)"
                                                                 class="btn btn-danger">Delete</button>
                                                         </td>
                                                     </tr>
@@ -115,9 +115,9 @@
                                                         <td>@category.CategoryName</td>
                                                         <td>
                                                             <button class="btn btn-warning" data-bs-toggle="modal"
-                                                                onclick="editCategory()@category.CategoryId">Edit</button>
+                                                                onclick="editCategory(@category.CategoryId)">Edit</button>
                                                             <button class="btn btn-danger" data-bs-toggle="modal"
-                                                                onclick="deleteCategory()@category.CategoryId">Delete</button>
+                                                                onclick="deleteCategory(@category.CategoryId)">Delete</button>
                                                         </td>
                                                     </tr>
                                                 }
@@ -139,6 +139,11 @@
         </div>
     </section>
     <partial name="createCategoryModal"></partial>
+    <partial name="editCategoryModal"></partial>
+    <partial name="createExpenseModal"></partial>
+    <partial name="editExpenseModal"></partial>
+    <partial name="detailExpenseModal"></partial>
+    <partial name="migrateExpenseModal"></partial>
 </main>
 
 @section scripts {

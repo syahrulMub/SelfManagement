@@ -37,8 +37,10 @@ public class CategoryController : Controller
             var category = await _categoryServices.GetCategoryByIdAsync(categoryId);
             if (category == null)
             {
+                _logger.LogError("category not found");
                 return NotFound();
             }
+            _logger.LogInformation("success get caetegory data");
             return Ok(category);
         }
         catch (Exception ex)
@@ -64,24 +66,13 @@ public class CategoryController : Controller
         }
     }
 
-    [HttpPut("/Category/UpdateCategory/{categoryId}")]
-    public async Task<ActionResult<Category>> UpdateCategory(int categoryId, [FromBody] Category category)
+    [HttpPost("/Category/UpdateCategory/{categoryId}")]
+    public async Task<IActionResult> UpdateCategory(int categoryId, Category category)
     {
         try
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Invalid input for UpdateCategory");
-                return BadRequest(ModelState);
-            }
-
-            var updatedCategory = await _categoryServices.UpdateCategoryAsync(categoryId, category);
-
-            if (updatedCategory == false)
-            {
-                return NotFound();
-            }
-
+            await _categoryServices.UpdateCategoryAsync(categoryId, category);
+            _logger.LogInformation("success update category");
             return Ok();
         }
         catch (Exception ex)
