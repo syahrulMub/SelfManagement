@@ -127,4 +127,27 @@ public class ExpenseController : Controller
             return View("Error");
         }
     }
+    [HttpGet("/Expense/MonthlyChart")]
+    public async Task<IActionResult> GetMonthlyForChartExpense()
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var monthlyExpense = await _expenseServices.GetMonthlyExpenseForYearChar(userId);
+                return Ok(monthlyExpense);
+            }
+            else
+            {
+                _logger.LogError("userId not found");
+                return Ok();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error proseccing data : " + ex.Message);
+            return View("Error");
+        }
+    }
 }

@@ -84,4 +84,14 @@ public class ExpenseServices : IExpenseServices
             .Where(e => e.Date >= startDate && e.Date <= endDate)
             .ToListAsync();
     }
+    public async Task<IEnumerable<decimal>> GetMonthlyExpenseForYearChar(string userId)
+    {
+        var monthly = await _dbContext.Expenses
+                            .Where(i => i.UserId == userId)
+                            .GroupBy(i => i.Date.Month)
+                            .Select(i => i.Sum(i => i.Amount))
+                            .OrderBy(i => i)
+                            .ToListAsync();
+        return monthly;
+    }
 }

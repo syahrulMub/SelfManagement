@@ -45,3 +45,39 @@ function createExpense(){
         }
     })
 }
+
+function GetExpenseChartMonthly(){
+    $.ajax({
+        url: '/Expense/MonthlyChart',
+        type: 'GET',
+        success: function(data){
+            createExpenseChart(data);
+        },
+        error: function(error){
+            console.log('Error creating expense chart' + error);
+        }
+    });
+}
+
+function createExpenseChart(data){
+    new Chart(document.querySelector('#lineChart'),{
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [{
+                label: 'Expense Chart',
+                data: data,
+                fill: true,
+                borderColor: 'rgb(75,192,192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}

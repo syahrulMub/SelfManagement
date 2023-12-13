@@ -134,6 +134,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Report<span>/Income Monthly</span></h5>
+                        <canvas id="lineChart" style="max-height: 400px;"></canvas>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                GetExpenseChartMonthly();
+                            });
+
+                        </script>
+                    </div>
                 </div>
             </div>
         </div>
@@ -149,4 +159,5 @@
 @section scripts {
     <script type="text/javascript" src="~/js/category.js"></script>
     <script type="text/javascript" src="~/js/expense.js"></script>
+    <script type="text/javascript" src="~/vendor/chart.js/chart.umd.js"></script>
 }
