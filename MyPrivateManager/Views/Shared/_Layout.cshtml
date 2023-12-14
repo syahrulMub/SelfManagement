@@ -17,8 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MyPrivateManager</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+
     <link rel="stylesheet" href="~/MyPrivateManager.styles.css" asp-append-version="true" />
 
     <!-- Favicons -->
@@ -45,13 +44,23 @@
 </head>
 
 <body>
+    <header id="header" class="header fixed-top d-flex align-items-center">
+        <div class="d-flex align-items-center justify-content-between">
+            <a class="logo d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/img/logo.png" alt="">
+                <span class="d-none d-lg-block">Self Management</span>
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div>
+        <partial name="_loginPartial" />
+    </header>
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
 
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link " href="index.html">
+                <a class="nav-link collapsed" href="index.html">
                     <i class="bi bi-grid"></i>
                     <span>Dashboard</span>
                 </a>
@@ -59,10 +68,9 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-cash-coin wides"></i><span>Finansial</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-cash-coin"></i><span>Finansial</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <ul id="components-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a asp-controller="Income" asp-action="">
                             <i class="bi bi-circle"></i><span>Income</span>
@@ -158,16 +166,6 @@
 
     </aside><!-- End Sidebar-->
 
-    <header id="header" class="header fixed-top d-flex align-items-center">
-        <div class="d-flex align-items-center justify-content-between">
-            <a class="logo d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                <img src="~/img/logo.png" alt="">
-                <span class="d-none d-lg-block">Self Management</span>
-            </a>
-            <i class="bi bi-list toggle-sidebar-btn"></i>
-            <partial name="_loginPartial" />
-        </div>
-    </header>
 
     <div class="container">
         @RenderBody()
@@ -180,11 +178,11 @@
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/vendor/quill/quill.min.js"></script>
     <script src="~/vendor/apexcharts/apexcharts.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/vendor/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="~/js/site.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
