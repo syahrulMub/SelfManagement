@@ -647,7 +647,7 @@ h6 {
 
   .toggle-sidebar #main,
   .toggle-sidebar #footer {
-    margin-left: -300px;
+    margin-left: -350px;
   }
 
   .toggle-sidebar .sidebar {
@@ -672,7 +672,7 @@ h6 {
 }
 
 .sidebar-nav .nav-heading {
-  font-size: 11px;
+  font-size: 18px;
   text-transform: uppercase;
   color: #899bbd;
   font-weight: 600;
@@ -682,7 +682,7 @@ h6 {
 .sidebar-nav .nav-link {
   display: flex;
   align-items: center;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   color: #4154f1;
   transition: 0.3;
@@ -692,7 +692,7 @@ h6 {
 }
 
 .sidebar-nav .nav-link i {
-  font-size: 16px;
+  font-size: 20px;
   margin-right: 10px;
   color: #4154f1;
 }
@@ -733,7 +733,7 @@ h6 {
 .sidebar-nav .nav-content a {
   display: flex;
   align-items: center;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #012970;
   transition: 0.3;
@@ -742,7 +742,7 @@ h6 {
 }
 
 .sidebar-nav .nav-content a i {
-  font-size: 6px;
+  font-size: 10px;
   margin-right: 8px;
   line-height: 0;
   border-radius: 50%;
@@ -772,7 +772,7 @@ h6 {
   padding-right: 20px;
   padding-bottom: 5px;
   transition: 0.3s;
-  font-size: 16px;
+  font-size: 6px;
 }
 
 .dashboard .filter .icon:hover,
@@ -837,7 +837,7 @@ h6 {
 
 /* Activity */
 .dashboard .activity {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .dashboard .activity .activity-item .activite-label {
@@ -861,7 +861,7 @@ h6 {
 .dashboard .activity .activity-item .activity-badge {
   margin-top: 3px;
   z-index: 1;
-  font-size: 11px;
+  font-size: 1px;
   line-height: 0;
   border-radius: 50%;
   flex-shrink: 0;
