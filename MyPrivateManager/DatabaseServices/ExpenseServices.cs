@@ -89,9 +89,21 @@ public class ExpenseServices : IExpenseServices
         var monthly = await _dbContext.Expenses
                             .Where(i => i.UserId == userId)
                             .GroupBy(i => i.Date.Month)
-                            .Select(i => i.Sum(i => i.Amount))
-                            .OrderBy(i => i)
+                            .Select(i => new
+                            {
+                                Month = i.Key,
+                                totalExpense = i.Sum(i => i.Amount)
+                            })
                             .ToListAsync();
-        return monthly;
+        var result = Enumerable.Range(1, 12)
+                            .Select(month => new
+                            {
+                                Month = month,
+                                TotalExpense = monthly.FirstOrDefault(i => i.Month == month)?.totalExpense ?? 0
+                            })
+                            .OrderBy(i => i.Month)
+                            .Select(i => i.TotalExpense)
+                            .ToList();
+        return result;
     }
 }
