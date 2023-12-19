@@ -87,13 +87,8 @@ public class CategoryController : Controller
     {
         try
         {
-            var result = await _categoryServices.DeleteCategoryAsync(categoryId);
-
-            if (!result)
-            {
-                return NotFound();
-            }
-
+            await _categoryServices.DeleteCategoryAsync(categoryId);
+            _logger.LogInformation("succes delete gategory");
             return Ok();
         }
         catch (Exception ex)

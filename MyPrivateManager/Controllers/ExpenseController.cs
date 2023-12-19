@@ -82,6 +82,37 @@ public class ExpenseController : Controller
             return View("Error");
         }
     }
+    [HttpPost("/Expense/UpdateExpense/{expenseId}")]
+    public async Task<IActionResult> UpdateExpense(int expenseId, Expense expense)
+    {
+        try
+        {
+            await _expenseServices.UpdateExpenseAsync(expenseId, expense);
+            _logger.LogInformation("success update expense");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("error while updating expense " + ex.Message);
+            return View("Error");
+        }
+    }
+
+    [HttpDelete("/Expense/DeleteExpense/{expenseId}")]
+    public async Task<IActionResult> DeleteExpense(int expenseId)
+    {
+        try
+        {
+            await _expenseServices.DeleteExpenseAsync(expenseId);
+            _logger.LogInformation("Success deleting expense");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error while deleting expense :" + ex.Message);
+            return View("Error");
+        }
+    }
     public async Task<IActionResult> GetTotalExpensesByCategory(int categoryId)
     {
         try
@@ -147,6 +178,21 @@ public class ExpenseController : Controller
         catch (Exception ex)
         {
             _logger.LogError("Error proseccing data : " + ex.Message);
+            return View("Error");
+        }
+    }
+    [HttpPost("/Expense/MigrateExpense")]
+    public async Task<IActionResult> MigrateExpenseCaregory(int categoryIdFrom, int categoryIdTo)
+    {
+        try
+        {
+            await _expenseServices.MigrateExpenseData(categoryIdFrom, categoryIdTo);
+            _logger.LogInformation("success migrate expense");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("error migrate expense : " + ex.Message);
             return View("Error");
         }
     }

@@ -12,4 +12,5 @@ public interface IExpenseServices
     Task<decimal> GetTotalExpensesByCategoryAsync(int categoryId, string userId);
     Task<IEnumerable<Expense>> GetExpensesByDateRangeAsync(DateTime startDate, DateTime endDate);
     Task<IEnumerable<decimal>> GetMonthlyExpenseForYearChar(string userId);
+    Task<bool> MigrateExpenseData(int categoryFrom, int categoryTo);
 }

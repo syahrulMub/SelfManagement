@@ -26,7 +26,9 @@ public class ExpenseServices : IExpenseServices
 
     public async Task<Expense?> GetExpenseByIdAsync(int expenseId)
     {
-        return await _dbContext.Expenses.FirstOrDefaultAsync(i => i.ExpenseId == expenseId);
+        return await _dbContext.Expenses
+                    .Include(i => i.Category)
+                    .FirstOrDefaultAsync(i => i.ExpenseId == expenseId);
     }
 
     public async Task<bool> CreateExpenseAsync(Expense expense)
@@ -105,5 +107,26 @@ public class ExpenseServices : IExpenseServices
                             .Select(i => i.TotalExpense)
                             .ToList();
         return result;
+    }
+    public async Task<bool> MigrateExpenseData(int categoryFrom, int categoryTo)
+    {
+        var currentExpense = await _dbContext.Expenses
+                                .Where(i => i.CategoryId == categoryFrom)
+                                .ToListAsync();
+        if (currentExpense == null)
+        {
+            return true;
+        }
+        else
+        {
+            foreach (var expense in currentExpense)
+            {
+                expense.CategoryId = categoryTo;
+                _dbContext.Update(expense);
+            }
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

@@ -75,7 +75,7 @@
                                                                 onclick="editExpense(@expense.ExpenseId)"
                                                                 class="btn btn-warning">Edit</button>
                                                             <button data-bs-toggle="modal"
-                                                                onclick="editExpense(@expense.ExpenseId)"
+                                                                onclick="deleteExpense(@expense.ExpenseId)"
                                                                 class="btn btn-danger">Delete</button>
                                                         </td>
                                                     </tr>
@@ -117,7 +117,7 @@
                                                             <button class="btn btn-warning" data-bs-toggle="modal"
                                                                 onclick="editCategory(@category.CategoryId)">Edit</button>
                                                             <button class="btn btn-danger" data-bs-toggle="modal"
-                                                                onclick="deleteCategory(@category.CategoryId)">Delete</button>
+                                                                onclick="migrateExpense(@category.CategoryId)">Delete</button>
                                                         </td>
                                                     </tr>
                                                 }

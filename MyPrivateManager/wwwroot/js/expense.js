@@ -81,3 +81,167 @@ function createExpenseChart(data){
         }
     });
 }
+
+function detailExpense(expenseId){
+    $.ajax({
+        url: '/Expense/GetExpense/' + expenseId,
+        type: 'GET',
+        success : function(data){
+            $('#detailExpenseModalLabel').text('Details Expense');
+            $('#detailExpenseId').val(data.expenseId);
+            $('#detailExpenseAmount').val(data.amount);
+            $('#detailExpenseCategory').val(data.category.categoryName);
+            var localDate = new Date(data.date);
+            var offset = localDate.getTimezoneOffset();
+            localDate.setMinutes(localDate.getMinutes() - offset);
+            var formattedDate = localDate.toISOString().split('T')[0];
+            $('#detailExpenseDate').val(formattedDate);
+            $('#detailExpenseDescription').val(data.description);
+            $('#detailExpenseModal').modal('show');
+        },
+        error: function(error){
+            console.error('Error prosessing data'+error);
+        }
+    });
+}
+
+function editExpense(expenseId){
+    $.ajax({
+        url: '/Expense/GetExpense/' + expenseId,
+        type: 'GET',
+        success: function(data){
+            $('#editExpenseModalLabel').text('Edit Expense');
+            $('#editExpenseId').val(data.expenseId);
+            $('#editExpenseAmount').val(data.amount);
+            getCategoryForEdit(data.categoryId);
+            var localDate = new Date(data.date);
+            var offset = localDate.getTimezoneOffset();
+            localDate.setMinutes(localDate.getMinutes() - offset);
+            var formattedDate = localDate.toISOString().split('T')[0];
+            $('#editExpenseDate').val(formattedDate);
+            $('#editExpenseDescription').val(data.description);
+            $('#editExpenseModal').modal('show');
+        },
+        error: function(error){
+            console.log('error prosessing data :' + error);
+        }
+    });
+}
+
+function updateExpense(){
+    var expenseId = $('#editExpenseId').val();
+    var amount = $('#editExpenseAmount').val();
+    var categoryId = $('#editCategoryIdForExpense').val();
+    var date = $('#editExpenseDate').val();
+    var description = $('#editExpenseDescription').val();
+    $.ajax({
+        url: '/Expense/UpdateExpense/' + expenseId,
+        type: 'POST',
+        data: {Amount : amount, ExpenseId: expenseId, CategoryId: categoryId, Date: date, Description: description},
+        success: function(){
+            $('#editExpenseModal').modal('hide');
+            location.reload();
+        },
+        error: function(error){
+            console.log('Error: ' + error);
+        }
+    });
+}
+
+function getCategoryForEdit(categoryId) {
+    $.ajax({
+        url: '/Category/Categories',
+        type: 'GET',
+        success: function (data) {
+            var dropdown = $('#editCategoryIdForExpense');
+            data.forEach(function (category) {
+                dropdown.append($('<option></option>').val(category.categoryId).text(category.categoryName));
+            });
+            dropdown.val(categoryId);
+        },
+        error: function () {
+            console.error('Failed to fetch data');
+        }
+    });
+}
+
+function deleteExpense(expenseId){
+    var validate = confirm('Are you sure you want to delete this expense?');
+    if (validate){
+        $.ajax({
+            url: '/Expense/DeleteExpense/' + expenseId,
+            type: 'DELETE',
+            success: function(){
+                location.reload();
+            },
+            error: function(error){
+                console.log('error delete data : ' + error);
+            }
+        });
+    }
+}
+
+function migrateExpense(categoryIdFrom){
+    $('#migrateExpenseModalLabel').text('Migrate Expense');
+    populateCheckboxForMigrateExpense(categoryIdFrom);
+    $('#migrateExpenseModal').data('categoryIdFrom', categoryIdFrom).modal('show');
+}
+
+function populateCheckboxForMigrateExpense(categoryIdFrom) {
+    $.ajax({
+        url: '/Category/Categories',
+        type: 'GET',
+        success: function(data){
+            var container = $('#radioMigrateExpense');
+            container.empty();
+            function radioButton(category){
+                return `
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="categoryOption" id="categoryOption${category.categoryId}" value="${category.categoryId}">
+                    <label class="form-check-label" for="categoryOption${category.categoryId}"> ${category.categoryName}</label>
+                </div>
+                `;
+            }
+
+            data.forEach(function(category){
+                if (category.categoryId !== categoryIdFrom){
+                    container.append(radioButton(category));
+                }
+            })
+        }
+    });
+}
+
+function submitExpenseMigration(){
+    var categoryIdFrom = $('#migrateExpenseModal').data('categoryIdFrom');
+    var categoryIdTo = $('input[value]:checked').val();
+    $.ajax({
+        url: '/Expense/MigrateExpense',
+        type: 'POST',
+        data: {categoryIdFrom : categoryIdFrom, categoryIdTo: categoryIdTo},
+        success: function(){
+            console.log('Success migrate expense');
+        },
+        error: function(){
+            console.log('error migrate expense');
+        }
+    });
+    $('#migrateExpenseModal').modal('hide');
+    deleteCategory(categoryIdFrom);
+}
+
+function deleteCategory(categoryId){
+    var isConfirmed = confirm('Are you sure you want to delete this category?');
+    if (isConfirmed){
+        $.ajax({
+            url: '/Category/DeleteCategory/' + categoryId,
+            type: 'DELETE',
+            success: function(){
+                location.reload();
+            },
+            error: function(error){
+                console.log(error);
+            }
+        })
+    }
+}

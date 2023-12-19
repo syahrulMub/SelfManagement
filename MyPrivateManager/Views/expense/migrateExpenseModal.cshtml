@@ -1,0 +1,20 @@
+<div class="modal fade" id="migrateExpenseModal" tabindex="-1" role="dialog" aria-labelledby="migrateExpenseModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="migrateExpenseModalLabel">Migrate Expense Category To</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <form id="migrateExpenseForm">
+                        <div class="d-flex flex-column" id="radioMigrateExpense"></div>
+                        <button type="button" class="btn btn-primary mt-2"
+                            onclick="submitExpenseMigration()">Migrate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

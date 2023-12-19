@@ -1,0 +1,38 @@
+<div class="modal fade" id="detailExpenseModal" tabindex="-1" role="dialog" aria-labelledby="detailExpenseModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailExpenseModalLabel">Detail Expense</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="detailExpenseForm">
+                    <div class="mb-3">
+                        <label>Expense Id</label>
+                        <input type="text" class="form-control" id="detailExpenseId" name="expenseId" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label>Amount</label>
+                        <input type="text" class="form-control" id="detailExpenseAmount" name="amount" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label>Category</label>
+                        <input type="text" class="form-control" id="detailExpenseCategory" name="categoryName"
+                            readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label>Date</label>
+                        <input type="date" class="form-control" id="detailExpenseDate" name="date" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <textarea type="text" class="form-control" id="detailExpenseDescription" name="description"
+                            readonly></textarea>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

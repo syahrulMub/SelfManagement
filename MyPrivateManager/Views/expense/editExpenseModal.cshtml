@@ -1,0 +1,38 @@
+<div class="modal fade" id="editExpenseModal" tabindex="-1" role="dialog" aria-labelledby="editExpenseModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editExpenseModalLabel">Edit Expense</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="editExpenseForm">
+                    <div class="form-group">
+                        <label for="editExpenseId">Expense Id</label>
+                        <input type="text" class="form-control" id="editExpenseId" name="ExpenseId" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editExpenseAmount">Amount</label>
+                        <input type="text" class="form-control" id="editExpenseAmount" name="expenseAmount" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCategoryIdForExpense">Category</label>
+                        <select class="form-control" id="editCategoryIdForExpense"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editExpenseDate">Date</label>
+                        <input type="date" class="form-control" id="editExpenseDate" name="date">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editExpenseDescription">Description</label>
+                        <textarea type="text" class="form-control" id="editExpenseDescription"
+                            name="description"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="updateExpense()">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
