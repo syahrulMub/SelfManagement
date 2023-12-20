@@ -21,6 +21,7 @@ public class ExpenseServices : IExpenseServices
     {
         return await _dbContext.Expenses
                     .Include(i => i.Category)
+                    .OrderByDescending(i => i)
                     .ToListAsync();
     }
 
@@ -127,6 +128,63 @@ public class ExpenseServices : IExpenseServices
             await _dbContext.SaveChangesAsync();
             return true;
         }
+    }
+    public IEnumerable<decimal> CountByCurrentWeek(string userId)
+    {
+        var today = DateTime.Now;
+        var firstDay = today.Date.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
 
+        var amounts = Enumerable.Range(0, 7)
+            .Select(offset => firstDay.AddDays(offset))
+            .Select(date => CountExpenseDaily(date, userId))
+            .ToList();
+
+        return amounts;
+
+        // List<decimal> amount = new();
+        // var today = DateTime.Now;
+        // var firstDay = today.Date.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+        // DateTime currentDate = firstDay;
+        // for (int i = 1; i <= 7; i++)
+        // {
+        //     var countDaily = CountExpenseDaily(currentDate, userId);
+        //     if (countDaily == 0)
+        //     {
+        //         amount.Add(0);
+        //     }
+        //     else
+        //     {
+        //         amount.Add(countDaily);
+        //     }
+        //     currentDate = currentDate.AddDays(1);
+        // }
+        // return amount;
+    }
+    private decimal CountExpenseDaily(DateTime date, string userId)
+    {
+        var count = _dbContext.Expenses
+            .Where(i => i.UserId == userId && i.Date == date)
+            .Sum(i => i.Amount);
+        return count;
+        // var count = _dbContext.Expenses
+        //             .Where(i => i.UserId == userId)
+        //             .Where(i => i.Date == date)
+        //             .Sum(i => i.Amount);
+        // return count;
+    }
+    public IEnumerable<decimal> CountByCurrentMonth(string userId)
+    {
+        var today = DateTime.Now;
+        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
+        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+        var amounts = Enumerable.Range(0, (int)(lastDayOfMonth - firstDayOfMonth).TotalDays + 1)
+            .Select(offset => firstDayOfMonth.AddDays(offset))
+            .GroupBy(date => (int)Math.Ceiling(date.Day / 7.0))
+            .Select(group => group.Sum(date => CountExpenseDaily(date, userId)))
+            .Take(5)
+            .ToList();
+
+        return amounts;
     }
 }

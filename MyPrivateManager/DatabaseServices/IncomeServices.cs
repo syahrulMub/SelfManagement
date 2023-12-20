@@ -1,4 +1,6 @@
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MyPrivateManager.Data;
 using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
@@ -16,7 +18,9 @@ public class IncomeServices : IIncomeServices
 
     public async Task<IEnumerable<Income>> GetIncomesAsync()
     {
-        return await _dbContext.Incomes.ToListAsync();
+        return await _dbContext.Incomes
+                        .OrderByDescending(i => i)
+                        .ToListAsync();
     }
 
     public async Task<Income?> GetIncomeByIdAsync(int? incomeId)
@@ -107,4 +111,29 @@ public class IncomeServices : IIncomeServices
 
         return monthlyIncomeStatistics;
     }
+    public async Task<IEnumerable<DTOTotalIncomeByCategory>> GetIncomeTotalByCategory()
+    {
+        var categoryTotal = _dbContext.Incomes
+                            .GroupBy(i => i.SourceId)
+                            .Select(i => new
+                            {
+                                source = i.Key,
+                                total = i.Sum(i => i.Amount)
+                            })
+                            .ToDictionary(i => i.source, i => i.total);
+        var totalSource = await _dbContext.Sources
+                            .ToListAsync();
+        var result = totalSource
+                        .Select(source => new DTOTotalIncomeByCategory
+                        {
+                            SourceName = source.SourceName,
+                            Total = categoryTotal.TryGetValue(source.SourceId, out var total) ? total : 0,
+                            MaxSum = categoryTotal.Values.Max()
+                        })
+                        .OrderBy(i => i.SourceName)
+                        .ToList();
+        return result;
+    }
 }
+
+

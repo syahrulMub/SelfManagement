@@ -633,13 +633,13 @@ h6 {
 
   #main,
   #footer {
-    margin-left: -100px;
+    margin-left: 300px;
   }
 }
 
 @media (max-width: 1199px) {
   .toggle-sidebar .sidebar {
-    left: -100px;
+    left: 300px;
   }
 }
 
@@ -647,7 +647,7 @@ h6 {
 
   .toggle-sidebar #main,
   .toggle-sidebar #footer {
-    margin-left: -350px;
+    margin-left: 20px;
   }
 
   .toggle-sidebar .sidebar {
@@ -772,7 +772,7 @@ h6 {
   padding-right: 20px;
   padding-bottom: 5px;
   transition: 0.3s;
-  font-size: 6px;
+  font-size: 18px;
 }
 
 .dashboard .filter .icon:hover,

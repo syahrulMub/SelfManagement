@@ -46,42 +46,6 @@ function createExpense(){
     })
 }
 
-function GetExpenseChartMonthly(){
-    $.ajax({
-        url: '/Expense/MonthlyChart',
-        type: 'GET',
-        success: function(data){
-            createExpenseChart(data);
-        },
-        error: function(error){
-            console.log('Error creating expense chart' + error);
-        }
-    });
-}
-
-function createExpenseChart(data){
-    new Chart(document.querySelector('#lineChart'),{
-        type: 'line',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            datasets: [{
-                label: 'Expense Chart',
-                data: data,
-                fill: true,
-                borderColor: 'rgb(75,192,192)',
-                tension: 0.1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-}
-
 function detailExpense(expenseId){
     $.ajax({
         url: '/Expense/GetExpense/' + expenseId,
@@ -244,4 +208,128 @@ function deleteCategory(categoryId){
             }
         })
     }
+}
+
+function updateChart(filter) {
+    switch (filter) {
+        case 'daily':
+            if (myChart) {
+                myChart.destroy();
+            }
+            getExpenseChartDaily();
+            break;
+        case 'weekly':
+            if (myChart) {
+                myChart.destroy();
+            }
+            getExpenseChartWeekly();
+            break;
+        case 'monthly':
+            if (myChart) {
+                myChart.destroy();
+            }
+            getExpenseChartMonthly();
+            break;
+        default:
+            getExpenseChartMonthly();
+            break;
+    }
+}
+
+function getExpenseChartMonthly(){
+    $.ajax({
+        url: '/Expense/MonthlyChart',
+        type: 'GET',
+        success: function(data){
+            myChart = new Chart(document.querySelector('#lineChart'),{
+                type: 'line',
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    datasets: [{
+                        label: 'Expense Chart Monthly',
+                        data: data,
+                        fill: true,
+                        borderColor: 'rgb(75,192,192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        },
+        error: function(error){
+            console.log('Error creating expense chart' + error);
+        }
+    });
+}
+
+function getExpenseChartDaily(){
+    $.ajax({
+        url: '/Expense/ExpenseDailyChart',
+        type: 'GET',
+        success: function(data){
+
+            myChart = new Chart(document.querySelector('#lineChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                    datasets: [{
+                        label: 'Expense Chart Daily',
+                        data: data,
+                        fill: true,
+                        borderColor: 'rgb(0,206,209)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero : true,
+                        }
+                    }
+                }
+            });
+        },
+        error: function(error){
+            console.log('error' + error);
+        }
+    });
+}
+
+function getExpenseChartWeekly(){
+    $.ajax({
+        url: '/Expense/ExpenseWeeklyChart',
+        type: 'GET',
+        success: function(data){
+
+            myChart = new Chart(document.querySelector('#lineChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                    datasets: [{
+                        label: 'Expense Chart Weekly',
+                        data: data,
+                        fill: true,
+                        borderColor: 'rgb(0,206,29)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero : true,
+                        }
+                    }
+                }
+            });
+        },
+        error: function(error){
+            console.log('error' + error);
+        }
+    });
 }

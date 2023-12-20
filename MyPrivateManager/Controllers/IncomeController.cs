@@ -135,6 +135,21 @@ public class IncomeController : Controller
         }
 
     }
+    [HttpGet("/Income/IncomeByCategory")]
+    public async Task<IActionResult> IncomeByCategoryEchart()
+    {
+        try
+        {
+            var incomeData = await _incomeService.GetIncomeTotalByCategory();
+            _logger.LogInformation("Success get income for echart");
+            return Ok(incomeData);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error getting income for echart" + ex.Message);
+            return View("Error");
+        }
+    }
 
     [HttpDelete("/Income/DeleteIncome/{incomeId}")]
     public async Task<IActionResult> DeleteConfirmed(int incomeId)

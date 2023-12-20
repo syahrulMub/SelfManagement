@@ -13,9 +13,10 @@
         </nav>
     </div>
 
-    <section class="section">
+    <section class="section dashboard">
         <div class="row">
-            <div class="col-lg-12">
+            <!--left side -->
+            <div class="col-lg-8">
                 <div class="card">
                     <div class="card-body">
                         <ul class="nav nav-tabs nav-tabs-bordered d-flex mt-2" id="borderedTabJustified" role="tablist">
@@ -133,6 +134,32 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <!--right section -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="filter">
+                        <a class="icon" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+                            <li class="dropdown-item">This week</li>
+                            <li class="dropdown-item">This Month</li>
+                            <li class="dropdown-item">This Year</li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body pb-0">
+                        <h5 class="card-title">Report Income <span>| by Category</span></h5>
+                        <div id="incomeBySourceChart" style="min-height: 400px;" class="echart"></div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                getIncomeChartByCategory();
+                            });
+                        </script>
                     </div>
                 </div>
             </div>

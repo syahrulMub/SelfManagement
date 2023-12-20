@@ -236,3 +236,38 @@ function deleteSource(sourceId) {
         });
     }
 }
+
+function getIncomeChartByCategory(){
+    $.ajax({
+        url: '/Income/IncomeByCategory',
+        type: 'GET',
+        success: function(data){
+            var indicatorData = [];
+            var totalByCategory =[];
+            data.forEach(function(item){
+                indicatorData.push({
+                    name: item.sourceName,
+                    max: item.maxSum + (item.maxSum/5)
+                });
+                totalByCategory.push(item.total);
+            });
+            echarts.init(document.querySelector("#incomeBySourceChart")).setOption({
+                legend: {
+                    data: ['Chart by Category']
+                },
+                radar: {
+                    indicator: indicatorData
+                },
+                series: [{
+                    name: 'Chart by Category',
+                    type: 'radar',
+                    data: [{
+                        value: totalByCategory,
+                        name: 'Category chart'
+                    }]
+                }]
+            });
+        }
+    });
+}
+

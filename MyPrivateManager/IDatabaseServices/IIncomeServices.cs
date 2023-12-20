@@ -11,4 +11,12 @@ public interface IIncomeServices
     Task<bool> DeleteIncomeAsync(int incomeId);
     Task<bool> MigrateIncomeAsync(int sourceIdFrom, int sourceIdTo);
     Task<IEnumerable<Income>> GetMonthlyIncomeStatisticsAsync(DateTime startDate, DateTime endDate);
+    Task<IEnumerable<DTOTotalIncomeByCategory>> GetIncomeTotalByCategory();
+}
+
+public class DTOTotalIncomeByCategory
+{
+    public string? SourceName { get; set; }
+    public decimal Total { get; set; }
+    public decimal MaxSum { get; set; }
 }

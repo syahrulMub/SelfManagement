@@ -13,4 +13,6 @@ public interface IExpenseServices
     Task<IEnumerable<Expense>> GetExpensesByDateRangeAsync(DateTime startDate, DateTime endDate);
     Task<IEnumerable<decimal>> GetMonthlyExpenseForYearChar(string userId);
     Task<bool> MigrateExpenseData(int categoryFrom, int categoryTo);
+    IEnumerable<decimal> CountByCurrentWeek(string userId);
+    IEnumerable<decimal> CountByCurrentMonth(string userId);
 }

@@ -196,4 +196,52 @@ public class ExpenseController : Controller
             return View("Error");
         }
     }
+    [HttpGet("/Expense/ExpenseDailyChart")]
+    public IActionResult ExpenseDailyForChart()
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var result = _expenseServices.CountByCurrentWeek(userId);
+                return Ok(result);
+            }
+            else
+            {
+                _logger.LogError("userId not Found");
+                return View("Error");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("error get daily expense" + ex.Message);
+            return View("Error");
+        }
+    }
+    [HttpGet("/Expense/ExpenseWeeklyChart")]
+    public IActionResult GetWeeklyDataChart()
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var result = _expenseServices.CountByCurrentMonth(userId);
+                _logger.LogInformation("Success Get Wekkly Chart");
+                return Ok(result);
+            }
+            else
+            {
+                _logger.LogError("UserId not found");
+                return View("Error");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error get weekly Chart" + ex.Message);
+            return View("Error");
+        }
+    }
+
 }

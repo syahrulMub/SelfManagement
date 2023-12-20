@@ -11,9 +11,10 @@
             </ul>
         </nav>
     </div>
-    <section class="section">
+    <section class="section dashboard">
         <div class="row">
-            <div class="col-md-12">
+            <!--left section-->
+            <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
                         <ul class="nav nav-tabs nav-tabs-bordered d-flex mt-2" id="borderedTabJustified" role="tablist">
@@ -134,16 +135,37 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card">
+                    <div class="filter">
+                        <a class="icon" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+                            <li><a class="dropdown-item" onclick="updateChart('daily')">This
+                                    Week</a></li>
+                            <li><a class="dropdown-item" onclick="updateChart('weekly')">This Month</a></li>
+                            <li><a class="dropdown-item" onclick="updateChart('monthly')">This Year</a></li>
+                        </ul>
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title">Report<span>/ Income Monthly</span></h5>
+                        <h5 class="card-title" id="report-title">Report<span>| Expense </span></h5>
                         <canvas id="lineChart" style="max-height: 400px;"></canvas>
-                        <script>
-                            document.addEventListener("DOMContentLoaded", () => {
-                                GetExpenseChartMonthly();
-                            });
 
+                        <script>
+                            var myChart;
+                            document.addEventListener("DOMContentLoaded", () => {
+                                updateChart('monthly');
+                            });
                         </script>
                     </div>
+                </div>
+            </div>
+            <!--right section -->
+            <div class="col-md-4">
+                <div class="card">
+
                 </div>
             </div>
         </div>
