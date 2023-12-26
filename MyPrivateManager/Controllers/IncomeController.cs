@@ -27,10 +27,11 @@ public class IncomeController : Controller
         {
             var userId = _userManager.GetUserId(User);
             var incomes = await _incomeService.GetIncomesAsync();
-            var userIncomes = incomes.Where(i => i.UserId == userId);
+            var userIncomes = incomes.Where(i => i.Source.UserId == userId);
             var sources = await _sourceService.GetSourcesAsync();
+            var userSources = sources.Where(i => i.UserId == userId);
             ViewBag.UserIncomes = userIncomes;
-            ViewBag.Sources = sources;
+            ViewBag.Sources = userSources;
             return View();
         }
         catch (Exception ex)
@@ -79,7 +80,7 @@ public class IncomeController : Controller
             var userId = _userManager.GetUserId(User);
             if (userId != null)
             {
-                income.UserId = userId;
+                income.Source.UserId = userId;
                 await _incomeService.CreateIncomeAsync(income);
                 _logger.LogInformation("success create income");
                 return Ok();
@@ -140,9 +141,17 @@ public class IncomeController : Controller
     {
         try
         {
-            var incomeData = await _incomeService.GetIncomeTotalByCategory();
-            _logger.LogInformation("Success get income for echart");
-            return Ok(incomeData);
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var incomeData = await _incomeService.GetIncomeTotalByCategory(userId);
+                _logger.LogInformation("Success get income for echart");
+                return Ok(incomeData);
+            }
+            else
+            {
+                return View("Error");
+            }
         }
         catch (Exception ex)
         {
@@ -174,7 +183,7 @@ public class IncomeController : Controller
         {
             var userId = _userManager.GetUserId(User);
             var monthlyIncomeStatistics = await _incomeService.GetMonthlyIncomeStatisticsAsync(startDate, endDate);
-            var userIncome = monthlyIncomeStatistics.Where(i => i.UserId == userId);
+            var userIncome = monthlyIncomeStatistics.Where(i => i.Source.UserId == userId);
             return Ok(userIncome);
         }
         catch (Exception ex)

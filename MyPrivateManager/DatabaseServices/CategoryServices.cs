@@ -19,7 +19,8 @@ namespace DatabaseServices
 
         public async Task<IEnumerable<Category>> GetCategoriesAsync()
         {
-            return await _dbContext.Categories.ToListAsync();
+            return await _dbContext.Categories
+                            .ToListAsync();
         }
 
         public async Task<Category?> GetCategoryByIdAsync(int? categoryId)

@@ -9,12 +9,11 @@ namespace MyPrivateManager.DatabaseServices;
 public class ExpenseServices : IExpenseServices
 {
     private readonly DatabaseContext _dbContext;
-    private readonly UserManager<User> _userManager;
 
-    public ExpenseServices(DatabaseContext dbContext, UserManager<User> userManager)
+    public ExpenseServices(DatabaseContext dbContext)
     {
         _dbContext = dbContext;
-        _userManager = userManager;
+
     }
 
     public async Task<IEnumerable<Expense>> GetExpenses()
@@ -78,7 +77,7 @@ public class ExpenseServices : IExpenseServices
     public async Task<decimal> GetTotalExpensesByCategoryAsync(int categoryId, string userId)
     {
         return await _dbContext.Expenses
-            .Where(e => e.CategoryId == categoryId && e.UserId == userId)
+            .Where(e => e.CategoryId == categoryId && e.Category.UserId == userId)
             .SumAsync(e => e.Amount);
     }
     public async Task<IEnumerable<Expense>> GetExpensesByDateRangeAsync(DateTime startDate, DateTime endDate)
@@ -90,7 +89,7 @@ public class ExpenseServices : IExpenseServices
     public async Task<IEnumerable<decimal>> GetMonthlyExpenseForYearChar(string userId)
     {
         var monthly = await _dbContext.Expenses
-                            .Where(i => i.UserId == userId)
+                            .Where(i => i.Category.UserId == userId)
                             .GroupBy(i => i.Date.Month)
                             .Select(i => new
                             {
@@ -163,7 +162,7 @@ public class ExpenseServices : IExpenseServices
     private decimal CountExpenseDaily(DateTime date, string userId)
     {
         var count = _dbContext.Expenses
-            .Where(i => i.UserId == userId && i.Date == date)
+            .Where(i => i.Category.UserId == userId && i.Date == date)
             .Sum(i => i.Amount);
         return count;
         // var count = _dbContext.Expenses

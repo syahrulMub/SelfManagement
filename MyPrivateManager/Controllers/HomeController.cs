@@ -42,14 +42,14 @@ public class HomeController : Controller
         {
             var userId = _userManager.GetUserId(User);
             var expenses = await _expenseServices.GetExpenses();
-            var incomes = await _incomeServices.GetIncomesAsync();
             if (userId != null)
             {
+                var incomes = await _incomeServices.GetIncomesAsync();
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user != null)
                 {
-                    decimal totalExpenses = expenses.Where(i => i.UserId == userId).Sum(e => e.Amount);
-                    decimal totalIncomes = incomes.Where(i => i.UserId == userId).Sum(i => i.Amount);
+                    decimal totalExpenses = expenses.Where(i => i.Category.UserId == userId).Sum(e => e.Amount);
+                    decimal totalIncomes = incomes.Where(i => i.Source.UserId == userId).Sum(i => i.Amount);
                     decimal netBalance = user.Balance + totalIncomes - totalExpenses;
 
                     var financialSummaryViewModel = new FinancialSummaryViewModel
@@ -62,8 +62,8 @@ public class HomeController : Controller
                 }
                 else
                 {
-                    decimal totalExpenses = expenses.Where(i => i.UserId == userId).Sum(e => e.Amount);
-                    decimal totalIncomes = incomes.Where(i => i.UserId == userId).Sum(i => i.Amount);
+                    decimal totalExpenses = expenses.Where(i => i.Category.UserId == userId).Sum(e => e.Amount);
+                    decimal totalIncomes = incomes.Where(i => i.Source.UserId == userId).Sum(i => i.Amount);
                     decimal netBalance = totalIncomes - totalExpenses;
 
                     var financialSummaryViewModel = new FinancialSummaryViewModel

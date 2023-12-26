@@ -3,16 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyPrivateManager.Models;
 
-public class Category
+public class TaskCategory
 {
     [Key]
-    public int CategoryId { get; set; }
-
     [Required]
-    [MaxLength(50)]
-    public string CategoryName { get; set; } = null!;
+    public int TaskCategoryId { get; set; }
+    public string TaskCategoryName { get; set; } = null!;
     [Required]
     [ForeignKey("UserId")]
-    public string UserId { get; set; } = null!;
+    public string? UserId { get; set; }
     public virtual User User { get; set; } = null!;
 }

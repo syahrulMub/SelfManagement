@@ -58,7 +58,6 @@ public class SourceController : Controller
         try
         {
             // Validate input
-
             await _services.CreateSourceAsync(source);
             return Ok();
         }

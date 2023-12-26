@@ -10,6 +10,9 @@ public class DatabaseContext : IdentityDbContext<User>
     public DbSet<Income> Incomes { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Source> Sources { get; set; }
+    public DbSet<TaskCategory> TaskCategories { get; set; }
+    public DbSet<TaskWork> TaskWorks { get; set; }
+    public DbSet<Schedule> Schedules { get; set; }
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
 

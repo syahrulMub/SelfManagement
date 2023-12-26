@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
@@ -8,19 +9,30 @@ public class CategoryController : Controller
 {
     private readonly ICategoryServices _categoryServices;
     private readonly ILogger<CategoryController> _logger;
+    private readonly UserManager<User> _userManager;
 
-    public CategoryController(ICategoryServices services, ILogger<CategoryController> logger)
+    public CategoryController(ICategoryServices services, ILogger<CategoryController> logger, UserManager<User> userManager)
     {
         _categoryServices = services;
         _logger = logger;
+        _userManager = userManager;
     }
     [HttpGet("/Category/Categories")]
     public async Task<IActionResult> GetCategories()
     {
         try
         {
-            var categories = await _categoryServices.GetCategoriesAsync();
-            return Ok(categories);
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var categories = await _categoryServices.GetCategoriesAsync();
+                var userCategories = categories.Where(i => i.UserId == userId);
+                return Ok(categories);
+            }
+            else
+            {
+                return View("Error");
+            }
         }
         catch (Exception ex)
         {

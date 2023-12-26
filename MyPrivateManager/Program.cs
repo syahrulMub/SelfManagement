@@ -19,6 +19,9 @@ builder.Services.AddScoped<ICategoryServices, CategoryServices>();
 builder.Services.AddScoped<IExpenseServices, ExpenseServices>();
 builder.Services.AddScoped<IIncomeServices, IncomeServices>();
 builder.Services.AddScoped<ISourceServices, SourceServices>();
+builder.Services.AddScoped<ITaskCategoryServices, TaskCategoryServices>();
+builder.Services.AddScoped<ITaskWorkServices, TaskWorkServices>();
+builder.Services.AddScoped<IScheduleServices, ScheduleServices>();
 builder.Services.AddScoped<IUserManager, UserManager>();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)

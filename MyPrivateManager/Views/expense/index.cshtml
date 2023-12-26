@@ -1,7 +1,7 @@
 @{
     ViewData["Title"] = "Expenses";
 }
-<main class="main" id="main" style="margin-top: 6rem;">
+<main class="main" id="main" style="margin-top: 4rem;">
     <div class="pagetitle">
         <h1>Expenses</h1>
         <nav>
@@ -56,13 +56,13 @@
                                                         <td scope="row">@expense.ExpenseId</td>
                                                         <td>
                                                             <script>
-                                                                function truncateDescription(description, maxLenght) {
-                                                                    if (description.Length > maxLenght) {
-                                                                        return description.substring(0, maxLenght + '...');
+                                                                function truncateDescription(description, maxLength) {
+                                                                    if (description.length > maxLength) {
+                                                                        return description.substring(0, maxLength) + '...';
                                                                     }
                                                                     return description;
                                                                 }
-                                                                document.write(truncateDescription('@expense.Description', 40));
+                                                                document.write(truncateDescription('@expense.Description', 35));
                                                             </script>
                                                         </td>
                                                         <td>@expense.Category.CategoryName</td>
@@ -107,9 +107,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.Category != null)
+                                            @if (ViewBag.UserCategory != null)
                                             {
-                                                @foreach (var category in ViewBag.Category)
+                                                @foreach (var category in ViewBag.UserCategory)
                                                 {
                                                     <tr>
                                                         <td scope="row">@category.CategoryId</td>

@@ -23,10 +23,4 @@ public class Expense
 
     [MaxLength(255)]
     public string? Description { get; set; }
-
-    [Required]
-    [ForeignKey("UserId")]
-    public string UserId { get; set; } = null!;
-
-    public virtual User User { get; set; } = null!;
 }

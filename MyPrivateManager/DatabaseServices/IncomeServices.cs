@@ -111,9 +111,10 @@ public class IncomeServices : IIncomeServices
 
         return monthlyIncomeStatistics;
     }
-    public async Task<IEnumerable<DTOTotalIncomeByCategory>> GetIncomeTotalByCategory()
+    public async Task<IEnumerable<DTOTotalIncomeByCategory>> GetIncomeTotalByCategory(string userId)
     {
         var categoryTotal = _dbContext.Incomes
+                            .Where(i => i.Source.UserId == userId)
                             .GroupBy(i => i.SourceId)
                             .Select(i => new
                             {

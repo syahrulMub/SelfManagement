@@ -16,7 +16,8 @@ public class SourceServices : ISourceServices
 
     public async Task<IEnumerable<Source>> GetSourcesAsync()
     {
-        return await _dbContext.Sources.ToListAsync();
+        return await _dbContext.Sources
+                        .ToListAsync();
     }
 
     public async Task<Source?> GetSourceByIdAsync(int? sourceId)

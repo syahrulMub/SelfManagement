@@ -12,8 +12,8 @@ using MyPrivateManager.Data;
 namespace MyPrivateManager.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20231114172452_AddingtypenametoDecimaltype")]
-    partial class AddingtypenametoDecimaltype
+    [Migration("20231225044658_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,10 +105,12 @@ namespace MyPrivateManager.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -145,10 +147,12 @@ namespace MyPrivateManager.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -171,7 +175,13 @@ namespace MyPrivateManager.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("CategoryId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Categories");
                 });
@@ -197,15 +207,9 @@ namespace MyPrivateManager.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("ExpenseId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Expenses");
                 });
@@ -231,17 +235,35 @@ namespace MyPrivateManager.Migrations
                     b.Property<int>("SourceId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("IncomeId");
 
                     b.HasIndex("SourceId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Incomes");
+                });
+
+            modelBuilder.Entity("MyPrivateManager.Models.Schedule", b =>
+                {
+                    b.Property<int>("ScheduleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScheduleId"));
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TaskWorkId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ScheduleId");
+
+                    b.HasIndex("TaskWorkId");
+
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("MyPrivateManager.Models.Source", b =>
@@ -257,9 +279,68 @@ namespace MyPrivateManager.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("SourceId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Sources");
+                });
+
+            modelBuilder.Entity("MyPrivateManager.Models.TaskCategory", b =>
+                {
+                    b.Property<int>("TaskCategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskCategoryId"));
+
+                    b.Property<string>("TaskCategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TaskCategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TaskCategories");
+                });
+
+            modelBuilder.Entity("MyPrivateManager.Models.TaskWork", b =>
+                {
+                    b.Property<int>("TaskWorkId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskWorkId"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TaskCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaskPriority")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaskStage")
+                        .HasColumnType("int");
+
+                    b.HasKey("TaskWorkId");
+
+                    b.HasIndex("TaskCategoryId");
+
+                    b.ToTable("TaskWorks");
                 });
 
             modelBuilder.Entity("MyPrivateManager.Models.User", b =>
@@ -386,6 +467,17 @@ namespace MyPrivateManager.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MyPrivateManager.Models.Category", b =>
+                {
+                    b.HasOne("MyPrivateManager.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MyPrivateManager.Models.Expense", b =>
                 {
                     b.HasOne("MyPrivateManager.Models.Category", "Category")
@@ -394,15 +486,7 @@ namespace MyPrivateManager.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyPrivateManager.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Category");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyPrivateManager.Models.Income", b =>
@@ -413,15 +497,56 @@ namespace MyPrivateManager.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Source");
+                });
+
+            modelBuilder.Entity("MyPrivateManager.Models.Schedule", b =>
+                {
+                    b.HasOne("MyPrivateManager.Models.TaskWork", "TaskWork")
+                        .WithMany("Schedules")
+                        .HasForeignKey("TaskWorkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TaskWork");
+                });
+
+            modelBuilder.Entity("MyPrivateManager.Models.Source", b =>
+                {
                     b.HasOne("MyPrivateManager.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Source");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyPrivateManager.Models.TaskCategory", b =>
+                {
+                    b.HasOne("MyPrivateManager.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyPrivateManager.Models.TaskWork", b =>
+                {
+                    b.HasOne("MyPrivateManager.Models.TaskCategory", "TaskCategory")
+                        .WithMany()
+                        .HasForeignKey("TaskCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TaskCategory");
+                });
+
+            modelBuilder.Entity("MyPrivateManager.Models.TaskWork", b =>
+                {
+                    b.Navigation("Schedules");
                 });
 #pragma warning restore 612, 618
         }

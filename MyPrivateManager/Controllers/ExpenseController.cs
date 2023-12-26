@@ -26,10 +26,11 @@ public class ExpenseController : Controller
         {
             var userId = _userManager.GetUserId(User);
             var expense = await _expenseServices.GetExpenses();
-            var userExpenses = expense.Where(i => i.UserId == userId);
+            var userExpenses = expense.Where(i => i.Category.UserId == userId);
             var category = await _categoryServices.GetCategoriesAsync();
+            var userCategory = category.Where(i => i.UserId == userId);
             ViewBag.UserExpenses = userExpenses;
-            ViewBag.Category = category;
+            ViewBag.UserCategory = userCategory;
             return View();
         }
         catch (Exception ex)
@@ -66,7 +67,7 @@ public class ExpenseController : Controller
             var userId = _userManager.GetUserId(User);
             if (userId != null)
             {
-                expense.UserId = userId;
+                expense.Category.UserId = userId;
                 await _expenseServices.CreateExpenseAsync(expense);
                 return Ok();
             }
@@ -143,7 +144,7 @@ public class ExpenseController : Controller
             if (userId != null)
             {
                 var expenses = await _expenseServices.GetExpensesByDateRangeAsync(startDate, endDate);
-                expenses = expenses.Where(e => e.UserId == userId);
+                expenses = expenses.Where(e => e.Category.UserId == userId);
                 return Ok(expenses);
             }
             else

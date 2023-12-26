@@ -2,7 +2,7 @@
     ViewData["Title"] = "Incomes";
 }
 
-<main class="main" id="main" style="margin-top: 6rem;">
+<main class="main" id="main" style="margin-top: 4rem;">
     <div class="pagetitle">
         <h1>Income</h1>
         <nav>
@@ -61,7 +61,7 @@
                                                                     }
                                                                     return description;
                                                                 }
-                                                                document.write(truncateDescription('@income.Description', 40));
+                                                                document.write(truncateDescription('@income.Description', 30));
                                                             </script>
                                                         </td>
                                                         <td>@income.Source.SourceName</td>
