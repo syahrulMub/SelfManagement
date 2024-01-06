@@ -11,8 +11,16 @@ public interface IExpenseServices
     Task<bool> DeleteExpenseAsync(int expenseId);
     Task<decimal> GetTotalExpensesByCategoryAsync(int categoryId, string userId);
     Task<IEnumerable<Expense>> GetExpensesByDateRangeAsync(DateTime startDate, DateTime endDate);
-    Task<IEnumerable<decimal>> GetMonthlyExpenseForYearChar(string userId);
+    Task<IEnumerable<int>> GetMonthlyExpenseForYearChar(string userId);
     Task<bool> MigrateExpenseData(int categoryFrom, int categoryTo);
     IEnumerable<decimal> CountByCurrentWeek(string userId);
     IEnumerable<decimal> CountByCurrentMonth(string userId);
+    Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId);
+}
+
+public class DTOTotalExpenseByCategory
+{
+    public string? CategoryName { get; set; }
+    public decimal Total { get; set; }
+    public decimal MaxSum { get; set; }
 }

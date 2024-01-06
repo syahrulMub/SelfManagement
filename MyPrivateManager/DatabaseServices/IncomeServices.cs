@@ -1,6 +1,4 @@
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MyPrivateManager.Data;
 using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
@@ -136,5 +134,3 @@ public class IncomeServices : IIncomeServices
         return result;
     }
 }
-
-

@@ -1,0 +1,109 @@
+.option-critical {
+    color: azure;
+    background-color: rgb(240, 31, 31);
+}
+
+.option-critical:hover {
+    background-color: rgb(194, 6, 6);
+}
+
+.option-high {
+    color: rgb(235, 235, 235);
+    background-color: rgb(224, 158, 35);
+}
+
+.option-high:hover {
+    background-color: rgb(201, 133, 8);
+}
+
+.option-medium {
+    color: rgb(235, 235, 235);
+    background-color: rgb(23, 177, 23);
+}
+
+.option-medium:hover {
+    background-color: rgb(0, 110, 0);
+}
+.option-low {
+    color: rgb(235, 235, 235);
+    background-color: rgb(35, 142, 212);
+}
+
+.option-low:hover {
+    background-color: rgb(8, 87, 133);
+}
+
+.option {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.option-notstarted {
+    color: azure;
+    background-color: rgb(139, 139, 139);
+}
+
+.option-notstarted:hover {
+    background-color: rgb(94, 94, 94);
+}
+
+.option-inprogress {
+    color: azure;
+    background-color: rgb(240, 165, 53);
+}
+
+.option-inprogress:hover {
+    background-color: rgb(165, 142, 9);
+}
+
+.option-reviewing {
+    color: azure;
+    background-color: rgb(75, 147, 241);
+}
+
+.option-reviewing:hover {
+    background-color: rgb(66, 89, 219);
+}
+
+.option-completed {
+    color: azure;
+    background-color: rgb(39, 204, 39);
+}
+
+.option-completed:hover {
+    background-color: rgb(10, 150, 10);
+}
+.task-priority-dropdown {
+    -webkit-appearance: none; /* Safari dan Chrome */
+    -moz-appearance: none; /* Firefox */
+    appearance: none;
+    padding: 5px; /* Atur padding sesuai kebutuhan Anda */
+    border: 1px solid transparent; /* Hilangkan border atau atur border tipis jika diperlukan */
+    border-radius: 5px; /* Tambahkan lengkungan pada sisi */
+    cursor: pointer;
+    text-align: center;
+}
+
+.task-stage-dropdown {
+    -webkit-appearance: none; /* Safari dan Chrome */
+    -moz-appearance: none; /* Firefox */
+    appearance: none;
+    padding: 5px; /* Atur padding sesuai kebutuhan Anda */
+    border: 1px solid transparent; /* Hilangkan border atau atur border tipis jika diperlukan */
+    border-radius: 5px; /* Tambahkan lengkungan pada sisi */
+    cursor: pointer;
+    text-align: center;
+}
+
+.transparant {
+    background: transparent;
+    /* border: 0.001px solid #bdbcbc; */
+    border: none;
+    outline: none;
+    
+}
+.transparant:focus {
+    border: 1px solid #afaaaa;
+}

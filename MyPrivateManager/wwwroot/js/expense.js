@@ -103,8 +103,15 @@ function updateExpense(){
         type: 'POST',
         data: {Amount : amount, ExpenseId: expenseId, CategoryId: categoryId, Date: date, Description: description},
         success: function(){
+            Swal.fire({
+                icon: 'success',
+                title: 'Succes!',
+                text: "database expense success updated!",
+                showConfirmButton: false,
+                timer: 2000
+              })
             $('#editExpenseModal').modal('hide');
-            location.reload();
+            // location.reload();
         },
         error: function(error){
             console.log('Error: ' + error);
@@ -129,20 +136,37 @@ function getCategoryForEdit(categoryId) {
     });
 }
 
-function deleteExpense(expenseId){
-    var validate = confirm('Are you sure you want to delete this expense?');
-    if (validate){
-        $.ajax({
-            url: '/Expense/DeleteExpense/' + expenseId,
-            type: 'DELETE',
-            success: function(){
-                location.reload();
-            },
-            error: function(error){
-                console.log('error delete data : ' + error);
-            }
-        });
-    }
+function deleteExpense( expenseId){
+    Swal.fire({
+        title: "are you sure?",
+        text: "once deleted, the data will remove from your account",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    })
+    .then((willDelete) => {
+        if (willDelete.isConfirmed){
+            $.ajax({
+                url: '/Expense/DeleteExpense/' + expenseId,
+                type: 'DELETE', 
+                success: function(){
+                    Swal.fire({
+                        icon: "success",
+                        title: "Expense deleted",
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                },
+                error: function(error){
+                    console.log('error delete data : ' + error);
+                }
+            });
+        } else {
+            Swal.fire("cancel delete expense");
+        }
+    });
 }
 
 function migrateExpense(categoryIdFrom){
@@ -330,6 +354,40 @@ function getExpenseChartWeekly(){
         },
         error: function(error){
             console.log('error' + error);
+        }
+    });
+}
+
+function getExpenseChartByCategory(){
+    $.ajax({
+        url: '/Expense/ExpenseByCategory',
+        type: 'GET',
+        success: function(data){
+            var indicatorData = [];
+            var totalByCategory =[];
+            data.forEach(function(item){
+                indicatorData.push({
+                    name: item.categoryName,
+                    max: item.maxSum + (item.maxSum/5)
+                });
+                totalByCategory.push(item.total);
+            });
+            echarts.init(document.querySelector("#incomeBySourceChart")).setOption({
+                legend: {
+                    data: ['Chart by Category']
+                },
+                radar: {
+                    indicator: indicatorData
+                },
+                series: [{
+                    name: 'Chart by Category',
+                    type: 'radar',
+                    data: [{
+                        value: totalByCategory,
+                        name: 'Category chart'
+                    }]
+                }]
+            });
         }
     });
 }

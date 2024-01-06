@@ -76,16 +76,8 @@ public class IncomeController : Controller
     {
         try
         {
-
-            var userId = _userManager.GetUserId(User);
-            if (userId != null)
-            {
-                income.Source.UserId = userId;
-                await _incomeService.CreateIncomeAsync(income);
-                _logger.LogInformation("success create income");
-                return Ok();
-            }
-            _logger.LogWarning("user not found");
+            await _incomeService.CreateIncomeAsync(income);
+            _logger.LogInformation("success create income");
             return Ok();
         }
         catch (Exception ex)

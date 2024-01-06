@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyPrivateManager.IDatabaseServices;
@@ -20,7 +21,7 @@ public class HomeController : Controller
         _incomeServices = incomeServices;
         _logger = logger;
     }
-
+    [Authorize]
     public IActionResult Index()
     {
         return View();

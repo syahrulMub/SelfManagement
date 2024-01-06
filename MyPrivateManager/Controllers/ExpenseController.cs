@@ -64,19 +64,10 @@ public class ExpenseController : Controller
     {
         try
         {
-            var userId = _userManager.GetUserId(User);
-            if (userId != null)
-            {
-                expense.Category.UserId = userId;
-                await _expenseServices.CreateExpenseAsync(expense);
-                return Ok();
-            }
-            else
-            {
-                _logger.LogError("user not found");
-                return View("Error");
-            }
+            await _expenseServices.CreateExpenseAsync(expense);
+            return Ok();
         }
+
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating expense");
@@ -241,6 +232,29 @@ public class ExpenseController : Controller
         catch (Exception ex)
         {
             _logger.LogError("Error get weekly Chart" + ex.Message);
+            return View("Error");
+        }
+    }
+    [HttpGet("/Expense/ExpenseByCategory")]
+    public async Task<IActionResult> ExpenseCategoryChart()
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var expenseData = await _expenseServices.GetExpenseTotalByCategory(userId);
+                _logger.LogInformation("Success get expense for echart");
+                return Ok(expenseData);
+            }
+            else
+            {
+                return View("Error");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error getting income for echart" + ex.Message);
             return View("Error");
         }
     }

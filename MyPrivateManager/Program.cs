@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //database connection
 var connectionString = builder.Configuration.GetConnectionString("DatabaseContext");
-builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlite(connectionString));
 builder.Services.AddRazorPages();
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
@@ -35,7 +35,6 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-SetRoleOnDatabase.CreateRoleOnDatabase(app);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -45,12 +44,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var dbContext = services.GetRequiredService<DatabaseContext>();
-    dbContext.Database.Migrate();
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var services = scope.ServiceProvider;
+//     var dbContext = services.GetRequiredService<DatabaseContext>();
+//     dbContext.Database.Migrate();
+// }
+string? schema = builder.Configuration.GetConnectionString("schema");
+DatabaseConfiguration.ConfigureDatabase(app, schema);
+SetRoleOnDatabase.CreateRoleOnDatabase(app);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

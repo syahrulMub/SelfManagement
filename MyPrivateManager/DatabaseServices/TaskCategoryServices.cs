@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyPrivateManager.Data;
 using MyPrivateManager.IDatabaseServices;
@@ -10,29 +7,70 @@ namespace DatabaseServices
 {
     public class TaskCategoryServices : ITaskCategoryServices
     {
-        Task<bool> ITaskCategoryServices.CreateTaskCategoryAsync(TaskCategory taskCategory)
+        private readonly DatabaseContext _dbContext;
+        public TaskCategoryServices(DatabaseContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
         }
-
-        Task<bool> ITaskCategoryServices.DeleteTaskCategoryAsync(int taskCategoryId)
+        public async Task<IEnumerable<TaskCategory>> GetTaskCategoriesAsync()
         {
-            throw new NotImplementedException();
+            var taskCategories = await _dbContext.TaskCategories
+                                .ToListAsync();
+            return taskCategories;
         }
-
-        Task<IEnumerable<TaskCategory>> ITaskCategoryServices.GetTaskCategoriesAsync()
+        public async Task<TaskCategory?> GetTaskCategoryByIdAsync(int? taskCategoryId)
         {
-            throw new NotImplementedException();
+            var taskCategory = await _dbContext.TaskCategories
+                                .Where(i => i.TaskCategoryId == taskCategoryId)
+                                .FirstOrDefaultAsync();
+            return taskCategory;
         }
-
-        Task<TaskCategory?> ITaskCategoryServices.GetTaskCategoryByIdAsync(int? taskCategoryId)
+        public async Task<bool> CreateTaskCategoryAsync(TaskCategory taskCategory)
         {
-            throw new NotImplementedException();
+            if (taskCategory != null)
+            {
+                _dbContext.TaskCategories.Add(taskCategory);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-
-        Task<bool> ITaskCategoryServices.UpdateTaskCategoryAsync(int taskCategoryId, TaskCategory taskCategory)
+        public async Task<bool> UpdateTaskCategoryAsync(int taskCategoryId, TaskCategory taskCategory)
         {
-            throw new NotImplementedException();
+            var currentTaskCategory = await _dbContext.TaskCategories
+                                    .Where(i => i.TaskCategoryId == taskCategoryId)
+                                    .FirstOrDefaultAsync();
+            if (currentTaskCategory != null)
+            {
+                currentTaskCategory.TaskCategoryName = taskCategory.TaskCategoryName;
+
+                _dbContext.TaskCategories.Update(currentTaskCategory);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public async Task<bool> DeleteTaskCategoryAsync(int taskCategoryId)
+        {
+            var currentTaskCategory = await _dbContext.TaskCategories
+                                    .Where(i => i.TaskCategoryId == taskCategoryId)
+                                    .FirstOrDefaultAsync();
+            if (currentTaskCategory != null)
+            {
+                _dbContext.TaskCategories.Remove(currentTaskCategory);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
@@ -8,10 +9,12 @@ public class SourceController : Controller
 {
     private readonly ISourceServices _services;
     private readonly ILogger<SourceController> _logger;
-    public SourceController(ISourceServices services, ILogger<SourceController> logger)
+    private readonly UserManager<User> _userManager;
+    public SourceController(ISourceServices services, ILogger<SourceController> logger, UserManager<User> userManager)
     {
         _services = services;
         _logger = logger;
+        _userManager = userManager;
     }
 
     [HttpGet("/Source/GetSources")]
@@ -57,9 +60,18 @@ public class SourceController : Controller
     {
         try
         {
-            // Validate input
-            await _services.CreateSourceAsync(source);
-            return Ok();
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                source.UserId = userId;
+                await _services.CreateSourceAsync(source);
+                return Ok();
+            }
+            else
+            {
+                return View("Error");
+            }
+
         }
         catch (Exception ex)
         {
