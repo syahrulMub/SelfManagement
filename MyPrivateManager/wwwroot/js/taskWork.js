@@ -101,27 +101,30 @@ function setFormattedDate(inputElement) {
 }
 
 function deleteTaskWork(taskWorkId){
-    swal({
+    swal.fire({
         title: "are you sure?",
-        text: "delete this task Work?",
+        text: "deleting this task work?",
         icon: "warning",
-        buttons: true,
-        dangerMode: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
     })
     .then((willDelete) => {
-        if (willDelete){
+        if (willDelete.isConfirmed){
             $.ajax({
                 url: '/TaskWork/Delete/' + taskWorkId,
                 type: 'DELETE',
                 data : {taskWorkId: taskWorkId},
                 success: function () {
-                    swal({
-                        title: "Success!",
-                        text: "Success delete Task Work!",
+                    swal.fire({
                         icon: "success",
-                        button: "Ok",
+                        title: "Success!",
+                        text: "Success delete Task Category!",
+                        showConfirmButton: false,
+                        timer: 2000
                     }).then(function() {
-
+                        
                     });
                 },
                 error: function () {
@@ -134,16 +137,16 @@ function deleteTaskWork(taskWorkId){
     });
 }
 
-function updateTaskWork(taskWorkId){
-    description = $('#description-'+taskWorkId).val();
-    dueDate = $('#dueDate-'+taskWorkId).val();
-    taskPriority = $('#priority-'+taskWorkId).val();
-    taskStage = $('#stage-'+taskWorkId).val();
-    console.log( description,dueDate, taskPriority, taskStage );
+$('form.rowFormTaskWork').submit(function(e){
+    e.preventDefault();
+    var taskWorkId = $(this).find('input[name="taskWorkId"]');
+    var formData = $(this).serialize();
+    console.log(taskWorkId, formData, $(this));
+
     $.ajax({
         url: '/TaskWork/Update/' + taskWorkId,
         type: 'POST',
-        data: {taskWorkId: taskWorkId, Description: description, DueDate: dueDate, TaskPriority: taskPriority, TaskStage: taskStage},
+        data: formData,
         success: function (){
             Swal.fire({
                 icon: 'success',
@@ -157,4 +160,4 @@ function updateTaskWork(taskWorkId){
             console.log(error);
         }
     })
-}
+})

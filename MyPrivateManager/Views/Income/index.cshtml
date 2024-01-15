@@ -36,7 +36,7 @@
                                 </button>
                                 <h5 class="card-title">Income</h5>
                                 <div class="table-responsive">
-                                    <table class="table table-striped">
+                                    <table class="table table-striped" id="incomeTable" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
@@ -44,6 +44,7 @@
                                                 <th scope="col">Source</th>
                                                 <th scope="col">Amount</th>
                                                 <th scope="col">Date Time</th>
+                                                <th scope="col">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -136,6 +137,30 @@
                         </div>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="filter">
+                        <a class="icon" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+                            <li><a class="dropdown-item" onclick="updateChartIncome('daily')">This
+                                    Week</a></li>
+                            <li><a class="dropdown-item" onclick="updateChartIncome('weekly')">This Month</a></li>
+                            <li><a class="dropdown-item" onclick="updateChartIncome('monthly')">This Year</a></li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="report-title">Report<span> | Income </span></h5>
+                        <canvas id="linChart" style="max-height: 400px"></canvas>
+                        <script>
+                            var myChart:
+                                document.addEventListener("DOMContentLoaded", () => {
+                                    updateChartIncome('daily');
+                                })
+                        </script>
+                    </div>
+                </div>
             </div>
             <!--right section -->
             <div class="col-lg-4">
@@ -177,4 +202,10 @@
 @section Scripts {
     <script type="text/javascript" src="~/js/income.js"></script>
     <script type="text/javascript" src="~/js/source.js"></script>
+    <script type="text/javascript" src="~/js/datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#incomeTable').DataTable();
+        });
+    </script>
 }

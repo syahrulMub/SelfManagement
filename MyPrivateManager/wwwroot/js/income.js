@@ -271,3 +271,28 @@ function getIncomeChartByCategory(){
     });
 }
 
+function updateChartIncome(filter){
+    switch(filter){
+        case 'daily': 
+        if (myChart){
+            myChart.destroy();
+        }
+        getExpenseChartDaily();
+        break;
+        case 'weekly':
+            if (myChart) {
+                myChart.destroy();
+            }
+            getExpenseChartWeekly();
+            break;
+        case 'monthly':
+            if (myChart) {
+                myChart.destroy();
+            }
+            getExpenseChartMonthly();
+            break;
+        default:
+            getExpenseChartMonthly();
+            break;
+    }
+}

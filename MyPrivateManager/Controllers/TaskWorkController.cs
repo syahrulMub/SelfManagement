@@ -22,8 +22,11 @@ public class TaskWorkController : Controller
             var userId = _userManager.GetUserId(User);
             if (userId != null)
             {
+                var taskWork = await _taskWorkServices.GetTaskWorkAsync();
+                var userCriticalTask = taskWork.Where(i => i.TaskCategory.UserId == userId).Where(i => i.TaskPriority == TaskPriority.Critical);
                 var userTask = await _taskWorkServices.GetTaskWorksGroupedByCategory(userId);
                 ViewBag.UserTask = userTask;
+                ViewBag.UserCritical = userCriticalTask;
                 return View();
             }
             else

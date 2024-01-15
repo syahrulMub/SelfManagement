@@ -110,8 +110,8 @@ namespace DatabaseServices
                 foreach (var task in workTask)
                 {
                     _dbContext.TaskWorks.Remove(task);
+                    await _dbContext.SaveChangesAsync();
                 }
-                await _dbContext.SaveChangesAsync();
                 return true;
             }
             else

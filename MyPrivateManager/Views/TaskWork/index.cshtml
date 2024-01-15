@@ -30,16 +30,18 @@
                     </div>
                     <ul class="nav nav-tabs nav-tabs-bordered" id="borderedTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="listTasWork" data-bs-target="#TaskWorkTab" type="button"
-                                role="tab" aria-selected="true">Task Work</button>
+                            <button class="nav-link active" id="listTasWork" data-bs-toggle="tab"
+                                data-bs-target="#TaskWorkTab" type="button" role="tab" aria-selected="true">Task
+                                Work</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="listTaskCritical" data-bs-target="#TaskWorkCriticalTab"
-                                type="button" role="tab" aria-selected="false">Critical Task Work</button>
+                            <button class="nav-link" id="listTaskCritical" data-bs-toggle="tab"
+                                data-bs-target="#TaskWorkCriticalTab" type="button" role="tab"
+                                aria-selected="false">Critical Task Work</button>
                         </li>
                     </ul>
-                    <div class="tab-content pt-2" id="borderedTabContent">
-                        <div class="tab-pane fade show active" id="TaskWorkTab" role="tabpanel">
+                    <div class="tab-content pt-2" id="borderedTabContent" role="tabpanel">
+                        <div class="tab-pane fade show active" id="TaskWorkTab">
                             @if (ViewBag.UserTask != null)
                             {
                                 @foreach (var taskCategory in ViewBag.UserTask)
@@ -47,7 +49,7 @@
                                     <div class="card mt-3">
                                         <div class="card-body">
                                             <h5 class="card-title">
-                                                Task Category: @taskCategory.Name
+                                                Task From @taskCategory.Name
                                                 <button class="btn btn-link float-end" data-bs-toggle="collapse"
                                                     href="#categoryCollapse{@taskCategory.Id}">
                                                     <i class="bi bi-chevron-down"></i>
@@ -56,7 +58,7 @@
                                             <div id="categoryCollapse{@taskCategory.Id}" class="collapse show">
                                                 @if (taskCategory.TaskWorks != null)
                                                 {
-                                                    <table class="table table-striped" id="example" cellspacing="0" width="100%">
+                                                    <table class="table table-striped" cellspacing="0" width="100%">
                                                         <thead>
                                                             <tr>
                                                                 <th scope="col">Id</th>
@@ -71,72 +73,75 @@
                                                             @foreach (var works in taskCategory.TaskWorks)
                                                             {
                                                                 <tr>
-                                                                    <td scope="row">@works.TaskWorkId</td>
-                                                                    <td>
-                                                                        <textarea type="text" id="description-@works.TaskWorkId"
-                                                                            class="form-control transparant"
-                                                                            rows="1">@works.Description</textarea>
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="date" id="dueDate-@works.TaskWorkId"
-                                                                            class="transparant"
-                                                                            value='@works.DueDate.ToString("yyyy-MM-dd")' />
-                                                                    </td>
-                                                                    <td>
-                                                                        <form class="btn-group categoryList">
-                                                                            <select name="selecetTaskCategory" type="hidden"
-                                                                                id="priority-@works.TaskWorkId"
-                                                                                class="task-priority-dropdown option-@(works.TaskPriority.ToString().ToLower())">
-                                                                                <option value="Critical" class="option-critical"
-                                                                                    selected="@(works.TaskPriority == TaskPriority.Critical)">
-                                                                                    Critical</option>
-                                                                                <option value="High" class="option-high"
-                                                                                    selected="@(works.TaskPriority == TaskPriority.High)">
-                                                                                    High</option>
-                                                                                <option value="Medium" class="option-medium"
-                                                                                    selected="@(works.TaskPriority == TaskPriority.Medium)">
-                                                                                    Medium
-                                                                                </option>
-                                                                                <option value="Low" class="option-low"
-                                                                                    selected="@(works.TaskPriority == TaskPriority.Low)">
-                                                                                    Low</option>
-                                                                            </select>
-                                                                        </form>
-                                                                    </td>
-                                                                    <td>
-                                                                        <form class="btn-group">
-                                                                            <select name="selectTaskStage" type="hidden"
-                                                                                id="stage-@works.TaskWorkId"
-                                                                                class="task-stage-dropdown option-@(works.TaskStage.ToString().ToLower())">
-                                                                                <option value="NotStarted" class="option-notstarted"
-                                                                                    selected="@(works.TaskStage == TaskStage.NotStarted)">
-                                                                                    Not Started
-                                                                                </option>
-                                                                                <option value="InProgress" class="option-inprogress"
-                                                                                    selected="@(works.TaskStage == TaskStage.InProgress)">
-                                                                                    In Progress
-                                                                                </option>
-                                                                                <option value="Reviewing" class="option-reviewing"
-                                                                                    selected="@(works.TaskStage == TaskStage.Reviewing)">
-                                                                                    Reviewing
-                                                                                </option>
-                                                                                <option value="Completed" class="option-completed"
-                                                                                    selected="@(works.TaskStage == TaskStage.Completed)">
-                                                                                    Completed
-                                                                                </option>
-
-                                                                            </select>
-
-                                                                        </form>
-                                                                    </td>
-                                                                    <td>
-                                                                        <button type="button"
-                                                                            onclick="updateTaskWork(@works.TaskWorkId)"
-                                                                            class="btn btn-success ri-save-3-line btn-sm"></button>
-                                                                        <button type="button"
-                                                                            onclick="deleteTaskWork(@works.TaskWorkId)"
-                                                                            class="btn btn-danger ri-delete-bin-line btn-sm"></button>
-                                                                    </td>
+                                                                    <form class="rowFormTaskWork">
+                                                                        <td>
+                                                                            <span>@works.TaskWorkId</span>
+                                                                            <input type="hidden" name="taskWorkId"
+                                                                                value="@works.TaskWorkId" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <textarea type="text" id="description-@works.TaskWorkId"
+                                                                                class="form-control transparant" name="Description"
+                                                                                rows="1">@works.Description</textarea>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="date" id="dueDate-@works.TaskWorkId"
+                                                                                class="transparant" name="DueDate"
+                                                                                value='@works.DueDate.ToString("yyyy-MM-dd")' />
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="btn-group categoryList">
+                                                                                <select name="TaskPriority" type="hidden"
+                                                                                    id="priority-@works.TaskWorkId"
+                                                                                    class="task-priority-dropdown option-@(works.TaskPriority.ToString().ToLower())">
+                                                                                    <option value="Critical" class="option-critical"
+                                                                                        selected="@(works.TaskPriority == TaskPriority.Critical)">
+                                                                                        Critical</option>
+                                                                                    <option value="High" class="option-high"
+                                                                                        selected="@(works.TaskPriority == TaskPriority.High)">
+                                                                                        High</option>
+                                                                                    <option value="Medium" class="option-medium"
+                                                                                        selected="@(works.TaskPriority == TaskPriority.Medium)">
+                                                                                        Medium
+                                                                                    </option>
+                                                                                    <option value="Low" class="option-low"
+                                                                                        selected="@(works.TaskPriority == TaskPriority.Low)">
+                                                                                        Low</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="btn-group">
+                                                                                <select name="TaskStage" type="hidden"
+                                                                                    id="stage-@works.TaskWorkId"
+                                                                                    class="task-stage-dropdown option-@(works.TaskStage.ToString().ToLower())">
+                                                                                    <option value="NotStarted" class="option-notstarted"
+                                                                                        selected="@(works.TaskStage == TaskStage.NotStarted)">
+                                                                                        Not Started
+                                                                                    </option>
+                                                                                    <option value="InProgress" class="option-inprogress"
+                                                                                        selected="@(works.TaskStage == TaskStage.InProgress)">
+                                                                                        In Progress
+                                                                                    </option>
+                                                                                    <option value="Reviewing" class="option-reviewing"
+                                                                                        selected="@(works.TaskStage == TaskStage.Reviewing)">
+                                                                                        Reviewing
+                                                                                    </option>
+                                                                                    <option value="Completed" class="option-completed"
+                                                                                        selected="@(works.TaskStage == TaskStage.Completed)">
+                                                                                        Completed
+                                                                                    </option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <button type="submit"
+                                                                                class="btn btn-success ri-save-3-line btn-sm"></button>
+                                                                            <button type="button"
+                                                                                onclick="deleteTaskWork(@works.TaskWorkId)"
+                                                                                class="btn btn-danger ri-delete-bin-line btn-sm"></button>
+                                                                        </td>
+                                                                    </form>
                                                                 </tr>
                                                             }
                                                         </tbody>
@@ -152,6 +157,49 @@
 
                                 }
                             }
+
+                        </div>
+                        <div class="tab-pane fade" id="TaskWorkCriticalTab">
+                            @if (ViewBag.UserCritical != null)
+                            {
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Critical Task
+                                        </h5>
+                                    </div>
+                                    <div class="card-content">
+                                        <table class="table table-striped" id="criticalTaskWorkTable" style="width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Id</th>
+                                                    <th scope="col">Description</th>
+                                                    <th scope="col">Due date</th>
+                                                    <th scope="col">Task Category</th>
+                                                    <th scope="col">Task Stage</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var critical in ViewBag.UserCritical)
+                                                {
+                                                    <tr>
+                                                        <td>@critical.TaskWorkId</td>
+                                                        <td>@critical.Description</td>
+                                                        <td>
+                                                            <div class="datepicker transparant">@critical.DueDate</div>
+                                                        </td>
+                                                        <td>@critical.TaskCategory.TaskCategoryName</td>
+                                                        <td>
+                                                            <div
+                                                                class="task-stage-dropdown option-@critical.TaskStage.ToString().ToLower()">
+                                                                @critical.TaskStage</div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -163,6 +211,8 @@
 @section scripts {
     <script type="text/javascript" src="~/js/TaskCategory.js"></script>
     <script type="text/javascript" src="~/js/taskWork.js"></script>
+    <script type="text/javascript" src="~/js/moment.min.js"></script>
+    <script type="text/javascript" src="~/js/datatables.min.js"></script>
 
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
@@ -197,40 +247,20 @@
                 });
             });
         });
-
-        // Global Klik selain .taskDescription class
-        @* $(document).on('click', function (event) {
-        var target = $(event.target);
-        var inputElement = $('.rowTaskWork').find('input[name="Description"]');
-
-        if (!target.closest('.taskDescription').length) {
-        if (inputElement.length) {
-        // Save the edited value or perform any necessary actions
-        var editedValue = inputElement.val();
-        console.log('Edited Value:', editedValue);
-
-        // Replace the input with a new span
-        inputElement.replaceWith('<span class="taskDescription">' + editedValue + '</span>');
+        function convertISOToCustomFormat(isoDate) {
+            // Menggunakan moment.js untuk mengonversi format
+            return moment(isoDate, 'DD/MM/YYYY HH:mm:ss').format('D-MMM-YYYY');
         }
-        } else {
-        // Click is inside the .taskDescription area
-        if (!inputElement.length) {
-        // If input doesn't exist, create it
-        var textDescription = $('.rowTaskWork .taskDescription').text();
-        var inputElement = $('<input type="text" name="Description">').val(textDescription);
-        $('.rowTaskWork .taskDescription').replaceWith(inputElement);
-        inputElement.focus();
-        }
-        }
+
+        // Mengonversi dan menetapkan nilai elemen input dengan class "datepicker"
+        $(".datepicker").each(function () {
+            var isoDate = $(this).text(); // Ambil nilai ISO dari elemen input
+            var customFormat = convertISOToCustomFormat(isoDate); // Konversi ke format yang diinginkan
+            $(this).text(customFormat); // Tetapkan nilai dengan format yang diinginkan
         });
-
-        $('.rowTaskWork').find(".taskDescription").on('click', function () {
-        var text = $(this).text();
-        var inputElement = $('<input type="text" name="Description">').val(text);
-        $(this).replaceWith(inputElement);
-        inputElement.focus();
-        })
-        }); *@
+        $(document).ready(function () {
+            $('#criticalTaskWorkTable').DataTable();
+        });
 
     </script>
 }

@@ -6,12 +6,14 @@ function addTaskCategory() {
         method: 'POST',
         data: { taskCategoryName: categoryName },
         success: function (data) {
-            swal({
-                title: "Success!",
-                text: "Success create Task Category!",
+            swal.fire({
                 icon: "success",
-                button: "Ok",
-              });
+                title: "Success!",
+                text: "Success delete Task Category!",
+                showConfirmButton: false,
+                timer: 2000
+            })
+            
             loadTaskCategories();
             $('#categoryName').val('');
         },
@@ -31,7 +33,7 @@ function loadTaskCategories() {
                 var listItemElement = $('<div class="category-item"></div>');
         
                 var formDiv = $('<div class="form-div"></div>');
-                var inputElement = $('<input type="text" class="form-control" value="' + category.taskCategoryName + '" id="categoryNameInput' + category.taskCategoryId + '">');
+                var inputElement = $('<input type="text" class="transparant form-control" value="' + category.taskCategoryName + '" id="categoryNameInput' + category.taskCategoryId + '">');
                 formDiv.append(inputElement);
         
                 var buttonsDiv = $('<div class="buttons-div"></div>');
@@ -73,11 +75,12 @@ function updateTaskCategory(taskCategoryId){
         type: 'POST',
         data: {taskCategoryId:taskCategoryId ,TaskCategoryName: updatedCategoryName},
         success: function () {
-            swal({
+            swal.fire({
+                icon: "success",
                 title: "Success!",
                 text: "Success update Task Category!",
-                icon: "success",
-                button: "Ok",
+                showConfirmButton: false,
+                timer: 2000
               });
         },
         error: function (){
@@ -87,20 +90,23 @@ function updateTaskCategory(taskCategoryId){
 }
 
 function deleteTaskCategory(taskCategoryId) {
-    swal({
+    swal.fire({
         title: "are you sure?",
         text: "once deleted this task category, the Task Works with this Task category will also be deleted",
         icon: "warning",
-        buttons: true,
-        dangerMode: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
     })
     .then((willDelete) => {
-        if (willDelete){
+        if (willDelete.isConfirmed){
             $.ajax({
                 url: '/TaskWork/bulkDeleteByTaskCategory/' + taskCategoryId,
                 type: 'DELETE',
                 data: {taskCategoryId: taskCategoryId},
                 success: function() {
+                    
                 },
                 error: function(){
                     console.log("error occurred during bulkDeleteByTaskCategory");
@@ -111,11 +117,12 @@ function deleteTaskCategory(taskCategoryId) {
                 type: 'DELETE',
                 data: {taskCategoryId: taskCategoryId},
                 success: function () {
-                    swal({
+                    swal.fire({
+                        icon: "success",
                         title: "Success!",
                         text: "Success delete Task Category!",
-                        icon: "success",
-                        button: "Ok",
+                        showConfirmButton: false,
+                        timer: 2000
                     }).then(function() {
                         loadTaskCategories();
                     });
@@ -125,7 +132,13 @@ function deleteTaskCategory(taskCategoryId) {
                 }
             });
         } else {
-            swal("cancel delete task category");
+            Swal.fire({
+                icon: 'info',
+                title: 'canceled',
+                text: 'you canceled for deleting task category',
+                showConfirmButton: false,
+                timer: 2000
+              })
         }
     });
 }
