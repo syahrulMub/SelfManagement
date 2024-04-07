@@ -5,9 +5,27 @@ $(document).ready(function(){
         loadEnumTaskStage('createTaskStage');
     });
     $('#createTaskWorkForm').submit(function(e) {
-        e.preventDefault();
-        createTaskWork();
-    });
+         e.preventDefault();
+         var formData = $(this).serialize();
+        console.log("data" + formData);
+        $.ajax({
+            url: '/TaskWork/Create',
+            type: 'POST',
+            data: formData,
+            success: function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Succes!',
+                    text: "Task Work Success Create",
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+        });
 });
 
 function getTaskCategoryData() {
