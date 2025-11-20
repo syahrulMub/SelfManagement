@@ -37,7 +37,7 @@
                                 </button>
                                 <h5 class="card-title">Expense</h5>
                                 <div class="table-responsive">
-                                    <table id="expenseTable" class="row-border hover" style="width:100%">
+                                    <table id="expenseTable" class="row-border hover " style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
@@ -113,10 +113,12 @@
                                                         <td scope="row">@category.CategoryId</td>
                                                         <td>@category.CategoryName</td>
                                                         <td>
-                                                            <button class="btn btn-warning" data-bs-toggle="modal"
-                                                                onclick="editCategory(@category.CategoryId)">Edit</button>
-                                                            <button class="btn btn-danger" data-bs-toggle="modal"
-                                                                onclick="migrateExpense(@category.CategoryId)">Delete</button>
+                                                            <button class="btn btn-warning ri-information-line"
+                                                                data-bs-toggle="modal"
+                                                                onclick="editCategory(@category.CategoryId)"></button>
+                                                            <button class="btn btn-danger ri-delete-bin-line"
+                                                                data-bs-toggle="modal"
+                                                                onclick="migrateExpense(@category.CategoryId)"></button>
                                                         </td>
                                                     </tr>
                                                 }
