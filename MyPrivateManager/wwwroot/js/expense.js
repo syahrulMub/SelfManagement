@@ -1,3 +1,5 @@
+var myChart;
+
 function addExpense(){
     $('#createExpenseModalLabel').text('Create Expense');
     $('#createExpenseAmount').val('');
@@ -358,36 +360,76 @@ function getExpenseChartWeekly(){
     });
 }
 
-function getExpenseChartByCategory(){
+function getExpenseChartByCategory(filter = 'monthly') {
     $.ajax({
-        url: '/Expense/ExpenseByCategory',
-        type: 'GET',
-        success: function(data){
-            var indicatorData = [];
-            var totalByCategory =[];
-            data.forEach(function(item){
-                indicatorData.push({
-                    name: item.categoryName,
-                    max: item.maxSum + (item.maxSum/5)
-                });
-                totalByCategory.push(item.total);
+        type: "GET",
+        url: "/Expense/ExpenseByCategory",
+        data: { filter: filter },
+        success: function (response) {
+            var chartDom = document.getElementById('incomeBySourceChart');
+            // Dispose existing instance if any to avoid memory leaks or conflicts
+            var existingChart = echarts.getInstanceByDom(chartDom);
+            if (existingChart) {
+                existingChart.dispose();
+            }
+            
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            var data = response.map(item => {
+                return { value: item.total, name: item.categoryName };
             });
-            echarts.init(document.querySelector("#incomeBySourceChart")).setOption({
+
+            option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (params) {
+                        var formattedValue = new Intl.NumberFormat('id-ID').format(params.value);
+                        return `${params.name}: ${formattedValue}`;
+                    }
+                },
                 legend: {
-                    data: ['Chart by Category']
+                    top: '5%',
+                    left: 'center'
                 },
-                radar: {
-                    indicator: indicatorData
-                },
-                series: [{
-                    name: 'Chart by Category',
-                    type: 'radar',
-                    data: [{
-                        value: totalByCategory,
-                        name: 'Category chart'
-                    }]
-                }]
-            });
+                series: [
+                    {
+                        name: 'Access From',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: 40,
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: data
+                    }
+                ]
+            };
+
+            option && myChart.setOption(option);
+        },
+        error: function (error) {
+            console.log(error);
         }
     });
+}
+
+function updateCategoryChart(filter) {
+    getExpenseChartByCategory(filter);
 }

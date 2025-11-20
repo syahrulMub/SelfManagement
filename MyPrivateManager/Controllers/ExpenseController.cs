@@ -184,12 +184,12 @@ public class ExpenseController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError("error migrate expense : " + ex.Message);
+            _logger.LogError("Error proseccing data : " + ex.Message);
             return View("Error");
         }
     }
     [HttpGet("/Expense/ExpenseDailyChart")]
-    public IActionResult ExpenseDailyForChart()
+    public IActionResult GetDailyDataChart()
     {
         try
         {
@@ -197,17 +197,18 @@ public class ExpenseController : Controller
             if (userId != null)
             {
                 var result = _expenseServices.CountByCurrentWeek(userId);
+                _logger.LogInformation("Success Get Daily Chart");
                 return Ok(result);
             }
             else
             {
-                _logger.LogError("userId not Found");
+                _logger.LogError("UserId not found");
                 return View("Error");
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError("error get daily expense" + ex.Message);
+            _logger.LogError("Error get daily Chart" + ex.Message);
             return View("Error");
         }
     }
@@ -236,14 +237,14 @@ public class ExpenseController : Controller
         }
     }
     [HttpGet("/Expense/ExpenseByCategory")]
-    public async Task<IActionResult> ExpenseCategoryChart()
+    public async Task<IActionResult> ExpenseCategoryChart(string filter = "monthly")
     {
         try
         {
             var userId = _userManager.GetUserId(User);
             if (userId != null)
             {
-                var expenseData = await _expenseServices.GetExpenseTotalByCategory(userId);
+                var expenseData = await _expenseServices.GetExpenseTotalByCategory(userId, filter);
                 _logger.LogInformation("Success get expense for echart");
                 return Ok(expenseData);
             }
@@ -258,5 +259,7 @@ public class ExpenseController : Controller
             return View("Error");
         }
     }
+
+
 
 }

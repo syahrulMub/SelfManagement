@@ -166,25 +166,52 @@ public class ExpenseServices : IExpenseServices
 
         return amounts;
     }
-    public async Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId)
+    public async Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId, string filter)
     {
-        var categoryTotal = _dbContext.Expenses
-                            .Where(i => i.Category.UserId == userId)
+        var query = _dbContext.Expenses.Where(i => i.Category.UserId == userId);
+        var today = DateTime.Now;
+
+        switch (filter.ToLower())
+        {
+            case "daily":
+                query = query.Where(e => e.Date.Date == today.Date);
+                break;
+            case "weekly":
+                var startOfWeek = today.Date.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+                var endOfWeek = startOfWeek.AddDays(7);
+                query = query.Where(e => e.Date >= startOfWeek && e.Date < endOfWeek);
+                break;
+            case "monthly":
+                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+                var endOfMonth = startOfMonth.AddMonths(1);
+                query = query.Where(e => e.Date >= startOfMonth && e.Date < endOfMonth);
+                break;
+            case "yearly":
+                var startOfYear = new DateTime(today.Year, 1, 1);
+                var endOfYear = startOfYear.AddYears(1);
+                query = query.Where(e => e.Date >= startOfYear && e.Date < endOfYear);
+                break;
+        }
+
+        var categoryTotal = await query
                             .GroupBy(i => i.CategoryId)
                             .Select(i => new
                             {
                                 category = i.Key,
                                 total = i.Sum(i => i.Amount)
                             })
-                            .ToDictionary(i => i.category, i => i.total);
+                            .ToDictionaryAsync(i => i.category, i => i.total);
+
         var totalCategory = await _dbContext.Categories
+                            .Where(c => c.UserId == userId)
                             .ToListAsync();
+
         var result = totalCategory
                     .Select(category => new DTOTotalExpenseByCategory
                     {
                         CategoryName = category.CategoryName,
                         Total = categoryTotal.TryGetValue(category.CategoryId, out var total) ? total : 0,
-                        MaxSum = categoryTotal.Values.Max()
+                        MaxSum = categoryTotal.Values.Any() ? categoryTotal.Values.Max() : 0
                     })
                     .OrderBy(i => i.CategoryName)
                     .ToList();

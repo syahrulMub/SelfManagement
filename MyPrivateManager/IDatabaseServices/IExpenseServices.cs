@@ -15,7 +15,8 @@ public interface IExpenseServices
     Task<bool> MigrateExpenseData(int categoryFrom, int categoryTo);
     IEnumerable<decimal> CountByCurrentWeek(string userId);
     IEnumerable<decimal> CountByCurrentMonth(string userId);
-    Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId);
+    Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId, string filter);
+
 }
 
 public class DTOTotalExpenseByCategory

@@ -1,27 +1,271 @@
+:root {
+  /* 
+     GLOBAL UI SETTINGS
+     ------------------
+     Change --ui-scale to resize the entire application.
+     0.85 = 85% of original size (smaller)
+     1.0  = 100% (original size)
+     1.2  = 120% (larger)
+  */
+  --ui-scale: 0.85;
+
+  /* Base Colors (Optional - for future use) */
+  --primary-color: #4154f1;
+}
+
+/* Apply Scaling to Root */
 html {
-  font-size: 16px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus,
-.btn:active:focus,
-.btn-link.nav-link:focus,
-.form-control:focus,
-.form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+  font-size: calc(16px * var(--ui-scale));
 }
 
 body {
-  position: relative;
-  margin-bottom: 60px;
+  font-size: 1rem; /* This will now be 16px * 0.85 = 13.6px */
+}
+
+/* --------------------------------------------------------------
+   # Overrides for Template Styles (style.css uses px, so we override with calc)
+   -------------------------------------------------------------- */
+
+/* Page Title */
+.pagetitle h1 {
+  font-size: calc(24px * var(--ui-scale)) !important;
+}
+
+/* Card Titles */
+.card-title {
+  font-size: calc(18px * var(--ui-scale)) !important;
+  padding: calc(20px * var(--ui-scale)) 0 calc(15px * var(--ui-scale)) 0 !important;
+}
+
+.card-body {
+  padding: 0 calc(20px * var(--ui-scale)) calc(20px * var(--ui-scale)) calc(20px * var(--ui-scale)) !important;
+}
+
+/* Sidebar Navigation */
+.sidebar-nav .nav-link {
+  font-size: calc(16px * var(--ui-scale)) !important; /* Reduced base from 18px to 16px for better fit */
+  padding: calc(10px * var(--ui-scale)) calc(15px * var(--ui-scale)) !important;
+}
+
+.sidebar-nav .nav-link i {
+  font-size: calc(20px * var(--ui-scale)) !important;
+  margin-right: calc(10px * var(--ui-scale)) !important;
+}
+
+.sidebar-nav .nav-heading {
+  font-size: calc(12px * var(--ui-scale)) !important; /* Reduced from 18px which was huge */
+  padding: calc(10px * var(--ui-scale)) 0 calc(5px * var(--ui-scale)) calc(15px * var(--ui-scale)) !important;
+}
+
+/* Tables (DataTables) */
+.table {
+  font-size: calc(14px * var(--ui-scale)) !important;
+}
+
+.table th, .table td {
+  padding: calc(8px * var(--ui-scale)) !important;
+}
+
+/* Buttons */
+.btn {
+  font-size: calc(14px * var(--ui-scale)) !important;
+  padding: calc(6px * var(--ui-scale)) calc(12px * var(--ui-scale)) !important;
+}
+
+.btn i {
+    font-size: 1.2em !important; /* Relative to button font size */
+}
+
+/* Form Controls */
+.form-control, .form-select {
+  font-size: calc(14px * var(--ui-scale)) !important;
+  padding: calc(6px * var(--ui-scale)) calc(12px * var(--ui-scale)) !important;
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    font-size: calc(14px * var(--ui-scale)) !important;
+}
+
+.dropdown-item {
+    font-size: calc(14px * var(--ui-scale)) !important;
+    padding: calc(8px * var(--ui-scale)) calc(16px * var(--ui-scale)) !important;
+}
+
+/* Icons General */
+.bi, .ri, .bx {
+    /* Allow icons to scale with their parent text */
+    font-size: 1.1em; 
+}
+
+/* Specific fix for the "Filter" icon in dashboard */
+.dashboard .filter .icon {
+    font-size: calc(18px * var(--ui-scale)) !important;
+}
+
+/* Fix for header icons */
+.header-nav .nav-icon {
+    font-size: calc(22px * var(--ui-scale)) !important;
+}
+
+/* Adjust main content margin */
+#main {
+    margin-top: calc(60px * var(--ui-scale)) !important;
+    padding: calc(20px * var(--ui-scale)) !important;
+}
+
+.header {
+    height: calc(60px * var(--ui-scale)) !important;
+}
+:root {
+  /* 
+     GLOBAL UI SETTINGS
+     ------------------
+     Change --ui-scale to resize the entire application.
+     0.85 = 85% of original size (smaller)
+     1.0  = 100% (original size)
+     1.2  = 120% (larger)
+  */
+  --ui-scale: 0.85;
+
+  /* Base Colors (Optional - for future use) */
+  --primary-color: #4154f1;
+}
+
+/* Apply Scaling to Root */
+html {
+  font-size: calc(16px * var(--ui-scale));
+}
+
+body {
+  font-size: 1rem; /* This will now be 16px * 0.85 = 13.6px */
+}
+
+/* --------------------------------------------------------------
+   # Overrides for Template Styles (style.css uses px, so we override with calc)
+   -------------------------------------------------------------- */
+
+/* Page Title */
+.pagetitle h1 {
+  font-size: calc(24px * var(--ui-scale)) !important;
+}
+
+/* Card Titles */
+.card-title {
+  font-size: calc(18px * var(--ui-scale)) !important;
+  padding: calc(20px * var(--ui-scale)) 0 calc(15px * var(--ui-scale)) 0 !important;
+}
+
+.card-body {
+  padding: 0 calc(20px * var(--ui-scale)) calc(20px * var(--ui-scale)) calc(20px * var(--ui-scale)) !important;
+}
+
+/* Sidebar Navigation */
+.sidebar-nav .nav-link {
+  font-size: calc(16px * var(--ui-scale)) !important; /* Reduced base from 18px to 16px for better fit */
+  padding: calc(10px * var(--ui-scale)) calc(15px * var(--ui-scale)) !important;
+}
+
+.sidebar-nav .nav-link i {
+  font-size: calc(20px * var(--ui-scale)) !important;
+  margin-right: calc(10px * var(--ui-scale)) !important;
+}
+
+.sidebar-nav .nav-heading {
+  font-size: calc(12px * var(--ui-scale)) !important; /* Reduced from 18px which was huge */
+  padding: calc(10px * var(--ui-scale)) 0 calc(5px * var(--ui-scale)) calc(15px * var(--ui-scale)) !important;
+}
+
+/* Tables (DataTables) */
+.table {
+  font-size: calc(14px * var(--ui-scale)) !important;
+}
+
+.table th, .table td {
+  padding: calc(8px * var(--ui-scale)) !important;
+}
+
+/* Buttons */
+.btn {
+  font-size: calc(14px * var(--ui-scale)) !important;
+  padding: calc(6px * var(--ui-scale)) calc(12px * var(--ui-scale)) !important;
+}
+
+.btn i {
+    font-size: 1.2em !important; /* Relative to button font size */
+}
+
+/* Form Controls */
+.form-control, .form-select {
+  font-size: calc(14px * var(--ui-scale)) !important;
+  padding: calc(6px * var(--ui-scale)) calc(12px * var(--ui-scale)) !important;
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    font-size: calc(14px * var(--ui-scale)) !important;
+}
+
+.dropdown-item {
+    font-size: calc(14px * var(--ui-scale)) !important;
+    padding: calc(8px * var(--ui-scale)) calc(16px * var(--ui-scale)) !important;
+}
+
+/* Icons General */
+.bi, .ri, .bx {
+    /* Allow icons to scale with their parent text */
+    font-size: 1.1em; 
+}
+
+/* Specific fix for the "Filter" icon in dashboard */
+.dashboard .filter .icon {
+    font-size: calc(18px * var(--ui-scale)) !important;
+}
+
+/* Fix for header icons */
+.header-nav .nav-icon {
+    font-size: calc(22px * var(--ui-scale)) !important;
+}
+
+/* Adjust main content margin */
+#main {
+    margin-top: calc(60px * var(--ui-scale)) !important;
+    padding: calc(20px * var(--ui-scale)) !important;
+}
+
+.header {
+    height: calc(60px * var(--ui-scale)) !important;
+}
+
+.sidebar {
+    top: calc(60px * var(--ui-scale)) !important;
+    width: calc(300px * var(--ui-scale)) !important;
+}
+
+@media (min-width: 1200px) {
+  #main, #footer {
+    margin-left: calc(300px * var(--ui-scale)) !important;
+    transition: margin-left 0.3s;
+  }
+
+  .toggle-sidebar #main, 
+  .toggle-sidebar #footer {
+    margin-left: 0 !important;
+  }
+  
+  .toggle-sidebar .sidebar {
+    left: calc(-300px * var(--ui-scale)) !important;
+  }
+}
+
+@media (max-width: 1199px) {
+  .toggle-sidebar .sidebar {
+    left: 0 !important;
+  }
+}
+
+/* Fix for horizontal scrollbar */
+body {
+    overflow-x: hidden;
+    width: 100%;
 }
