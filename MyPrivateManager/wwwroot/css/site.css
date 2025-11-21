@@ -38,12 +38,15 @@ body {
 }
 
 .card-body {
-  padding: 0 calc(20px * var(--ui-scale)) calc(20px * var(--ui-scale)) calc(20px * var(--ui-scale)) !important;
+  padding: 0 calc(20px * var(--ui-scale)) calc(20px * var(--ui-scale))
+    calc(20px * var(--ui-scale)) !important;
 }
 
 /* Sidebar Navigation */
 .sidebar-nav .nav-link {
-  font-size: calc(16px * var(--ui-scale)) !important; /* Reduced base from 18px to 16px for better fit */
+  font-size: calc(
+    16px * var(--ui-scale)
+  ) !important; /* Reduced base from 18px to 16px for better fit */
   padding: calc(10px * var(--ui-scale)) calc(15px * var(--ui-scale)) !important;
 }
 
@@ -53,8 +56,11 @@ body {
 }
 
 .sidebar-nav .nav-heading {
-  font-size: calc(12px * var(--ui-scale)) !important; /* Reduced from 18px which was huge */
-  padding: calc(10px * var(--ui-scale)) 0 calc(5px * var(--ui-scale)) calc(15px * var(--ui-scale)) !important;
+  font-size: calc(
+    12px * var(--ui-scale)
+  ) !important; /* Reduced from 18px which was huge */
+  padding: calc(10px * var(--ui-scale)) 0 calc(5px * var(--ui-scale))
+    calc(15px * var(--ui-scale)) !important;
 }
 
 /* Tables (DataTables) */
@@ -62,7 +68,8 @@ body {
   font-size: calc(14px * var(--ui-scale)) !important;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   padding: calc(8px * var(--ui-scale)) !important;
 }
 
@@ -73,49 +80,52 @@ body {
 }
 
 .btn i {
-    font-size: 1.2em !important; /* Relative to button font size */
+  font-size: 1.2em !important; /* Relative to button font size */
 }
 
 /* Form Controls */
-.form-control, .form-select {
+.form-control,
+.form-select {
   font-size: calc(14px * var(--ui-scale)) !important;
   padding: calc(6px * var(--ui-scale)) calc(12px * var(--ui-scale)) !important;
 }
 
 /* Dropdowns */
 .dropdown-menu {
-    font-size: calc(14px * var(--ui-scale)) !important;
+  font-size: calc(14px * var(--ui-scale)) !important;
 }
 
 .dropdown-item {
-    font-size: calc(14px * var(--ui-scale)) !important;
-    padding: calc(8px * var(--ui-scale)) calc(16px * var(--ui-scale)) !important;
+  font-size: calc(14px * var(--ui-scale)) !important;
+  padding: calc(8px * var(--ui-scale)) calc(16px * var(--ui-scale)) !important;
 }
 
 /* Icons General */
-.bi, .ri, .bx {
-    /* Allow icons to scale with their parent text */
-    font-size: 1.1em; 
+.bi,
+.ri,
+.bx {
+  /* Allow icons to scale with their parent text */
+  font-size: 1.1em;
 }
 
 /* Specific fix for the "Filter" icon in dashboard */
 .dashboard .filter .icon {
-    font-size: calc(18px * var(--ui-scale)) !important;
+  font-size: calc(18px * var(--ui-scale)) !important;
 }
 
 /* Fix for header icons */
 .header-nav .nav-icon {
-    font-size: calc(22px * var(--ui-scale)) !important;
+  font-size: calc(22px * var(--ui-scale)) !important;
 }
 
 /* Adjust main content margin */
 #main {
-    margin-top: calc(60px * var(--ui-scale)) !important;
-    padding: calc(20px * var(--ui-scale)) !important;
+  margin-top: calc(60px * var(--ui-scale)) !important;
+  padding: calc(20px * var(--ui-scale)) !important;
 }
 
 .header {
-    height: calc(60px * var(--ui-scale)) !important;
+  height: calc(60px * var(--ui-scale)) !important;
 }
 :root {
   /* 
@@ -157,12 +167,15 @@ body {
 }
 
 .card-body {
-  padding: 0 calc(20px * var(--ui-scale)) calc(20px * var(--ui-scale)) calc(20px * var(--ui-scale)) !important;
+  padding: 0 calc(20px * var(--ui-scale)) calc(20px * var(--ui-scale))
+    calc(20px * var(--ui-scale)) !important;
 }
 
 /* Sidebar Navigation */
 .sidebar-nav .nav-link {
-  font-size: calc(16px * var(--ui-scale)) !important; /* Reduced base from 18px to 16px for better fit */
+  font-size: calc(
+    16px * var(--ui-scale)
+  ) !important; /* Reduced base from 18px to 16px for better fit */
   padding: calc(10px * var(--ui-scale)) calc(15px * var(--ui-scale)) !important;
 }
 
@@ -172,8 +185,11 @@ body {
 }
 
 .sidebar-nav .nav-heading {
-  font-size: calc(12px * var(--ui-scale)) !important; /* Reduced from 18px which was huge */
-  padding: calc(10px * var(--ui-scale)) 0 calc(5px * var(--ui-scale)) calc(15px * var(--ui-scale)) !important;
+  font-size: calc(
+    12px * var(--ui-scale)
+  ) !important; /* Reduced from 18px which was huge */
+  padding: calc(10px * var(--ui-scale)) 0 calc(5px * var(--ui-scale))
+    calc(15px * var(--ui-scale)) !important;
 }
 
 /* Tables (DataTables) */
@@ -181,7 +197,8 @@ body {
   font-size: calc(14px * var(--ui-scale)) !important;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   padding: calc(8px * var(--ui-scale)) !important;
 }
 
@@ -192,67 +209,71 @@ body {
 }
 
 .btn i {
-    font-size: 1.2em !important; /* Relative to button font size */
+  font-size: 1.2em !important; /* Relative to button font size */
 }
 
 /* Form Controls */
-.form-control, .form-select {
+.form-control,
+.form-select {
   font-size: calc(14px * var(--ui-scale)) !important;
   padding: calc(6px * var(--ui-scale)) calc(12px * var(--ui-scale)) !important;
 }
 
 /* Dropdowns */
 .dropdown-menu {
-    font-size: calc(14px * var(--ui-scale)) !important;
+  font-size: calc(14px * var(--ui-scale)) !important;
 }
 
 .dropdown-item {
-    font-size: calc(14px * var(--ui-scale)) !important;
-    padding: calc(8px * var(--ui-scale)) calc(16px * var(--ui-scale)) !important;
+  font-size: calc(14px * var(--ui-scale)) !important;
+  padding: calc(8px * var(--ui-scale)) calc(16px * var(--ui-scale)) !important;
 }
 
 /* Icons General */
-.bi, .ri, .bx {
-    /* Allow icons to scale with their parent text */
-    font-size: 1.1em; 
+.bi,
+.ri,
+.bx {
+  /* Allow icons to scale with their parent text */
+  font-size: 1.1em;
 }
 
 /* Specific fix for the "Filter" icon in dashboard */
 .dashboard .filter .icon {
-    font-size: calc(18px * var(--ui-scale)) !important;
+  font-size: calc(18px * var(--ui-scale)) !important;
 }
 
 /* Fix for header icons */
 .header-nav .nav-icon {
-    font-size: calc(22px * var(--ui-scale)) !important;
+  font-size: calc(22px * var(--ui-scale)) !important;
 }
 
 /* Adjust main content margin */
 #main {
-    margin-top: calc(60px * var(--ui-scale)) !important;
-    padding: calc(20px * var(--ui-scale)) !important;
+  margin-top: calc(60px * var(--ui-scale)) !important;
+  padding: calc(20px * var(--ui-scale)) !important;
 }
 
 .header {
-    height: calc(60px * var(--ui-scale)) !important;
+  height: calc(60px * var(--ui-scale)) !important;
 }
 
 .sidebar {
-    top: calc(60px * var(--ui-scale)) !important;
-    width: calc(300px * var(--ui-scale)) !important;
+  top: calc(60px * var(--ui-scale)) !important;
+  width: calc(300px * var(--ui-scale)) !important;
 }
 
 @media (min-width: 1200px) {
-  #main, #footer {
+  #main,
+  #footer {
     margin-left: calc(300px * var(--ui-scale)) !important;
     transition: margin-left 0.3s;
   }
 
-  .toggle-sidebar #main, 
+  .toggle-sidebar #main,
   .toggle-sidebar #footer {
     margin-left: 0 !important;
   }
-  
+
   .toggle-sidebar .sidebar {
     left: calc(-300px * var(--ui-scale)) !important;
   }
@@ -266,6 +287,47 @@ body {
 
 /* Fix for horizontal scrollbar */
 body {
-    overflow-x: hidden;
-    width: 100%;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Subtle animations and hover improvements for activity/task lists */
+.fade-in {
+  animation: fadeInUp 0.35s ease both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.task-row {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.task-row:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.task-card {
+  overflow: visible;
+}
+
+.recent-row {
+  transition: background 0.12s ease, transform 0.12s ease;
+}
+.recent-row:hover {
+  background: rgba(65, 84, 241, 0.02);
+  transform: translateY(-2px);
+}
+
+/* Ensure main padding collapse is smooth when toggling sidebar */
+#main {
+  transition: margin-left 0.25s ease, padding 0.2s ease;
 }

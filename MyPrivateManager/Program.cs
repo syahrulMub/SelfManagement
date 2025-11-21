@@ -24,6 +24,7 @@ builder.Services.AddScoped<ITaskCategoryServices, TaskCategoryServices>();
 builder.Services.AddScoped<ITaskWorkServices, TaskWorkServices>();
 builder.Services.AddScoped<IScheduleServices, ScheduleServices>();
 builder.Services.AddScoped<IUserManager, UserManager>();
+builder.Services.AddScoped<IActivityServices, ActivityServices>();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
 .AddRoles<IdentityRole>()

@@ -2,201 +2,196 @@
     ViewData["Title"] = "Incomes";
 }
 
-<main class="main" id="main" style="margin-top: 4rem;">
-    <div class="pagetitle">
-        <h1>Income</h1>
-        <nav>
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="">Home</a></li>
-                <li class="breadcrumb-item">Income</li>
-            </ul>
-        </nav>
-    </div>
 
-    <section class="section dashboard">
-        <div class="row">
-            <!--left side -->
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <ul class="nav nav-tabs nav-tabs-bordered d-flex mt-2" id="borderedTabJustified" role="tablist">
-                            <li class="nav-item flex-fill" role="presentation">
-                                <button class="nav-link w-100 active" id="income-tab" data-bs-toggle="tab" type="button"
-                                    role="tab" data-bs-target="#income-content" aria-selected="true">Income</button>
-                            </li>
-                            <li class="nav-item flex-fill" role="presentation">
-                                <button class="nav-link w-100" id="source-tab" data-bs-toggle="tab" type="button"
-                                    role="tab" data-bs-target="#source-content" aria-selected="false">Source</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content pt-2" id="myIncomeTab" role="tabpanel">
-                            <div class="tab-pane fade show active" id="income-content">
-                                <button class="btn btn-primary" onclick="addIncome()">
-                                    <i class="bi bi-journal-plus"></i> Create New Income
-                                </button>
-                                <h5 class="card-title">Income</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-striped cell-border" id="incomeTable" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Description</th>
-                                                <th scope="col">Source</th>
-                                                <th scope="col">Amount</th>
-                                                <th scope="col">Date Time</th>
-                                                <th scope="col">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (ViewBag.UserIncomes != null)
+<div class="pagetitle">
+    <h1>Income</h1>
+    <nav>
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="">Home</a></li>
+            <li class="breadcrumb-item">Income</li>
+        </ul>
+    </nav>
+</div>
+
+<section class="section dashboard">
+    <div class="row">
+        <!--left side -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-tabs nav-tabs-bordered d-flex mt-2" id="borderedTabJustified" role="tablist">
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button class="nav-link w-100 active" id="income-tab" data-bs-toggle="tab" type="button"
+                                role="tab" data-bs-target="#income-content" aria-selected="true">Income</button>
+                        </li>
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button class="nav-link w-100" id="source-tab" data-bs-toggle="tab" type="button" role="tab"
+                                data-bs-target="#source-content" aria-selected="false">Source</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content pt-2" id="myIncomeTab" role="tabpanel">
+                        <div class="tab-pane fade show active" id="income-content">
+                            <button class="btn btn-primary" onclick="addIncome()">
+                                <i class="bi bi-journal-plus"></i> Create New Income
+                            </button>
+                            <h5 class="card-title">Income</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped cell-border" id="incomeTable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Source</th>
+                                            <th scope="col">Amount</th>
+                                            <th scope="col">Date Time</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.UserIncomes != null)
+                                        {
+                                            @foreach (var income in ViewBag.UserIncomes)
                                             {
-                                                @foreach (var income in ViewBag.UserIncomes)
-                                                {
-                                                    <tr>
-                                                        <td scope="row">@income.IncomeId</td>
-                                                        <td>
-                                                            <script>
-                                                                function truncateDescription(description, maxLength) {
-                                                                    if (description.length > maxLength) {
-                                                                        return description.substring(0, maxLength) + '...';
-                                                                    }
-                                                                    return description;
+                                                <tr>
+                                                    <td scope="row">@income.IncomeId</td>
+                                                    <td>
+                                                        <script>
+                                                            function truncateDescription(description, maxLength) {
+                                                                if (description.length > maxLength) {
+                                                                    return description.substring(0, maxLength) + '...';
                                                                 }
-                                                                document.write(truncateDescription('@income.Description', 30));
-                                                            </script>
-                                                        </td>
-                                                        <td>@income.Source.SourceName</td>
-                                                        <td>@income.Amount</td>
-                                                        <td>@income.Date.ToString("dd-MM-yyyy")</td>
-                                                        <td>
-                                                            <button data-bs-toogle="modal"
-                                                                onclick="detailIncome(@income.IncomeId)"
-                                                                class="btn btn-info">Detail</button>
-                                                            <button data-bs-toggle="modal"
-                                                                onclick="editIncome(@income.IncomeId)"
-                                                                class="btn btn-warning">Edit</button>
-                                                            <button data-bs-toggle="modal"
-                                                                onclick="deleteIncome(@income.IncomeId)"
-                                                                class="btn btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            }
-                                            else
-                                            {
-                                                <tr>
-                                                    <td colspan="5">No data</td>
+                                                                return description;
+                                                            }
+                                                            document.write(truncateDescription('@income.Description', 30));
+                                                        </script>
+                                                    </td>
+                                                    <td>@income.Source.SourceName</td>
+                                                    <td>@income.Amount</td>
+                                                    <td>@income.Date.ToString("dd-MM-yyyy")</td>
+                                                    <td>
+                                                        <button data-bs-toogle="modal" onclick="detailIncome(@income.IncomeId)"
+                                                            class="btn btn-info">Detail</button>
+                                                        <button data-bs-toggle="modal" onclick="editIncome(@income.IncomeId)"
+                                                            class="btn btn-warning">Edit</button>
+                                                        <button data-bs-toggle="modal" onclick="deleteIncome(@income.IncomeId)"
+                                                            class="btn btn-danger">Delete</button>
+                                                    </td>
                                                 </tr>
                                             }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="source-content">
-                                <button class="btn btn-primary my-2" onclick="addSource()" data-bs-toggle="modal">
-                                    <i class="bi bi-journal-plus"></i> Create New Source
-                                </button>
-                                <h5 class="card-title">Source</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
+                                        }
+                                        else
+                                        {
                                             <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Source Name</th>
+                                                <td colspan="5">No data</td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (ViewBag.Sources != null)
-                                            {
-                                                @foreach (var source in ViewBag.Sources)
-                                                {
-                                                    <tr>
-                                                        <td scope="row">@source.SourceId</td>
-                                                        <td>@source.SourceName</td>
-                                                        <td>
-                                                            <button data-bs-toggle="modal"
-                                                                onclick="editSource(@source.SourceId)"
-                                                                class="btn btn-warning">Edit</button>
-                                                            <button data-bs-toggle="modal"
-                                                                onclick="migrateIncome(@source.SourceId)"
-                                                                class="btn btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            }
-                                            else
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="source-content">
+                            <button class="btn btn-primary my-2" onclick="addSource()" data-bs-toggle="modal">
+                                <i class="bi bi-journal-plus"></i> Create New Source
+                            </button>
+                            <h5 class="card-title">Source</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Source Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.Sources != null)
+                                        {
+                                            @foreach (var source in ViewBag.Sources)
                                             {
                                                 <tr>
-                                                    <td colspan="2">No data</td>
+                                                    <td scope="row">@source.SourceId</td>
+                                                    <td>@source.SourceName</td>
+                                                    <td>
+                                                        <button data-bs-toggle="modal" onclick="editSource(@source.SourceId)"
+                                                            class="btn btn-warning">Edit</button>
+                                                        <button data-bs-toggle="modal" onclick="migrateIncome(@source.SourceId)"
+                                                            class="btn btn-danger">Delete</button>
+                                                    </td>
                                                 </tr>
                                             }
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No data</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="filter">
-                        <a class="icon" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li>
-                            <li><a class="dropdown-item" onclick="updateChartIncome('daily')">This
-                                    Week</a></li>
-                            <li><a class="dropdown-item" onclick="updateChartIncome('weekly')">This Month</a></li>
-                            <li><a class="dropdown-item" onclick="updateChartIncome('monthly')">This Year</a></li>
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title" id="report-title">Report<span> | Income </span></h5>
-                        <canvas id="linChart" style="max-height: 400px"></canvas>
-                        <script>
-                            var myChart;
-                                document.addEventListener("DOMContentLoaded", () => {
-                                    updateChartIncome('daily');
-                                })
-                        </script>
-                    </div>
-                </div>
             </div>
-            <!--right section -->
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="filter">
-                        <a class="icon" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li>
-                            <li class="dropdown-item">This week</li>
-                            <li class="dropdown-item">This Month</li>
-                            <li class="dropdown-item">This Year</li>
-                        </ul>
-                    </div>
-
-                    <div class="card-body pb-0">
-                        <h5 class="card-title">Report Income <span>| by Category</span></h5>
-                        <div id="incomeBySourceChart" style="min-height: 400px;" class="echart"></div>
-                        <script>
-                            document.addEventListener("DOMContentLoaded", () => {
-                                getIncomeChartByCategory();
-                            });
-                        </script>
-                    </div>
+            <div class="card">
+                <div class="filter">
+                    <a class="icon" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li class="dropdown-header text-start">
+                            <h6>Filter</h6>
+                        </li>
+                        <li><a class="dropdown-item" onclick="updateChartIncome('daily')">This
+                                Week</a></li>
+                        <li><a class="dropdown-item" onclick="updateChartIncome('weekly')">This Month</a></li>
+                        <li><a class="dropdown-item" onclick="updateChartIncome('monthly')">This Year</a></li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" id="report-title">Report<span> | Income </span></h5>
+                    <canvas id="linChart" style="max-height: 400px"></canvas>
+                    <script>
+                        var myChart;
+                        document.addEventListener("DOMContentLoaded", () => {
+                            updateChartIncome('daily');
+                        })
+                    </script>
                 </div>
             </div>
         </div>
-    </section>
-    <partial name="createIncomeModal" />
-    <partial name="detailIncomeModal" />
-    <partial name="editIncomeModal" />
-    <partial name="createSourceModal" />
-    <partial name="editSourceModal" />
-    <partial name="migrateIncomeModal" />
-</main>
+        <!--right section -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="filter">
+                    <a class="icon" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li class="dropdown-header text-start">
+                            <h6>Filter</h6>
+                        </li>
+                        <li class="dropdown-item">This week</li>
+                        <li class="dropdown-item">This Month</li>
+                        <li class="dropdown-item">This Year</li>
+                    </ul>
+                </div>
+
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Report Income <span>| by Category</span></h5>
+                    <div id="incomeBySourceChart" style="min-height: 400px;" class="echart"></div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                            getIncomeChartByCategory();
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<partial name="createIncomeModal" />
+<partial name="detailIncomeModal" />
+<partial name="editIncomeModal" />
+<partial name="createSourceModal" />
+<partial name="editSourceModal" />
+<partial name="migrateIncomeModal" />
+
 
 
 @section Scripts {
