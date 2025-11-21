@@ -184,4 +184,77 @@ public class IncomeController : Controller
             return View("Error");
         }
     }
+    [HttpGet("/Income/MonthlyChart")]
+    public async Task<IActionResult> GetMonthlyForChartIncome()
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var monthlyIncome = await _incomeService.GetMonthlyIncomeForYearChar(userId);
+                return Ok(monthlyIncome);
+            }
+            else
+            {
+                _logger.LogError("userId not found");
+                return Ok();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error proseccing data : " + ex.Message);
+            return View("Error");
+        }
+    }
+
+    [HttpGet("/Income/IncomeDailyChart")]
+    public IActionResult GetDailyDataChart()
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var result = _incomeService.CountByCurrentWeek(userId);
+                _logger.LogInformation("Success Get Daily Chart");
+                return Ok(result);
+            }
+            else
+            {
+                _logger.LogError("UserId not found");
+                return View("Error");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error get daily Chart" + ex.Message);
+            return View("Error");
+        }
+    }
+
+    [HttpGet("/Income/IncomeWeeklyChart")]
+    public IActionResult GetWeeklyDataChart()
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var result = _incomeService.CountByCurrentMonth(userId);
+                _logger.LogInformation("Success Get Weekly Chart");
+                return Ok(result);
+            }
+            else
+            {
+                _logger.LogError("UserId not found");
+                return View("Error");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error get weekly Chart" + ex.Message);
+            return View("Error");
+        }
+    }
 }
