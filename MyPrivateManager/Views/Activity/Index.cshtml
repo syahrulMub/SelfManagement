@@ -1,0 +1,162 @@
+@model IEnumerable<MyPrivateManager.Models.Activity>
+
+@{
+    ViewData["Title"] = "Activity Dashboard";
+    var topActivities = ViewBag.TopActivities as List<MyPrivateManager.Models.Activity>;
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-4">Activity Dashboard</h1>
+            <p class="lead">Track your daily activities and see your progress.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Quick Add Section -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4 fade-in">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Quick Add Activity</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div class="mb-3">
+                            <label for="Name" class="form-label">Activity Name</label>
+                            <input type="text" class="form-control" id="Name" name="Name" required
+                                placeholder="e.g., Gym, Reading">
+                        </div>
+                        <div class="mb-3">
+                            <label for="Date" class="form-label">Date</label>
+                            <input type="datetime-local" class="form-control" id="Date" name="Date"
+                                value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Rating" class="form-label">Rating (1-5)</label>
+                            <input type="range" class="form-range" min="1" max="5" id="Rating" name="Rating" value="3"
+                                oninput="this.nextElementSibling.value = this.value">
+                            <output>3</output>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Duration" class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-control" id="Duration" name="Duration"
+                                placeholder="Optional">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Add Activity</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Top Activities -->
+            <div class="card shadow-sm fade-in">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-trophy"></i> Top Rated Activities</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    @if (topActivities != null && topActivities.Any())
+                    {
+                        @foreach (var item in topActivities)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>@item.Name</span>
+                                <span class="badge bg-primary rounded-pill">@item.Rating <i class="bi bi-star-fill"></i></span>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item text-muted">No activities yet.</li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content / Charts / List -->
+        <div class="col-md-8">
+            <!-- Placeholder for Chart -->
+            <div class="card shadow-sm mb-4 fade-in">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Activity Trends</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="activityChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Activities List -->
+            <div class="card shadow-sm fade-in">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-list-check"></i> Recent Activities</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Rating</th>
+                                <th>Duration</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderByDescending(m => m.Date))
+                            {
+                                <tr class="recent-row">
+                                    <td>@item.Name</td>
+                                    <td>@item.Date.ToString("g")</td>
+                                    <td>
+                                        @for (int i = 0; i < item.Rating; i++)
+                                        {
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        }
+                                    </td>
+                                    <td>@(item.Duration.HasValue? item.Duration + " min" : "-")</td>
+                                    <td>
+                                        <form asp-action="Delete" asp-route-id="@item.ActivityId" method="post"
+                                            class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Are you sure?')"><i
+                                                    class="bi bi-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Simple chart setup
+        const ctx = document.getElementById('activityChart').getContext('2d');
+        const activityChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.Take(7).Select(x => x.Name).ToList())), // Just taking recent 7 for demo
+                datasets: [{
+                    label: 'Rating',
+                    data: @Html.Raw(Json.Serialize(Model.Take(7).Select(x => x.Rating).ToList())),
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5
+                    }
+                }
+            }
+        });
+    </script>
+}

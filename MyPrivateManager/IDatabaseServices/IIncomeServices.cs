@@ -12,6 +12,9 @@ public interface IIncomeServices
     Task<bool> MigrateIncomeAsync(int sourceIdFrom, int sourceIdTo);
     Task<IEnumerable<Income>> GetMonthlyIncomeStatisticsAsync(DateTime startDate, DateTime endDate);
     Task<IEnumerable<DTOTotalIncomeByCategory>> GetIncomeTotalByCategory(string userId);
+    Task<IEnumerable<int>> GetMonthlyIncomeForYearChar(string userId);
+    IEnumerable<decimal> CountByCurrentWeek(string userId);
+    IEnumerable<decimal> CountByCurrentMonth(string userId);
 }
 
 public class DTOTotalIncomeByCategory

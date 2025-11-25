@@ -1,6 +1,4 @@
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MyPrivateManager.Data;
 using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
@@ -135,6 +133,85 @@ public class IncomeServices : IIncomeServices
                         .ToList();
         return result;
     }
+
+    public async Task<IEnumerable<int>> GetMonthlyIncomeForYearChar(string userId)
+    {
+        var monthly = await _dbContext.Incomes
+                            .Where(i => i.Source.UserId == userId)
+                            .GroupBy(i => i.Date.Month)
+                            .Select(i => new
+                            {
+                                Month = i.Key,
+                                TotalIncome = i.Sum(i => i.Amount)
+                            })
+                            .ToListAsync();
+        
+        var result = Enumerable.Range(1, 12)
+                            .Select(month => new
+                            {
+                                Month = month,
+                                TotalIncome = monthly.FirstOrDefault(i => i.Month == month)?.TotalIncome ?? 0
+                            })
+                            .OrderBy(i => i.Month)
+                            .Select(i => i.TotalIncome)
+                            .ToList();
+        return result;
+    }
+
+    public IEnumerable<decimal> CountByCurrentWeek(string userId)
+    {
+        var today = DateTime.Now;
+        var firstDay = today.Date.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+
+        var sourceIds = _dbContext.Sources
+                            .Where(i => i.UserId == userId)
+                            .Select(i => i.SourceId)
+                            .ToList();
+
+        if (!sourceIds.Any())
+        {
+            return Enumerable.Repeat(0m, 7).ToList();
+        }
+
+        var amounts = Enumerable.Range(0, 7)
+            .Select(offset => firstDay.AddDays(offset))
+            .Select(date => CountIncomeDaily(date, sourceIds))
+            .ToList();
+
+        return amounts;
+    }
+
+    private decimal CountIncomeDaily(DateTime date, List<int> sourceIds)
+    {
+        var count = _dbContext.Incomes
+            .Where(i => sourceIds.Contains(i.SourceId) && i.Date == date)
+            .Sum(i => i.Amount);
+        return (decimal)count;
+    }
+
+    public IEnumerable<decimal> CountByCurrentMonth(string userId)
+    {
+        var today = DateTime.Now;
+        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
+        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+        var sourceIds = _dbContext.Sources
+                            .Where(i => i.UserId == userId)
+                            .Select(i => i.SourceId)
+                            .ToList();
+
+        if (!sourceIds.Any())
+        {
+             return Enumerable.Repeat(0m, 5).ToList();
+        }
+
+        var amounts = Enumerable.Range(0, (int)(lastDayOfMonth - firstDayOfMonth).TotalDays + 1)
+            .Select(offset => firstDayOfMonth.AddDays(offset))
+            .GroupBy(date => (int)Math.Ceiling(date.Day / 7.0))
+            .Select(group => group.Sum(date => CountIncomeDaily(date, sourceIds)))
+            .Take(5)
+            .ToList();
+
+        return amounts;
+    }
 }
-
-

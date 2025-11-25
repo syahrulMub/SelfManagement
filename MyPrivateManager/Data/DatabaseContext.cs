@@ -13,6 +13,7 @@ public class DatabaseContext : IdentityDbContext<User>
     public DbSet<TaskCategory> TaskCategories { get; set; }
     public DbSet<TaskWork> TaskWorks { get; set; }
     public DbSet<Schedule> Schedules { get; set; }
+    public DbSet<Activity> Activities { get; set; }
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
 

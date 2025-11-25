@@ -67,9 +67,18 @@ public class CategoryController : Controller
     {
         try
         {
-            var success = await _categoryServices.CreateCategoryAsync(category);
-            _logger.LogInformation("success create category");
-            return Ok();
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                category.UserId = userId;
+                var success = await _categoryServices.CreateCategoryAsync(category);
+                _logger.LogInformation("success create category");
+                return Ok();
+            }
+            else
+            {
+                return View("Error");
+            }
         }
         catch (Exception ex)
         {

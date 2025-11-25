@@ -1,3 +1,5 @@
+var myChart;
+
 function addExpense(){
     $('#createExpenseModalLabel').text('Create Expense');
     $('#createExpenseAmount').val('');
@@ -103,8 +105,15 @@ function updateExpense(){
         type: 'POST',
         data: {Amount : amount, ExpenseId: expenseId, CategoryId: categoryId, Date: date, Description: description},
         success: function(){
+            Swal.fire({
+                icon: 'success',
+                title: 'Succes!',
+                text: "database expense success updated!",
+                showConfirmButton: false,
+                timer: 2000
+              })
             $('#editExpenseModal').modal('hide');
-            location.reload();
+            // location.reload();
         },
         error: function(error){
             console.log('Error: ' + error);
@@ -129,20 +138,37 @@ function getCategoryForEdit(categoryId) {
     });
 }
 
-function deleteExpense(expenseId){
-    var validate = confirm('Are you sure you want to delete this expense?');
-    if (validate){
-        $.ajax({
-            url: '/Expense/DeleteExpense/' + expenseId,
-            type: 'DELETE',
-            success: function(){
-                location.reload();
-            },
-            error: function(error){
-                console.log('error delete data : ' + error);
-            }
-        });
-    }
+function deleteExpense( expenseId){
+    Swal.fire({
+        title: "are you sure?",
+        text: "once deleted, the data will remove from your account",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    })
+    .then((willDelete) => {
+        if (willDelete.isConfirmed){
+            $.ajax({
+                url: '/Expense/DeleteExpense/' + expenseId,
+                type: 'DELETE', 
+                success: function(){
+                    Swal.fire({
+                        icon: "success",
+                        title: "Expense deleted",
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                },
+                error: function(error){
+                    console.log('error delete data : ' + error);
+                }
+            });
+        } else {
+            Swal.fire("cancel delete expense");
+        }
+    });
 }
 
 function migrateExpense(categoryIdFrom){
@@ -332,4 +358,78 @@ function getExpenseChartWeekly(){
             console.log('error' + error);
         }
     });
+}
+
+function getExpenseChartByCategory(filter = 'monthly') {
+    $.ajax({
+        type: "GET",
+        url: "/Expense/ExpenseByCategory",
+        data: { filter: filter },
+        success: function (response) {
+            var chartDom = document.getElementById('incomeBySourceChart');
+            // Dispose existing instance if any to avoid memory leaks or conflicts
+            var existingChart = echarts.getInstanceByDom(chartDom);
+            if (existingChart) {
+                existingChart.dispose();
+            }
+            
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            var data = response.map(item => {
+                return { value: item.total, name: item.categoryName };
+            });
+
+            option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (params) {
+                        var formattedValue = new Intl.NumberFormat('id-ID').format(params.value);
+                        return `${params.name}: ${formattedValue}`;
+                    }
+                },
+                legend: {
+                    top: '5%',
+                    left: 'center'
+                },
+                series: [
+                    {
+                        name: 'Access From',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: 40,
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: data
+                    }
+                ]
+            };
+
+            option && myChart.setOption(option);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+function updateCategoryChart(filter) {
+    getExpenseChartByCategory(filter);
 }

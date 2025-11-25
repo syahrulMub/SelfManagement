@@ -1,0 +1,33 @@
+<div class="modal fade" id="TaskCategoryModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Task Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <!-- ini card untuk create besertakan form dan tombol save -->
+                    <div class="card-header">Add Task Category</div>
+                    <div class="card-body">
+                        <form id="createCategoryForm">
+                            <div class="mb-3">
+                                <label for="categoryName"> Task Category Name</label>
+                                <input type="text" class="form-control" id="categoryName" />
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="addTaskCategory()">Save</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <!-- ini card untuk menampilkan list of task categories dan disampingnya ada save dan delete -->
+                    <div class="card mt-3">
+                        <div class="card-header">Task Categories</div>
+                        <div class="card-body" id="categoryList">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

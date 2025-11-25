@@ -1160,6 +1160,7 @@ h6 {
 
 .contact .php-email-form button[type=submit]:hover {
   background: #5969f3;
+  background: #606ff1;
 }
 
 @keyframes animate-loading {
@@ -1231,4 +1232,24 @@ h6 {
   text-align: center;
   font-size: 13px;
   color: #012970;
+}
+
+/*--------------------------------------------------------------
+# Custom
+--------------------------------------------------------------*/
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-div {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.buttons-div {
+  display: flex;
+  gap: 5px;
 }

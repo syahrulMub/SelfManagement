@@ -86,7 +86,7 @@ public class ExpenseServices : IExpenseServices
             .Where(e => e.Date >= startDate && e.Date <= endDate)
             .ToListAsync();
     }
-    public async Task<IEnumerable<decimal>> GetMonthlyExpenseForYearChar(string userId)
+    public async Task<IEnumerable<int>> GetMonthlyExpenseForYearChar(string userId)
     {
         var monthly = await _dbContext.Expenses
                             .Where(i => i.Category.UserId == userId)
@@ -133,57 +133,106 @@ public class ExpenseServices : IExpenseServices
         var today = DateTime.Now;
         var firstDay = today.Date.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
 
+        var categoryIds = _dbContext.Categories
+                            .Where(i => i.UserId == userId)
+                            .Select(i => i.CategoryId)
+                            .ToList();
+
+        if (!categoryIds.Any())
+        {
+            return Enumerable.Repeat(0m, 7).ToList();
+        }
+
         var amounts = Enumerable.Range(0, 7)
             .Select(offset => firstDay.AddDays(offset))
-            .Select(date => CountExpenseDaily(date, userId))
+            .Select(date => CountExpenseDaily(date, categoryIds))
             .ToList();
 
         return amounts;
-
-        // List<decimal> amount = new();
-        // var today = DateTime.Now;
-        // var firstDay = today.Date.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
-        // DateTime currentDate = firstDay;
-        // for (int i = 1; i <= 7; i++)
-        // {
-        //     var countDaily = CountExpenseDaily(currentDate, userId);
-        //     if (countDaily == 0)
-        //     {
-        //         amount.Add(0);
-        //     }
-        //     else
-        //     {
-        //         amount.Add(countDaily);
-        //     }
-        //     currentDate = currentDate.AddDays(1);
-        // }
-        // return amount;
     }
-    private decimal CountExpenseDaily(DateTime date, string userId)
+
+    private decimal CountExpenseDaily(DateTime date, List<int> categoryIds)
     {
         var count = _dbContext.Expenses
-            .Where(i => i.Category.UserId == userId && i.Date == date)
+            .Where(i => categoryIds.Contains(i.CategoryId) && i.Date == date)
             .Sum(i => i.Amount);
-        return count;
-        // var count = _dbContext.Expenses
-        //             .Where(i => i.UserId == userId)
-        //             .Where(i => i.Date == date)
-        //             .Sum(i => i.Amount);
-        // return count;
+        return (decimal)count;
     }
+
     public IEnumerable<decimal> CountByCurrentMonth(string userId)
     {
         var today = DateTime.Now;
         var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
         var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
 
+        var categoryIds = _dbContext.Categories
+                            .Where(i => i.UserId == userId)
+                            .Select(i => i.CategoryId)
+                            .ToList();
+
+        if (!categoryIds.Any())
+        {
+             return Enumerable.Repeat(0m, 5).ToList();
+        }
+
         var amounts = Enumerable.Range(0, (int)(lastDayOfMonth - firstDayOfMonth).TotalDays + 1)
             .Select(offset => firstDayOfMonth.AddDays(offset))
             .GroupBy(date => (int)Math.Ceiling(date.Day / 7.0))
-            .Select(group => group.Sum(date => CountExpenseDaily(date, userId)))
+            .Select(group => group.Sum(date => CountExpenseDaily(date, categoryIds)))
             .Take(5)
             .ToList();
 
         return amounts;
+    }
+    public async Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId, string filter)
+    {
+        var query = _dbContext.Expenses.Where(i => i.Category.UserId == userId);
+        var today = DateTime.Now;
+
+        switch (filter.ToLower())
+        {
+            case "daily":
+                query = query.Where(e => e.Date.Date == today.Date);
+                break;
+            case "weekly":
+                var startOfWeek = today.Date.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+                var endOfWeek = startOfWeek.AddDays(7);
+                query = query.Where(e => e.Date >= startOfWeek && e.Date < endOfWeek);
+                break;
+            case "monthly":
+                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+                var endOfMonth = startOfMonth.AddMonths(1);
+                query = query.Where(e => e.Date >= startOfMonth && e.Date < endOfMonth);
+                break;
+            case "yearly":
+                var startOfYear = new DateTime(today.Year, 1, 1);
+                var endOfYear = startOfYear.AddYears(1);
+                query = query.Where(e => e.Date >= startOfYear && e.Date < endOfYear);
+                break;
+        }
+
+        var categoryTotal = await query
+                            .GroupBy(i => i.CategoryId)
+                            .Select(i => new
+                            {
+                                category = i.Key,
+                                total = i.Sum(i => i.Amount)
+                            })
+                            .ToDictionaryAsync(i => i.category, i => i.total);
+
+        var totalCategory = await _dbContext.Categories
+                            .Where(c => c.UserId == userId)
+                            .ToListAsync();
+
+        var result = totalCategory
+                    .Select(category => new DTOTotalExpenseByCategory
+                    {
+                        CategoryName = category.CategoryName,
+                        Total = categoryTotal.TryGetValue(category.CategoryId, out var total) ? total : 0,
+                        MaxSum = categoryTotal.Values.Any() ? categoryTotal.Values.Max() : 0
+                    })
+                    .OrderBy(i => i.CategoryName)
+                    .ToList();
+        return result;
     }
 }
