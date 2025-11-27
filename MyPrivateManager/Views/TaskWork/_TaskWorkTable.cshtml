@@ -1,0 +1,118 @@
+@using MyPrivateManager.Models
+@if (ViewBag.UserTask != null)
+{
+    @foreach (var taskCategory in ViewBag.UserTask)
+    {
+        <div class="card mt-3 fade-in task-card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    Task From @taskCategory.Name
+                    <button class="btn btn-link float-end" data-bs-toggle="collapse"
+                        href="#categoryCollapse{@taskCategory.Id}">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                </h5>
+                <div id="categoryCollapse{@taskCategory.Id}" class="collapse show">
+                    @if (taskCategory.TaskWorks != null)
+                    {
+                        <table class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Due date</th>
+                                    <th scope="col">Task Prority</th>
+                                    <th scope="col">Task Stage</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var works in taskCategory.TaskWorks)
+                                {
+                                    <tr class="task-row">
+                                        <form class="rowFormTaskWork">
+                                            <td>
+                                                <span>@works.TaskWorkId</span>
+                                                <input type="hidden" name="taskWorkId" value="@works.TaskWorkId" />
+                                                <input type="hidden" name="TaskCategoryId" value="@works.TaskCategoryId" />
+                                            </td>
+                                            <td>
+                                                <textarea type="text" id="description-@works.TaskWorkId"
+                                    class="form-control transparant" name="Description"
+                                    rows="1">@works.Description</textarea>
+                                            </td>
+                                            <td>
+                                                <input type="date" id="dueDate-@works.TaskWorkId"
+                                                    class="transparant" name="DueDate"
+                                                    value='@works.DueDate.ToString("yyyy-MM-dd")' />
+                                            </td>
+                                            <td>
+                                                <div class="btn-group categoryList">
+                                                    <select name="TaskPriority" type="hidden"
+                                                        id="priority-@works.TaskWorkId"
+                                                        class="task-priority-dropdown option-@(works.TaskPriority.ToString().ToLower())">
+                                                        <option value="Critical" class="option-critical"
+                                                            selected="@(works.TaskPriority == TaskPriority.Critical)">
+                                                            Critical</option>
+                                                        <option value="High" class="option-high"
+                                                            selected="@(works.TaskPriority == TaskPriority.High)">
+                                                            High</option>
+                                                        <option value="Medium" class="option-medium"
+                                                            selected="@(works.TaskPriority == TaskPriority.Medium)">
+                                                            Medium
+                                                        </option>
+                                                        <option value="Low" class="option-low"
+                                                            selected="@(works.TaskPriority == TaskPriority.Low)">
+                                                            Low</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <select name="TaskStage" type="hidden"
+                                                        id="stage-@works.TaskWorkId"
+                                                        class="task-stage-dropdown option-@(works.TaskStage.ToString().ToLower())">
+                                                        <option value="NotStarted" class="option-notstarted"
+                                                            selected="@(works.TaskStage == TaskStage.NotStarted)">
+                                                            Not Started
+                                                        </option>
+                                                        <option value="InProgress" class="option-inprogress"
+                                                            selected="@(works.TaskStage == TaskStage.InProgress)">
+                                                            In Progress
+                                                        </option>
+                                                        <option value="Reviewing" class="option-reviewing"
+                                                            selected="@(works.TaskStage == TaskStage.Reviewing)">
+                                                            Reviewing
+                                                        </option>
+                                                        <option value="Completed" class="option-completed"
+                                                            selected="@(works.TaskStage == TaskStage.Completed)">
+                                                            Completed
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button type="submit"
+                                                    class="btn btn-success ri-save-3-line btn-sm"
+                                                    title="Save"></button>
+                                                <button type="button"
+                                                    onclick="deleteTaskWork(@works.TaskWorkId)"
+                                                    class="btn btn-danger ri-delete-bin-line btn-sm"
+                                                    title="Delete"></button>
+                                            </td>
+                                        </form>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No data</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+    }
+}

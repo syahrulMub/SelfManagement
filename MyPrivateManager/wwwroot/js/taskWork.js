@@ -1,36 +1,6 @@
-$(document).ready(function(){
-    $('#CreateTaskWorkModal').on('shown.bs.modal', function () {
-        getTaskCategoryData()
-        loadEnumTaskPriority('createTaskPriority');
-        loadEnumTaskStage('createTaskStage');
-    });
-    $('#createTaskWorkForm').submit(function(e) {
-         e.preventDefault();
-         var formData = $(this).serialize();
-        console.log("data" + formData);
-        $.ajax({
-            url: '/TaskWork/Create',
-            type: 'POST',
-            data: formData,
-            success: function () {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Succes!',
-                    text: "Task Work Success Create",
-                    showConfirmButton: false,
-                    timer: 2000
-                })
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        })
-        });
-});
-
 function getTaskCategoryData() {
     $.ajax({
-        url: '/TaskCategory/GetCategories',
+        url: '/TaskCategory/GetCategoriesJson',
         type: 'GET',
         success: function (data) {
             var dropdown = $('#createTaskCategoryId');
@@ -99,7 +69,10 @@ function createTaskWork() {
         },
         success: function () {
             $('#CreateTaskWorkModal').modal('hide');
-            location.reload();
+            // Clear form
+            $('#createTaskWorkForm')[0].reset();
+            loadTaskWorkTable();
+            loadCriticalTaskTable();
         },
         error: function () {
             console.log('Error creating task work');
@@ -138,26 +111,26 @@ function deleteTaskWork(taskWorkId){
                     swal.fire({
                         icon: "success",
                         title: "Success!",
-                        text: "Success delete Task Category!",
+                        text: "Success delete Task Work!",
                         showConfirmButton: false,
                         timer: 2000
-                    }).then(function() {
-                        
                     });
+                    loadTaskWorkTable();
+                    loadCriticalTaskTable();
                 },
                 error: function () {
                     console.log("error");
                 }
             });
         } else {
-            swal("cancel delete task category");
+            swal("cancel delete task work");
         }
     });
 }
 
-$('form.rowFormTaskWork').submit(function(e){
+$(document).on('submit', 'form.rowFormTaskWork', function(e){
     e.preventDefault();
-    var taskWorkId = $(this).find('input[name="taskWorkId"]');
+    var taskWorkId = $(this).find('input[name="taskWorkId"]').val();
     var formData = $(this).serialize();
     console.log(taskWorkId, formData, $(this));
 
@@ -172,10 +145,56 @@ $('form.rowFormTaskWork').submit(function(e){
                 text: "Task Work Success Updated!",
                 showConfirmButton: false,
                 timer: 2000
-              })
+              });
+            loadTaskWorkTable();
+            loadCriticalTaskTable();
         },
         error: function(error){
             console.log(error);
         }
     })
 })
+
+function loadTaskWorkTable() {
+    $.ajax({
+        url: '/TaskWork/GetTable',
+        type: 'GET',
+        success: function (data) {
+            $('#taskWorkTableContainer').html(data);
+        },
+        error: function () {
+            console.log('Error loading task work table');
+        }
+    });
+}
+
+function loadCriticalTaskTable() {
+    $.ajax({
+        url: '/TaskWork/GetCriticalTable',
+        type: 'GET',
+        success: function (data) {
+            $('#criticalTaskTableContainer').html(data);
+            $('#criticalTaskWorkTable').DataTable();
+        },
+        error: function () {
+            console.log('Error loading critical task table');
+        }
+    });
+}
+
+$(document).ready(function(){
+    loadTaskWorkTable();
+    loadCriticalTaskTable();
+
+    $('#CreateTaskWorkModal').on('show.bs.modal', function () {
+        getTaskCategoryData();
+        loadEnumTaskPriority('createTaskPriority');
+        loadEnumTaskStage('createTaskStage');
+    });
+
+    // Fix: Handle Create Task Form Submission
+    $('#createTaskWorkForm').on('submit', function(e) {
+        e.preventDefault();
+        createTaskWork();
+    });
+});

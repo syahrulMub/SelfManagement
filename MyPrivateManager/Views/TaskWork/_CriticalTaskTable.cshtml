@@ -1,0 +1,44 @@
+@using MyPrivateManager.Models
+@if (ViewBag.UserCritical != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Critical Task</h5>
+        </div>
+        <div class="card-content">
+            <table class="table table-striped" id="criticalTaskWorkTable" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Due date</th>
+                        <th scope="col">Task Category</th>
+                        <th scope="col">Task Stage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var critical in ViewBag.UserCritical)
+                    {
+                        <tr>
+                            <td>@critical.TaskWorkId</td>
+                            <td>@critical.Description</td>
+                            <td>
+                                <div class="datepicker transparant">@critical.DueDate</div>
+                            </td>
+                            <td>@critical.TaskCategory.TaskCategoryName</td>
+                            <td>
+                                <div class="task-stage-dropdown option-@critical.TaskStage.ToString().ToLower()">
+                                    @critical.TaskStage
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <p>No critical tasks found.</p>
+}

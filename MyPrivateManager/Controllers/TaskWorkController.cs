@@ -9,38 +9,63 @@ public class TaskWorkController : Controller
     private readonly ITaskWorkServices _taskWorkServices;
     private readonly UserManager<User> _userManager;
     private readonly ILogger<TaskWorkController> _logger;
+
     public TaskWorkController(ITaskWorkServices taskWorkServices, UserManager<User> userManager, ILogger<TaskWorkController> logger)
     {
         _taskWorkServices = taskWorkServices;
-        _logger = logger;
         _userManager = userManager;
+        _logger = logger;
     }
-    public async Task<IActionResult> Index()
+
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+    [HttpGet("/TaskWork/GetCriticalTable")]
+    public async Task<IActionResult> GetCriticalTaskTable()
     {
         try
         {
             var userId = _userManager.GetUserId(User);
             if (userId != null)
             {
-                var taskWork = await _taskWorkServices.GetTaskWorkAsync();
-                var userCriticalTask = taskWork.Where(i => i.TaskCategory.UserId == userId).Where(i => i.TaskPriority == TaskPriority.Critical);
-                var userTask = await _taskWorkServices.GetTaskWorksGroupedByCategory(userId);
-                ViewBag.UserTask = userTask;
-                ViewBag.UserCritical = userCriticalTask;
-                return View();
+                var allTasks = await _taskWorkServices.GetTaskWorkAsync();
+                var criticalTasks = allTasks.Where(i => i.TaskCategory.UserId == userId && i.TaskPriority == TaskPriority.Critical);
+
+                ViewBag.UserCritical = criticalTasks;
+                return PartialView("_CriticalTaskTable");
             }
-            else
-            {
-                _logger.LogError("failed to get userId");
-                return View("Error");
-            }
+            return BadRequest();
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error getting task Work " + ex.Message);
-            return View("Error");
+            _logger.LogError("Error getting critical task table " + ex.Message);
+            return BadRequest();
         }
     }
+
+    [HttpGet("/TaskWork/GetTable")]
+    public async Task<IActionResult> GetTaskWorkTable()
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var userTask = await _taskWorkServices.GetTaskWorksGroupedByCategory(userId);
+                ViewBag.UserTask = userTask;
+                return PartialView("_TaskWorkTable");
+            }
+            return BadRequest();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error getting task work table " + ex.Message);
+            return BadRequest();
+        }
+    }
+
     [HttpPost("/TaskWork/Create")]
     public async Task<IActionResult> CreateTaskWork(TaskWork taskwork)
     {
@@ -56,6 +81,7 @@ public class TaskWorkController : Controller
             return View("Error");
         }
     }
+
     [HttpPost("/TaskWork/Update/{taskWorkId}")]
     public async Task<IActionResult> UpdateTaskWork(int taskWorkId, TaskWork taskWork)
     {
@@ -71,6 +97,7 @@ public class TaskWorkController : Controller
             return View("Error");
         }
     }
+
     [HttpDelete("/TaskWork/bulkDeleteByTaskCategory/{taskCategoryId}")]
     public async Task<IActionResult> BulkDeleteByTaskCategory(int taskCategoryId)
     {
@@ -86,6 +113,7 @@ public class TaskWorkController : Controller
             return View("Error");
         }
     }
+
     [HttpDelete("/TaskWork/Delete/{taskWorkId}")]
     public async Task<IActionResult> DeleteTaskWork(int taskWorkId)
     {
