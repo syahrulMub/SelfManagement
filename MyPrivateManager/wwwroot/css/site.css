@@ -331,3 +331,45 @@ body {
 #main {
   transition: margin-left 0.25s ease, padding 0.2s ease;
 }
+
+/* Custom Styles for TaskWork */
+.transparant {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.transparant:focus {
+    box-shadow: none !important;
+    border-bottom: 1px solid #0d6efd !important;
+}
+
+/* Priority Colors */
+.option-critical { color: #dc3545; font-weight: bold; }
+.option-high { color: #fd7e14; font-weight: bold; }
+.option-medium { color: #ffc107; font-weight: bold; }
+.option-low { color: #0dcaf0; font-weight: bold; }
+
+/* Stage Colors */
+.option-notstarted { color: #6c757d; }
+.option-inprogress { color: #0d6efd; }
+.option-reviewing { color: #6610f2; }
+.option-completed { color: #198754; }
+
+/* Modal Styling Enhancements */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.modal-header {
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #f8f9fa;
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-footer {
+    border-top: 1px solid #f0f0f0;
+    background-color: #f8f9fa;
+    border-radius: 0 0 15px 15px;
+}

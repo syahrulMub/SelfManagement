@@ -9,12 +9,13 @@ function addTaskCategory() {
             swal.fire({
                 icon: "success",
                 title: "Success!",
-                text: "Success delete Task Category!",
+                text: "Success add Task Category!",
                 showConfirmButton: false,
                 timer: 2000
-            })
+            });
             
             loadTaskCategories();
+            loadTaskWorkTable(); // Sync main table
             $('#categoryName').val('');
         },
         error: function (error) {
@@ -28,35 +29,8 @@ function loadTaskCategories() {
         url: '/TaskCategory/GetCategories',
         method: 'GET',
         success: function (data) {
-            $('#categoryList').empty();
-            data.forEach(function (category) {
-                var listItemElement = $('<div class="category-item"></div>');
-        
-                var formDiv = $('<div class="form-div"></div>');
-                var inputElement = $('<input type="text" class="transparant form-control" value="' + category.taskCategoryName + '" id="categoryNameInput' + category.taskCategoryId + '">');
-                formDiv.append(inputElement);
-        
-                var buttonsDiv = $('<div class="buttons-div"></div>');
-        
-                var saveButton = $('<button class="btn btn-success ri-save-3-line btn-sm"></button>');
-                saveButton.click(function () {
-                    updateTaskCategory(category.taskCategoryId);
-                });
-                buttonsDiv.append(saveButton);
-        
-                var deleteButton = $('<button class="btn btn-danger ri-delete-bin-line btn-sm"></button>');
-                deleteButton.click(function () {
-                    deleteTaskCategory(category.taskCategoryId);
-                });
-                buttonsDiv.append(deleteButton);
-        
-                listItemElement.append(formDiv);
-                listItemElement.append(buttonsDiv);
-        
-                $('#categoryList').append(listItemElement);
-            });
+            $('#categoryList').html(data); // Inject HTML partial
         },
-        
         error: function (error) {
             console.error('Error getting Task Categories: ', error);
         }
@@ -82,6 +56,7 @@ function updateTaskCategory(taskCategoryId){
                 showConfirmButton: false,
                 timer: 2000
               });
+            loadTaskWorkTable(); // Sync main table
         },
         error: function (){
             console.log("error");
@@ -106,31 +81,33 @@ function deleteTaskCategory(taskCategoryId) {
                 type: 'DELETE',
                 data: {taskCategoryId: taskCategoryId},
                 success: function() {
-                    
+                    // After bulk delete, delete category
+                     $.ajax({
+                        url: '/TaskCategory/Delete/' + taskCategoryId,
+                        type: 'DELETE',
+                        data: {taskCategoryId: taskCategoryId},
+                        success: function () {
+                            swal.fire({
+                                icon: "success",
+                                title: "Success!",
+                                text: "Success delete Task Category!",
+                                showConfirmButton: false,
+                                timer: 2000
+                            }).then(function() {
+                                loadTaskCategories();
+                                loadTaskWorkTable(); // Sync main table
+                            });
+                        },
+                        error: function () {
+                            console.log("error deleting category");
+                        }
+                    });
                 },
                 error: function(){
                     console.log("error occurred during bulkDeleteByTaskCategory");
                 }
             })
-            $.ajax({
-                url: '/TaskCategory/Delete/' + taskCategoryId,
-                type: 'DELETE',
-                data: {taskCategoryId: taskCategoryId},
-                success: function () {
-                    swal.fire({
-                        icon: "success",
-                        title: "Success!",
-                        text: "Success delete Task Category!",
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then(function() {
-                        loadTaskCategories();
-                    });
-                },
-                error: function () {
-                    console.log("error");
-                }
-            });
+           
         } else {
             Swal.fire({
                 icon: 'info',

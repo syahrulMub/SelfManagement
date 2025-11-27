@@ -28,7 +28,7 @@ public class TaskCategoryController : Controller
                 var taskCategories = await _taskCategoryServices.GetTaskCategoriesAsync();
                 var userTask = taskCategories.Where(i => i.UserId == userId);
                 _logger.LogInformation("success get categories");
-                return Ok(userTask);
+                return PartialView("_TaskCategoryList", userTask);
             }
             else
             {
@@ -40,6 +40,28 @@ public class TaskCategoryController : Controller
         {
             _logger.LogError("error get categories" + ex.Message);
             return View("Error");
+        }
+    }
+
+    [HttpGet("/TaskCategory/GetCategoriesJson")]
+    public async Task<IActionResult> GetTaskCategoriesJson()
+    {
+        try
+        {
+            var userId = _userManagaer.GetUserId(User);
+            if (userId != null)
+            {
+                var taskCategories = await _taskCategoryServices.GetTaskCategoriesAsync();
+                var userTask = taskCategories.Where(i => i.UserId == userId)
+                                             .Select(i => new { taskCategoryId = i.TaskCategoryId, taskCategoryName = i.TaskCategoryName });
+                return Ok(userTask);
+            }
+            return BadRequest();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("error get categories json" + ex.Message);
+            return BadRequest();
         }
     }
     [HttpGet("/TaskCategory/GetTaskCategory/{taskCategoryId}")]

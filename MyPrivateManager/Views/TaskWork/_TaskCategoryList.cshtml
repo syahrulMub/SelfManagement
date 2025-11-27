@@ -1,0 +1,17 @@
+@model IEnumerable<MyPrivateManager.Models.TaskCategory>
+
+@if (Model != null)
+{
+    foreach (var category in Model)
+    {
+        <div class="category-item">
+            <div class="form-div">
+                <input type="text" class="transparant form-control" value="@category.TaskCategoryName" id="categoryNameInput@(category.TaskCategoryId)" />
+            </div>
+            <div class="buttons-div">
+                <button class="btn btn-success ri-save-3-line btn-sm" onclick="updateTaskCategory(@category.TaskCategoryId)"></button>
+                <button class="btn btn-danger ri-delete-bin-line btn-sm" onclick="deleteTaskCategory(@category.TaskCategoryId)"></button>
+            </div>
+        </div>
+    }
+}
