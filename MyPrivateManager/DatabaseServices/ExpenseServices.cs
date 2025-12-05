@@ -86,10 +86,11 @@ public class ExpenseServices : IExpenseServices
             .Where(e => e.Date >= startDate && e.Date <= endDate)
             .ToListAsync();
     }
-    public async Task<IEnumerable<int>> GetMonthlyExpenseForYearChar(string userId)
+    public async Task<IEnumerable<int>> GetMonthlyExpenseForYearChar(string userId, int? year = null)
     {
+        var selectedYear = year ?? DateTime.Now.Year;
         var monthly = await _dbContext.Expenses
-                            .Where(i => i.Category.UserId == userId)
+                            .Where(i => i.Category.UserId == userId && i.Date.Year == selectedYear)
                             .GroupBy(i => i.Date.Month)
                             .Select(i => new
                             {
@@ -184,10 +185,14 @@ public class ExpenseServices : IExpenseServices
 
         return amounts;
     }
-    public async Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId, string filter)
+    public async Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId, string filter, int? year = null)
     {
         var query = _dbContext.Expenses.Where(i => i.Category.UserId == userId);
+        var selectedYear = year ?? DateTime.Now.Year;
         var today = DateTime.Now;
+
+        // Apply year filter first
+        query = query.Where(e => e.Date.Year == selectedYear);
 
         switch (filter.ToLower())
         {
@@ -200,12 +205,12 @@ public class ExpenseServices : IExpenseServices
                 query = query.Where(e => e.Date >= startOfWeek && e.Date < endOfWeek);
                 break;
             case "monthly":
-                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+                var startOfMonth = new DateTime(selectedYear, today.Month, 1);
                 var endOfMonth = startOfMonth.AddMonths(1);
                 query = query.Where(e => e.Date >= startOfMonth && e.Date < endOfMonth);
                 break;
             case "yearly":
-                var startOfYear = new DateTime(today.Year, 1, 1);
+                var startOfYear = new DateTime(selectedYear, 1, 1);
                 var endOfYear = startOfYear.AddYears(1);
                 query = query.Where(e => e.Date >= startOfYear && e.Date < endOfYear);
                 break;

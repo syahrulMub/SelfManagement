@@ -237,6 +237,7 @@ function deleteCategory(categoryId){
 }
 
 function updateChart(filter) {
+    var selectedYear = $('#yearFilter').val();
     switch (filter) {
         case 'daily':
             if (myChart) {
@@ -254,18 +255,20 @@ function updateChart(filter) {
             if (myChart) {
                 myChart.destroy();
             }
-            getExpenseChartMonthly();
+            getExpenseChartMonthly(selectedYear);
             break;
         default:
-            getExpenseChartMonthly();
+            getExpenseChartMonthly(selectedYear);
             break;
     }
 }
 
-function getExpenseChartMonthly(){
+function getExpenseChartMonthly(year){
+    var selectedYear = year || $('#yearFilter').val();
     $.ajax({
         url: '/Expense/MonthlyChart',
         type: 'GET',
+        data: { year: selectedYear },
         success: function(data){
             myChart = new Chart(document.querySelector('#lineChart'),{
                 type: 'line',
@@ -360,11 +363,12 @@ function getExpenseChartWeekly(){
     });
 }
 
-function getExpenseChartByCategory(filter = 'monthly') {
+function getExpenseChartByCategory(filter = 'monthly', year = null) {
+    var selectedYear = year || $('#yearFilter').val();
     $.ajax({
         type: "GET",
         url: "/Expense/ExpenseByCategory",
-        data: { filter: filter },
+        data: { filter: filter, year: selectedYear },
         success: function (response) {
             var chartDom = document.getElementById('incomeBySourceChart');
             // Dispose existing instance if any to avoid memory leaks or conflicts
@@ -431,5 +435,11 @@ function getExpenseChartByCategory(filter = 'monthly') {
 }
 
 function updateCategoryChart(filter) {
-    getExpenseChartByCategory(filter);
+    // Only apply year filter for monthly and yearly views
+    // Daily and weekly should always use current date
+    var selectedYear = null;
+    if (filter === 'monthly' || filter === 'yearly') {
+        selectedYear = $('#yearFilter').val();
+    }
+    getExpenseChartByCategory(filter, selectedYear);
 }

@@ -11,6 +11,17 @@
         </ul>
     </nav>
 </div>
+<!-- Year Filter -->
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="d-flex align-items-center">
+            <label for="yearFilter" class="me-2 mb-0"><strong>Filter by Year:</strong></label>
+            <select id="yearFilter" class="form-select" style="width: auto; min-width: 70px;">
+                <!-- Years will be populated dynamically by JavaScript -->
+            </select>
+        </div>
+    </div>
+</div>
 <section class="section dashboard">
     <div class="row">
         <!--left section-->
@@ -202,9 +213,34 @@
     <script type="text/javascript" src="~/js/datatables.min.js"></script>
     <script>
         $(document).ready(function () {
+            // Populate year filter dynamically (current year to 5 years ago)
+            var currentYear = new Date().getFullYear();
+            var yearFilter = $('#yearFilter');
+            for (var i = 0; i <= 5; i++) {
+                var year = currentYear - i;
+                var option = $('<option></option>').val(year).text(year);
+                if (i === 0) {
+                    option.attr('selected', 'selected'); // Select current year by default
+                }
+                yearFilter.append(option);
+            }
+            
             $('#expenseTable').DataTable();
-            getExpenseChartByCategory();
-            updateChart('daily');
+            
+            // Initialize charts with current year
+            var selectedYear = $('#yearFilter').val();
+            getExpenseChartByCategory('monthly', selectedYear);
+            updateChart('monthly');
+            
+            // Add year filter change event
+            // Year filter only affects monthly/yearly views
+            $('#yearFilter').change(function() {
+                var selectedYear = $(this).val();
+                // Refresh line chart (monthly view)
+                updateChart('monthly');
+                // Refresh pie chart (monthly view)
+                getExpenseChartByCategory('monthly', selectedYear);
+            });
         });
     </script>
 }
