@@ -151,14 +151,14 @@ public class ExpenseController : Controller
         }
     }
     [HttpGet("/Expense/MonthlyChart")]
-    public async Task<IActionResult> GetMonthlyForChartExpense()
+    public async Task<IActionResult> GetMonthlyForChartExpense(int? year)
     {
         try
         {
             var userId = _userManager.GetUserId(User);
             if (userId != null)
             {
-                var monthlyExpense = await _expenseServices.GetMonthlyExpenseForYearChar(userId);
+                var monthlyExpense = await _expenseServices.GetMonthlyExpenseForYearChar(userId, year);
                 return Ok(monthlyExpense);
             }
             else
@@ -237,14 +237,14 @@ public class ExpenseController : Controller
         }
     }
     [HttpGet("/Expense/ExpenseByCategory")]
-    public async Task<IActionResult> ExpenseCategoryChart(string filter = "monthly")
+    public async Task<IActionResult> ExpenseCategoryChart(string filter = "monthly", int? year = null)
     {
         try
         {
             var userId = _userManager.GetUserId(User);
             if (userId != null)
             {
-                var expenseData = await _expenseServices.GetExpenseTotalByCategory(userId, filter);
+                var expenseData = await _expenseServices.GetExpenseTotalByCategory(userId, filter, year);
                 _logger.LogInformation("Success get expense for echart");
                 return Ok(expenseData);
             }

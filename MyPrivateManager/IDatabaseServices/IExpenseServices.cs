@@ -11,11 +11,11 @@ public interface IExpenseServices
     Task<bool> DeleteExpenseAsync(int expenseId);
     Task<decimal> GetTotalExpensesByCategoryAsync(int categoryId, string userId);
     Task<IEnumerable<Expense>> GetExpensesByDateRangeAsync(DateTime startDate, DateTime endDate);
-    Task<IEnumerable<int>> GetMonthlyExpenseForYearChar(string userId);
+    Task<IEnumerable<int>> GetMonthlyExpenseForYearChar(string userId, int? year = null);
     Task<bool> MigrateExpenseData(int categoryFrom, int categoryTo);
     IEnumerable<decimal> CountByCurrentWeek(string userId);
     IEnumerable<decimal> CountByCurrentMonth(string userId);
-    Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId, string filter);
+    Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId, string filter, int? year = null);
 
 }
 
