@@ -4,6 +4,7 @@ using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
 
 namespace MyPrivateManager.Controllers;
+
 public class TaskWorkController : Controller
 {
     private readonly ITaskWorkServices _taskWorkServices;
@@ -125,7 +126,7 @@ public class TaskWorkController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error while deleting taskwork", ex.Message);
+            _logger.LogError("Error while deleting taskwork" + ex.Message);
             return View("Error");
         }
     }
