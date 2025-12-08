@@ -195,6 +195,26 @@
                     <div id="incomeBySourceChart" style="min-height: 400px;" class="echart"></div>
                 </div>
             </div>
+            <!-- Transaction Details Table -->
+            <div class="card" id="transactionDetailsCard" style="display: none;">
+                <div class="card-body">
+                    <h5 class="card-title" id="transactionDetailsTitle">Transaction Details</h5>
+                    <div class="table-responsive">
+                        <table id="transactionDetailsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionDetailsBody">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -224,17 +244,17 @@
                 }
                 yearFilter.append(option);
             }
-            
+
             $('#expenseTable').DataTable();
-            
+
             // Initialize charts with current year
             var selectedYear = $('#yearFilter').val();
             getExpenseChartByCategory('monthly', selectedYear);
             updateChart('monthly');
-            
+
             // Add year filter change event
             // Year filter only affects monthly/yearly views
-            $('#yearFilter').change(function() {
+            $('#yearFilter').change(function () {
                 var selectedYear = $(this).val();
                 // Refresh line chart (monthly view)
                 updateChart('monthly');

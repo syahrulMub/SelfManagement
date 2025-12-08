@@ -260,6 +260,39 @@ public class ExpenseController : Controller
         }
     }
 
+    [HttpGet("/Expense/ExpenseDetailsByIds")]
+    public async Task<IActionResult> GetExpenseDetailsByIds(string expenseIds)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(expenseIds))
+            {
+                return BadRequest("Expense IDs are required");
+            }
+
+            // Parse comma-separated IDs
+            var idList = expenseIds.Split(',')
+                                   .Select(id => int.TryParse(id.Trim(), out var parsed) ? parsed : (int?)null)
+                                   .Where(id => id.HasValue)
+                                   .Select(id => id.Value)
+                                   .ToList();
+
+            if (!idList.Any())
+            {
+                return BadRequest("No valid expense IDs provided");
+            }
+
+            var expenseDetails = await _expenseServices.GetExpenseDetailsByIds(idList);
+            _logger.LogInformation("Success get expense details");
+            return Ok(expenseDetails);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error getting expense details: " + ex.Message);
+            return View("Error");
+        }
+    }
+
 
 
 }

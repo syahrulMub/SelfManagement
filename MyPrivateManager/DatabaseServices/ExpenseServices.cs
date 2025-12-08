@@ -216,14 +216,15 @@ public class ExpenseServices : IExpenseServices
                 break;
         }
 
-        var categoryTotal = await query
+        var categoryData = await query
                             .GroupBy(i => i.CategoryId)
                             .Select(i => new
                             {
                                 category = i.Key,
-                                total = i.Sum(i => i.Amount)
+                                total = i.Sum(i => i.Amount),
+                                expenseIds = i.Select(e => e.ExpenseId).ToList()
                             })
-                            .ToDictionaryAsync(i => i.category, i => i.total);
+                            .ToDictionaryAsync(i => i.category, i => new { i.total, i.expenseIds });
 
         var totalCategory = await _dbContext.Categories
                             .Where(c => c.UserId == userId)
@@ -233,11 +234,34 @@ public class ExpenseServices : IExpenseServices
                     .Select(category => new DTOTotalExpenseByCategory
                     {
                         CategoryName = category.CategoryName,
-                        Total = categoryTotal.TryGetValue(category.CategoryId, out var total) ? total : 0,
-                        MaxSum = categoryTotal.Values.Any() ? categoryTotal.Values.Max() : 0
+                        Total = categoryData.TryGetValue(category.CategoryId, out var data) ? data.total : 0,
+                        MaxSum = categoryData.Values.Any() ? categoryData.Values.Max(v => v.total) : 0,
+                        ExpenseIds = categoryData.TryGetValue(category.CategoryId, out var ids) ? ids.expenseIds : new List<int>()
                     })
                     .OrderBy(i => i.CategoryName)
                     .ToList();
         return result;
+    }
+
+    public async Task<IEnumerable<DTOExpenseDetail>> GetExpenseDetailsByIds(List<int> expenseIds)
+    {
+        if (expenseIds == null || !expenseIds.Any())
+        {
+            return new List<DTOExpenseDetail>();
+        }
+
+        var expenses = await _dbContext.Expenses
+                            .Where(e => expenseIds.Contains(e.ExpenseId))
+                            .OrderByDescending(e => e.Amount)
+                            .Select(e => new DTOExpenseDetail
+                            {
+                                ExpenseId = e.ExpenseId,
+                                Description = e.Description,
+                                Amount = e.Amount,
+                                Date = e.Date
+                            })
+                            .ToListAsync();
+
+        return expenses;
     }
 }

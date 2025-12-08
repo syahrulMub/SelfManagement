@@ -16,6 +16,7 @@ public interface IExpenseServices
     IEnumerable<decimal> CountByCurrentWeek(string userId);
     IEnumerable<decimal> CountByCurrentMonth(string userId);
     Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId, string filter, int? year = null);
+    Task<IEnumerable<DTOExpenseDetail>> GetExpenseDetailsByIds(List<int> expenseIds);
 
 }
 
@@ -24,4 +25,13 @@ public class DTOTotalExpenseByCategory
     public string? CategoryName { get; set; }
     public decimal Total { get; set; }
     public decimal MaxSum { get; set; }
+    public List<int> ExpenseIds { get; set; } = new List<int>();
+}
+
+public class DTOExpenseDetail
+{
+    public int ExpenseId { get; set; }
+    public string? Description { get; set; }
+    public decimal Amount { get; set; }
+    public DateTime Date { get; set; }
 }
