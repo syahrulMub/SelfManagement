@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyPrivateManager.IDatabaseServices;
+using Microsoft.AspNetCore.Authorization;
 using MyPrivateManager.Models;
 
 namespace MyPrivateManager.Controllers;
@@ -19,6 +20,7 @@ public class ExpenseController : Controller
         _userManager = userManager;
         _logger = logger;
     }
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Index()
     {

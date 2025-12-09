@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyPrivateManager.IDatabaseServices;
+using Microsoft.AspNetCore.Authorization;  
 using MyPrivateManager.Models;
 
 namespace MyPrivateManager.Controllers;
@@ -20,7 +21,7 @@ public class IncomeController : Controller
         _userManager = userManager;
         _logger = logger;
     }
-
+    [Authorize]
     public async Task<IActionResult> Index()
     {
         try
