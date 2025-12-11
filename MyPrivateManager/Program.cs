@@ -6,8 +6,33 @@ using MyPrivateManager.Data;
 using MyPrivateManager.DatabaseServices;
 using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
+using Serilog;
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.AspNetCore", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Routing", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.AspNetCore.StaticFiles", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
+    .WriteTo.Console()
+    .WriteTo.File(
+        path: "Logs/log-.log",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+
+try
+{
+    Log.Information("Starting web application");
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Use Serilog
+builder.Host.UseSerilog();
 
 //database connection
 var connectionString = builder.Configuration.GetConnectionString("DatabaseContext");
@@ -25,6 +50,7 @@ builder.Services.AddScoped<ITaskWorkServices, TaskWorkServices>();
 builder.Services.AddScoped<IScheduleServices, ScheduleServices>();
 builder.Services.AddScoped<IUserManager, UserManager>();
 builder.Services.AddScoped<IActivityServices, ActivityServices>();
+builder.Services.AddScoped<ILogFileService, LogFileService>();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
 .AddRoles<IdentityRole>()
@@ -69,3 +95,12 @@ app.MapControllerRoute(
 app.MapRazorPages();
 app.Run();
 
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
