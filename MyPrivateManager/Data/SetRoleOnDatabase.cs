@@ -13,7 +13,7 @@ public static class SetRoleOnDatabase
     }
     static async Task SetRoleAsync(RoleManager<IdentityRole> roleManager)
     {
-        string[] roles = { "admin", "user" };
+        string[] roles = { "admin", "user", "customer", "technician" };
         foreach (var role in roles)
         {
             if (!await roleManager.RoleExistsAsync(role))

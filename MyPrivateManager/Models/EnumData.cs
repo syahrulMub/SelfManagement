@@ -15,3 +15,11 @@ public enum TaskStage
     Reviewing = 2,
     Completed = 3
 }
+
+public enum OrderStatus
+{
+    Created = 0,
+    InProgress = 1,
+    Reviewing = 2,
+    Completed = 3
+}
