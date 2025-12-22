@@ -4,7 +4,7 @@ namespace MyPrivateManager.Models;
 
 public class Technician
 {
-    public int Id { get; set; }
+    public int TechnicianId { get; set; }
     public string FullName { get; set; } = default!;
     public string Phone { get; set; } = default!;
     public bool IsActive { get; set; } = true;
