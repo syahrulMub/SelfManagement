@@ -7,7 +7,7 @@ public class Order
     public int Id { get; set; }
     public Guid CustomerId { get; set; }
     public Customer Customer { get; set; } = default!;
-    public Guid? TechnicianId { get; set; } // opsional kalau teknisi sudah assign
+    public int TechnicianId { get; set; } 
     public Technician? Technician { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? ScheduledAt { get; set; }
