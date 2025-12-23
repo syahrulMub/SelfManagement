@@ -51,6 +51,10 @@ builder.Services.AddScoped<IScheduleServices, ScheduleServices>();
 builder.Services.AddScoped<IUserManager, UserManager>();
 builder.Services.AddScoped<IActivityServices, ActivityServices>();
 builder.Services.AddScoped<ILogFileService, LogFileService>();
+builder.Services.AddScoped<ICustomerServices, CustomerServices>();
+builder.Services.AddScoped<IOrderServices, OrderServices>();
+builder.Services.AddScoped<ITechnicianServices, TechnicianServices>();
+builder.Services.AddScoped<IRatingServices, RatingServices>();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
 .AddRoles<IdentityRole>()

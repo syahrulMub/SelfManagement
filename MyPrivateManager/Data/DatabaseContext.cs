@@ -14,6 +14,10 @@ public class DatabaseContext : IdentityDbContext<User>
     public DbSet<TaskWork> TaskWorks { get; set; }
     public DbSet<Schedule> Schedules { get; set; }
     public DbSet<Activity> Activities { get; set; }
+    public DbSet<Customer> Customers { get; set; } = default!;
+    public DbSet<Order> Orders { get; set; } = default!;
+    public DbSet<Technician> Technicians { get; set; } = default!;
+    public DbSet<Rating> Ratings { get; set; } = default!;
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
 
