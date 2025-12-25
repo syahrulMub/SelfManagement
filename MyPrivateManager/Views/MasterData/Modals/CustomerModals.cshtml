@@ -1,4 +1,146 @@
-<!-- Customer Modals Placeholder -->
-<div>
-    <!-- Modals will be implemented in future iterations -->
+<!-- Create Customer Modal -->
+<div class="modal fade" id="createCustomerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createCustomerForm">
+                    <div class="mb-3">
+                        <label for="createCustUserId" class="form-label">Select User <span class="text-danger">*</span></label>
+                        <select class="form-select" id="createCustUserId" required>
+                            <option value="">-- Select User --</option>
+                        </select>
+                        <small class="text-muted">Only users without customer profiles are shown</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="createCustPhone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="createCustPhone" placeholder="Enter phone number">
+                        <small class="text-muted">Will update user's phone number</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="createCustAddress" class="form-label">Address <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="createCustAddress" rows="2" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="createCustCity" class="form-label">City <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="createCustCity" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="createCustLat" class="form-label">Latitude</label>
+                            <input type="text" class="form-control" id="createCustLat" placeholder="-6.200000">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="createCustLng" class="form-label">Longitude</label>
+                            <input type="text" class="form-control" id="createCustLng" placeholder="106.816666">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitCreateCustomer()">
+                    <i class="bi bi-check-circle"></i> Create
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Customer Modal -->
+<div class="modal fade" id="editCustomerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCustomerForm">
+                    <input type="hidden" id="editCustId">
+                    <input type="hidden" id="editCustUserId">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">User Email</label>
+                        <input type="text" class="form-control" id="editCustUserEmail" readonly disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCustPhone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="editCustPhone" placeholder="Enter phone number">
+                        <small class="text-muted">Will update user's phone number</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCustAddress" class="form-label">Address <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="editCustAddress" rows="2" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCustCity" class="form-label">City <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="editCustCity" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="editCustLat" class="form-label">Latitude</label>
+                            <input type="text" class="form-control" id="editCustLat" placeholder="-6.200000">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="editCustLng" class="form-label">Longitude</label>
+                            <input type="text" class="form-control" id="editCustLng" placeholder="106.816666">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitUpdateCustomer()">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Customer Modal -->
+<div class="modal fade" id="viewCustomerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Customer Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td class="fw-bold">Email:</td>
+                        <td id="viewCustEmail">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Phone:</td>
+                        <td id="viewCustPhone">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Address:</td>
+                        <td id="viewCustAddress">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">City:</td>
+                        <td id="viewCustCity">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Location:</td>
+                        <td id="viewCustLocation">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Total Orders:</td>
+                        <td id="viewCustOrders">-</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>

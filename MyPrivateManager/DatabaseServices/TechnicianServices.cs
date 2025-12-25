@@ -20,6 +20,7 @@ namespace DatabaseServices
         public async Task<IEnumerable<Technician>> GetTechniciansAsync()
         {
             return await _dbContext.Technicians
+                            .Include(t => t.User)
                             .Include(t => t.Orders)
                             .ToListAsync();
         }
@@ -27,6 +28,7 @@ namespace DatabaseServices
         public async Task<Technician?> GetTechnicianByIdAsync(int technicianId)
         {
             return await _dbContext.Technicians
+                    .Include(t => t.User)
                     .Include(t => t.Orders)
                     .Where(t => t.TechnicianId == technicianId)
                     .FirstOrDefaultAsync();
@@ -45,8 +47,6 @@ namespace DatabaseServices
 
             if (existingTechnician != null)
             {
-                existingTechnician.FullName = technician.FullName;
-                existingTechnician.Phone = technician.Phone;
                 existingTechnician.IsActive = technician.IsActive;
                 existingTechnician.AvgRating = technician.AvgRating;
                 existingTechnician.CompletedJobs = technician.CompletedJobs;

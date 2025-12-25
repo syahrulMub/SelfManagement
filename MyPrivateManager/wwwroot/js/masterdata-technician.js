@@ -6,7 +6,7 @@ $(document).ready(function () {
     // Initialize DataTable with AJAX
     techniciansTable = $('#techniciansTable').DataTable({
         ajax: {
-            url: '/MasterData/GetTechniciansData',
+            url: '/Admin/Technicians/GetData',
             dataSrc: 'data'
         },
         columns: [
@@ -54,30 +54,149 @@ $(document).ready(function () {
     });
 });
 
+// Load available users for create modal
+function loadAvailableUsersForTechnician() {
+    $.ajax({
+        url: '/Admin/Technicians/GetAvailableUsers',
+        type: 'GET',
+        success: function (response) {
+            const select = $('#createTechUserId');
+            select.empty().append('<option value="">-- Select User --</option>');
+            response.data.forEach(user => {
+                select.append(`<option value="${user.id}" data-phone="${user.phoneNumber || ''}">${user.email} (${user.userName})</option>`);
+            });
+        },
+        error: function () {
+            Swal.fire('Error', 'Failed to load available users', 'error');
+        }
+    });
+}
+
+// Auto-fill phone when user is selected
+$(document).on('change', '#createTechUserId', function() {
+    const phone = $(this).find(':selected').data('phone');
+    $('#createTechPhone').val(phone || '');
+});
+
 // Create new technician
 function createTechnician() {
-    Swal.fire({
-        icon: 'info',
-        title: 'Feature Coming Soon',
-        text: 'Create technician modal will be implemented'
+    loadAvailableUsersForTechnician();
+    $('#createTechnicianForm')[0].reset();
+    $('#createTechActive').prop('checked', true);
+    $('#createTechnicianModal').modal('show');
+}
+
+// Submit create technician
+function submitCreateTechnician() {
+    const userId = $('#createTechUserId').val();
+    
+    if (!userId) {
+        Swal.fire('Validation Error', 'Please select a user', 'warning');
+        return;
+    }
+
+    const data = {
+        userId: userId,
+        phoneNumber: $('#createTechPhone').val(),
+        isActive: $('#createTechActive').is(':checked')
+    };
+
+    $.ajax({
+        url: '/Admin/Technicians/Create',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (response) {
+            $('#createTechnicianModal').modal('hide');
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: response.message,
+                timer: 2000
+            });
+            techniciansTable.ajax.reload();
+        },
+        error: function (xhr) {
+            const error = xhr.responseJSON?.error || 'Failed to create technician';
+            Swal.fire('Error', error, 'error');
+        }
     });
 }
 
 // View technician details
 function viewTechnician(technicianId) {
-    Swal.fire({
-        icon: 'info',
-        title: 'Feature Coming Soon',
-        text: 'View technician details modal will be implemented'
+    $.ajax({
+        url: `/Admin/Technicians/Get/${technicianId}`,
+        type: 'GET',
+        success: function (data) {
+            $('#viewTechName').text(data.fullName || 'N/A');
+            $('#viewTechEmail').text(data.fullName || 'N/A');
+            $('#viewTechPhone').text(data.phone || 'N/A');
+            $('#viewTechStatus').html(data.isActive ? 
+                '<span class="badge bg-success">Active</span>' : 
+                '<span class="badge bg-danger">Inactive</span>');
+            $('#viewTechRating').text(data.avgRating.toFixed(1) + ' ⭐');
+            $('#viewTechJobs').text(data.completedJobs);
+            $('#viewTechOrders').text('N/A');
+            $('#viewTechnicianModal').modal('show');
+        },
+        error: function () {
+            Swal.fire('Error', 'Failed to load technician details', 'error');
+        }
     });
 }
 
 // Edit technician
 function editTechnician(technicianId) {
-    Swal.fire({
-        icon: 'info',
-        title: 'Feature Coming Soon',
-        text: 'Edit technician modal will be implemented'
+    $.ajax({
+        url: `/Admin/Technicians/Get/${technicianId}`,
+        type: 'GET',
+        success: function (tech) {
+            $('#editTechId').val(tech.technicianId);
+            $('#editTechUserId').val(tech.userId);
+            $('#editTechUserEmail').val(tech.fullName);
+            $('#editTechPhone').val(tech.phone || '');
+            $('#editTechActive').prop('checked', tech.isActive);
+            $('#editTechRating').text(tech.avgRating.toFixed(1));
+            $('#editTechJobs').text(tech.completedJobs);
+            $('#editTechnicianModal').modal('show');
+        },
+        error: function () {
+            Swal.fire('Error', 'Failed to load technician data', 'error');
+        }
+    });
+}
+
+// Submit update technician
+function submitUpdateTechnician() {
+    const technicianId = $('#editTechId').val();
+    
+    const data = {
+        technicianId: parseInt(technicianId),
+        userId: $('#editTechUserId').val(),
+        phoneNumber: $('#editTechPhone').val(),
+        isActive: $('#editTechActive').is(':checked')
+    };
+
+    $.ajax({
+        url: `/Admin/Technicians/Update/${technicianId}`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (response) {
+            $('#editTechnicianModal').modal('hide');
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: response.message,
+                timer: 2000
+            });
+            techniciansTable.ajax.reload();
+        },
+        error: function (xhr) {
+            const error = xhr.responseJSON?.error || 'Failed to update technician';
+            Swal.fire('Error', error, 'error');
+        }
     });
 }
 
@@ -94,7 +213,7 @@ function deleteTechnician(technicianId) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: `/Technician/DeleteTechnician/${technicianId}`,
+                url: `/Admin/Technicians/Delete/${technicianId}`,
                 type: 'DELETE',
                 success: function (response) {
                     Swal.fire({

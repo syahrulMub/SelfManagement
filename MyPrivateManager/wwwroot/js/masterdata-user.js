@@ -7,7 +7,7 @@ $(document).ready(function () {
     // Initialize DataTable with AJAX
     usersTable = $('#usersTable').DataTable({
         ajax: {
-            url: '/MasterData/GetUsersData',
+            url: '/UserManagement/GetUsersData',
             dataSrc: 'data'
         },
         columns: [
@@ -45,7 +45,7 @@ $(document).ready(function () {
 // Load available roles from database
 function loadAvailableRoles() {
     $.ajax({
-        url: '/MasterData/GetAvailableRoles',
+        url: '/UserManagement/GetAvailableRoles',
         type: 'GET',
         success: function (response) {
             availableRoles = response.data;
@@ -64,7 +64,7 @@ function loadAvailableRoles() {
 // Open edit user role modal
 function editUserRole(userId) {
     $.ajax({
-        url: `/MasterData/GetUser?userId=${userId}`,
+        url: `/UserManagement/GetUser?userId=${userId}`,
         type: 'GET',
         success: function (user) {
             $('#editUserId').val(user.id);
@@ -118,7 +118,7 @@ function submitUpdateUserRole() {
     };
 
     $.ajax({
-        url: '/MasterData/UpdateUserRole',
+        url: '/UserManagement/UpdateUserRole',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(data),

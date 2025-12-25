@@ -2,41 +2,36 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
 
 namespace MyPrivateManager.Controllers;
 
 [Authorize(Roles = "admin")]
-public class MasterDataController : Controller
+public class UserManagementController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly ICustomerServices _customerServices;
-    private readonly ITechnicianServices _technicianServices;
-    private readonly ILogger<MasterDataController> _logger;
+    private readonly ILogger<UserManagementController> _logger;
 
-    public MasterDataController(
+    public UserManagementController(
         UserManager<User> userManager,
         RoleManager<IdentityRole> roleManager,
-        ICustomerServices customerServices,
-        ITechnicianServices technicianServices,
-        ILogger<MasterDataController> logger)
+        ILogger<UserManagementController> logger)
     {
         _userManager = userManager;
         _roleManager = roleManager;
-        _customerServices = customerServices;
-        _technicianServices = technicianServices;
         _logger = logger;
     }
 
-    // ===== MASTER USER MANAGEMENT =====
+    // ===== VIEW =====
 
     [HttpGet]
-    public IActionResult Users()
+    public IActionResult Index()
     {
         return View();
     }
+
+    // ===== DATA ENDPOINTS =====
 
     [HttpGet]
     public async Task<IActionResult> GetUsersData()
@@ -109,6 +104,8 @@ public class MasterDataController : Controller
         }
     }
 
+    // ===== CRUD OPERATIONS =====
+
     [HttpPost]
     public async Task<IActionResult> UpdateUserRole([FromBody] UpdateUserRoleRequest request)
     {
@@ -147,75 +144,6 @@ public class MasterDataController : Controller
         {
             _logger.LogError(ex, "Error updating user roles");
             return StatusCode(500, new { error = "Error updating user roles" });
-        }
-    }
-
-    // ===== MASTER CUSTOMER MANAGEMENT =====
-
-    [HttpGet]
-    public IActionResult Customers()
-    {
-        return View();
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetCustomersData()
-    {
-        try
-        {
-            var customers = await _customerServices.GetCustomersAsync();
-            var customerDataList = customers.Select(c => new
-            {
-                customerId = c.CustomerId,
-                userId = c.UserId,
-                userEmail = c.User?.Email ?? "N/A",
-                address = c.Address,
-                city = c.City,
-                latitude = c.Latitude,
-                longitude = c.Longitude,
-                orderCount = c.Orders?.Count ?? 0
-            });
-
-            return Json(new { data = customerDataList });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving customers data");
-            return StatusCode(500, new { error = "Error retrieving customers data" });
-        }
-    }
-
-    // ===== MASTER TECHNICIAN MANAGEMENT =====
-
-    [HttpGet]
-    public IActionResult Technicians()
-    {
-        return View();
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetTechniciansData()
-    {
-        try
-        {
-            var technicians = await _technicianServices.GetTechniciansAsync();
-            var technicianDataList = technicians.Select(t => new
-            {
-                technicianId = t.TechnicianId,
-                fullName = t.FullName,
-                phone = t.Phone,
-                isActive = t.IsActive,
-                avgRating = t.AvgRating,
-                completedJobs = t.CompletedJobs,
-                orderCount = t.Orders?.Count ?? 0
-            });
-
-            return Json(new { data = technicianDataList });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving technicians data");
-            return StatusCode(500, new { error = "Error retrieving technicians data" });
         }
     }
 }

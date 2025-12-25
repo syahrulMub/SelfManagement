@@ -5,8 +5,8 @@ namespace MyPrivateManager.Models;
 public class Technician
 {
     public int TechnicianId { get; set; }
-    public string FullName { get; set; } = default!;
-    public string Phone { get; set; } = default!;
+    public string UserId { get; set; }
+    public User User { get; set; }
     public bool IsActive { get; set; } = true;
     public double AvgRating { get; set; } // denormalisasi
     public int CompletedJobs { get; set; }
