@@ -1,0 +1,141 @@
+<!-- Create Technician Modal -->
+<div class="modal fade" id="createTechnicianModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Technician</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createTechnicianForm">
+                    <div class="mb-3">
+                        <label for="createTechUserId" class="form-label">Select User <span class="text-danger">*</span></label>
+                        <select class="form-select" id="createTechUserId" required>
+                            <option value="">-- Select User --</option>
+                        </select>
+                        <small class="text-muted">Only users without technician profiles are shown</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="createTechPhone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="createTechPhone" placeholder="Enter phone number">
+                        <small class="text-muted">Will update user's phone number</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="createTechActive" checked>
+                            <label class="form-check-label" for="createTechActive">Active</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitCreateTechnician()">
+                    <i class="bi bi-check-circle"></i> Create
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Technician Modal -->
+<div class="modal fade" id="editTechnicianModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Technician</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editTechnicianForm">
+                    <input type="hidden" id="editTechId">
+                    <input type="hidden" id="editTechUserId">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">User Email</label>
+                        <input type="text" class="form-control" id="editTechUserEmail" readonly disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTechPhone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="editTechPhone" placeholder="Enter phone number">
+                        <small class="text-muted">Will update user's phone number</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="editTechActive">
+                            <label class="form-check-label" for="editTechActive">Active</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Statistics (Read-only)</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Avg Rating:</small>
+                                <div id="editTechRating">-</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Completed Jobs:</small>
+                                <div id="editTechJobs">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitUpdateTechnician()">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Technician Modal -->
+<div class="modal fade" id="viewTechnicianModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Technician Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td class="fw-bold">Full Name:</td>
+                        <td id="viewTechName">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Email:</td>
+                        <td id="viewTechEmail">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Phone:</td>
+                        <td id="viewTechPhone">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Status:</td>
+                        <td id="viewTechStatus">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Avg Rating:</td>
+                        <td id="viewTechRating">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Completed Jobs:</td>
+                        <td id="viewTechJobs">-</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Total Orders:</td>
+                        <td id="viewTechOrders">-</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
