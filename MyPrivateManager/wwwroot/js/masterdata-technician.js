@@ -29,7 +29,7 @@ $(document).ready(function () {
                     return data.toFixed(2);
                 }
             },
-            { data: 'completedJobs' },
+            { data: 'completedJobs'},
             { data: 'orderCount' },
             {
                 data: null,
