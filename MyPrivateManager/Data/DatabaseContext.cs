@@ -20,7 +20,5 @@ public class DatabaseContext : IdentityDbContext<User>
     public DbSet<Rating> Ratings { get; set; } = default!;
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
-
-
     }
 }
