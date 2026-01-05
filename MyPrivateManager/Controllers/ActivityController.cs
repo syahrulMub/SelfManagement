@@ -17,9 +17,9 @@ public class ActivityController : Controller
     {
         var activities = await _activityServices.GetActivitiesAsync();
         var topActivities = await _activityServices.GetTopActivitiesAsync(5);
-        
+
         ViewBag.TopActivities = topActivities;
-        
+
         return View(activities);
     }
 
@@ -31,8 +31,7 @@ public class ActivityController : Controller
             await _activityServices.CreateActivityAsync(activity);
             return RedirectToAction(nameof(Index));
         }
-        
-        // If invalid, reload the page with errors (and data)
+
         var activities = await _activityServices.GetActivitiesAsync();
         var topActivities = await _activityServices.GetTopActivitiesAsync(5);
         ViewBag.TopActivities = topActivities;
