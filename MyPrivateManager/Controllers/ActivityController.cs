@@ -19,7 +19,6 @@ public class ActivityController : Controller
         var topActivities = await _activityServices.GetTopActivitiesAsync(5);
 
         ViewBag.TopActivities = topActivities;
-
         return View(activities);
     }
 
