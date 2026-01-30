@@ -190,6 +190,7 @@ public class ExpenseController : Controller
             return View("Error");
         }
     }
+
     [HttpGet("/Expense/ExpenseDailyChart")]
     public IActionResult GetDailyDataChart()
     {
