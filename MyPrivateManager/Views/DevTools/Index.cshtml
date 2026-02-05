@@ -1,0 +1,122 @@
+@{
+    ViewData["Title"] = "Developer Tools";
+}
+
+<div class="pagetitle">
+    <h1>Developer Tools</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active">Dev Tools</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+
+        <!-- Log Viewer Card -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <i class="bi bi-file-earmark-text fs-1 text-info"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="card-title">Log Viewer</h5>
+                            <p class="text-muted small mb-0">View and filter application logs in real-time. Search by level, date range, and keywords.</p>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a asp-controller="LogViewer" asp-action="Index" class="btn btn-sm btn-primary">
+                            <i class="bi bi-arrow-right"></i> Open Log Viewer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backup & Restore Card -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <i class="bi bi-cloud-arrow-down fs-1 text-success"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="card-title">Backup & Restore</h5>
+                            <p class="text-muted small mb-0">Create database backups, restore from previous backups, and manage backup files.</p>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a asp-controller="Backup" asp-action="Index" class="btn btn-sm btn-success">
+                            <i class="bi bi-arrow-right"></i> Open Backup & Restore
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quick Links -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Quick Links</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Direct access to developer tools:</p>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a asp-controller="DevTools" asp-action="Logs" class="btn btn-outline-primary" title="View Application Logs">
+                            <i class="bi bi-file-earmark-text"></i> Logs
+                        </a>
+                        <a asp-controller="DevTools" asp-action="Backup" class="btn btn-outline-success" title="Backup and Restore Database">
+                            <i class="bi bi-cloud-arrow-down"></i> Backup & Restore
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Overview -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Features</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-2"><i class="bi bi-file-earmark-text text-info"></i> Log Viewer Features</h6>
+                            <ul class="small">
+                                <li>View all application logs</li>
+                                <li>Filter by log level (Info, Warning, Error, etc.)</li>
+                                <li>Search logs by keywords</li>
+                                <li>Date range filtering</li>
+                                <li>Real-time log updates</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-2"><i class="bi bi-cloud-arrow-down text-success"></i> Backup & Restore Features</h6>
+                            <ul class="small">
+                                <li>Create instant database backups</li>
+                                <li>View all available backups</li>
+                                <li>Restore from any previous backup</li>
+                                <li>Delete old backups</li>
+                                <li>Download backup files</li>
+                                <li>Automatic daily backups</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

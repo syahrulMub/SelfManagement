@@ -180,6 +180,29 @@
             </ul>
             </li><!-- End Icons Nav --> *@
 
+            @if (User.IsInRole("admin"))
+            {
+                <li class="nav-heading">Developer Tools</li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#devtools-nav" data-bs-toggle="collapse" href="#">
+                        <i class="bi bi-tools"></i><span>Dev Tools</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="devtools-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a asp-controller="LogViewer" asp-action="Index">
+                                <i class="bi bi-file-earmark-text"></i><span>Log Viewer</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Backup" asp-action="Index">
+                                <i class="bi bi-cloud-arrow-down"></i><span>Backup & Restore</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li><!-- End Dev Tools Nav -->
+            }
+
                 <li class="nav-heading">Pages</li>
 
                 <li class="nav-item">
