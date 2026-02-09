@@ -8,7 +8,7 @@ public class BackupService : IBackupService
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<BackupService> _logger;
-    private const string BACKUP_FOLDER = "Backups";
+    private const string BACKUP_FOLDER = "DatabaseBackups";
     private const string LAST_BACKUP_FILE = "LastBackupDate.txt";
 
     public BackupService(IConfiguration configuration, ILogger<BackupService> logger)
