@@ -24,7 +24,6 @@ Log.Logger = new LoggerConfiguration()
         retainedFileCountLimit: 30,
         outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
     .CreateLogger();
-
 try
 {
     Log.Information("Starting web application");
