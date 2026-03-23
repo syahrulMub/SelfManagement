@@ -6,7 +6,7 @@ using MyPrivateManager.Models;
 
 namespace MyPrivateManager.Controllers;
 
-[Authorize(Roles = "admin")]
+
 public class UserManagementController : Controller
 {
     private readonly UserManager<User> _userManager;

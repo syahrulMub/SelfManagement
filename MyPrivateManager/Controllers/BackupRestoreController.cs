@@ -4,12 +4,12 @@ using MyPrivateManager.IDatabaseServices;
 
 namespace MyPrivateManager.Controllers;
 
-public class BackupController : Controller
+public class BackupRestoreController : Controller
 {
     private readonly IBackupService _backupService;
-    private readonly ILogger<BackupController> _logger;
+    private readonly ILogger<BackupRestoreController> _logger;
 
-    public BackupController(IBackupService backupService, ILogger<BackupController> logger)
+    public BackupRestoreController(IBackupService backupService, ILogger<BackupRestoreController> logger)
     {
         _backupService = backupService;
         _logger = logger;
