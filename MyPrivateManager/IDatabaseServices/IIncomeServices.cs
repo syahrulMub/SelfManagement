@@ -1,3 +1,4 @@
+using MyPrivateManager.DTOs;
 using MyPrivateManager.Models;
 
 namespace MyPrivateManager.IDatabaseServices;
@@ -15,6 +16,7 @@ public interface IIncomeServices
     Task<IEnumerable<int>> GetMonthlyIncomeForYearChar(string userId);
     IEnumerable<decimal> CountByCurrentWeek(string userId);
     IEnumerable<decimal> CountByCurrentMonth(string userId);
+    Task<DTOTotalCompareWithPrevious> GetTotalIncomesThisMonthAsync(string userId);
 }
 
 public class DTOTotalIncomeByCategory

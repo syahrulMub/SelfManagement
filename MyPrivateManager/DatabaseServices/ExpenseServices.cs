@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MyPrivateManager.Data;
 using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
+using MyPrivateManager.DTOs;
 
 namespace MyPrivateManager.DatabaseServices;
 
@@ -173,7 +174,7 @@ public class ExpenseServices : IExpenseServices
 
         if (!categoryIds.Any())
         {
-             return Enumerable.Repeat(0m, 5).ToList();
+            return Enumerable.Repeat(0m, 5).ToList();
         }
 
         var amounts = Enumerable.Range(0, (int)(lastDayOfMonth - firstDayOfMonth).TotalDays + 1)
@@ -264,4 +265,26 @@ public class ExpenseServices : IExpenseServices
 
         return expenses;
     }
+
+    public async Task<DTOTotalCompareWithPrevious> GetTotalExpensesThisMonthAsync(string userId)
+    {
+        var today = DateTime.Now;
+        var startOfMonth = new DateTime(today.Year, today.Month, 1);
+        var previousMonth = startOfMonth.AddMonths(-1);
+        var endOfMonth = startOfMonth.AddMonths(1);
+        decimal amount = await _dbContext.Expenses.Where(e => e.Category.UserId == userId && e.Date >= startOfMonth && e.Date < endOfMonth)
+                                        .SumAsync(e => e.Amount);
+        decimal previousAmount = await _dbContext.Expenses.Where(e => e.Category.UserId == userId && e.Date >= previousMonth && e.Date < startOfMonth)
+                                        .SumAsync(e => e.Amount);
+
+        var percentageChange = previousAmount != 0 ? ((amount - previousAmount) / previousAmount) * 100 : 0;
+
+        return new DTOTotalCompareWithPrevious
+        {
+            CurrentTotal = amount,
+            PercentageChange = percentageChange
+        };
+    }
 }
+
+

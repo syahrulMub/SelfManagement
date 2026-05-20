@@ -56,7 +56,7 @@ public class BackupInfo
         while (len >= 1024 && order < sizes.Length - 1)
         {
             order++;
-            len = len / 1024;
+            len /= 1024;
         }
         return $"{len:0.##} {sizes[order]}";
     }

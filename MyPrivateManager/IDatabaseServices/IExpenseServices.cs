@@ -1,4 +1,5 @@
 using MyPrivateManager.Models;
+using MyPrivateManager.DTOs;
 
 namespace MyPrivateManager.IDatabaseServices;
 
@@ -17,6 +18,7 @@ public interface IExpenseServices
     IEnumerable<decimal> CountByCurrentMonth(string userId);
     Task<IEnumerable<DTOTotalExpenseByCategory>> GetExpenseTotalByCategory(string userId, string filter, int? year = null);
     Task<IEnumerable<DTOExpenseDetail>> GetExpenseDetailsByIds(List<int> expenseIds);
+    Task<DTOTotalCompareWithPrevious> GetTotalExpensesThisMonthAsync(string userId);
 
 }
 

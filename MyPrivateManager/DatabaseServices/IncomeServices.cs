@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using MyPrivateManager.Data;
+using MyPrivateManager.DTOs;
 using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
 
@@ -213,5 +215,26 @@ public class IncomeServices : IIncomeServices
             .ToList();
 
         return amounts;
+    }
+
+    public async Task<DTOTotalCompareWithPrevious> GetTotalIncomesThisMonthAsync(string userId)
+
+    {
+        var today = DateTime.Now;
+        var startOfMonth = new DateTime(today.Year, today.Month, 1);
+        var previousMonth  = startOfMonth.AddMonths(-1);
+        var endOfMonth = startOfMonth.AddMonths(1);
+        decimal amount = await _dbContext.Incomes.Where(e => e.Source.UserId == userId && e.Date >= startOfMonth && e.Date < endOfMonth)
+                                        .SumAsync(e => e.Amount);
+        decimal previousAmount = await _dbContext.Incomes.Where(e => e.Source.UserId == userId && e.Date >= previousMonth && e.Date < startOfMonth)
+                                        .SumAsync(e => e.Amount);
+
+        var percentageChange = previousAmount != 0 ? ((amount - previousAmount) / previousAmount) * 100 : 0;
+
+        return new DTOTotalCompareWithPrevious
+        {
+            CurrentTotal = amount,
+            PercentageChange = percentageChange,
+        };
     }
 }

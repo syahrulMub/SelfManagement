@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyPrivateManager.IDatabaseServices;
 using MyPrivateManager.Models;
+using Microsoft.AspNetCore.Authorization;
+using MyPrivateManager.DTOs;
 
 namespace MyPrivateManager.Controllers;
 
@@ -36,6 +38,42 @@ public class HomeController : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    [Authorize]
+    [HttpGet("/Home/ExpenseInformation")]
+    public async Task<IActionResult> ExpenseInformation()
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            var ExpenseInformation = await _expenseServices.GetTotalExpensesThisMonthAsync(userId);
+            return Ok(ExpenseInformation);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving expense information");
+            return View("Error");
+        }
+    }
+
+    [Authorize]
+    [HttpGet("/Home/IncomeInformation")]
+    public async Task<IActionResult> IncomeInformation()
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            var IncomeInformation = _incomeServices.GetTotalIncomesThisMonthAsync(userId);
+            return Ok(IncomeInformation);
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving income information");
+            return View("Error");
+
+        }
     }
     public async Task<IActionResult> UserInfoDashboard()
     {
