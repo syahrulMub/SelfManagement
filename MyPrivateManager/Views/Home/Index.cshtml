@@ -3,53 +3,90 @@
 }
 
 
+<style>
+    .increase {
+        color: red;
+    }
 
+    .decrease {
+        color: green;
+    }
+</style>
 
 <div class="text-center">
     <div class="row">
         <div class="col-md-4">
             <div class="card mb-4 box-shadow">
                 <div class="card-body">
+                    <h5 class="card-title">Expense This Month</h5>
+                    <h6 class="card-subtitle mb-2 text-muted" id="expenseAmount"></h6>
+                    <div class="status-color">
+                        <span class="card-text">percentage with last month</span>
+                        <span id="expensePercentage"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+        <div class="card mb-4 box-shadow">
+            <div class="card-body">
+                <h5 class="card-title">Income This Month</h5>
+                <h6 class="card-subtitle mb-2 text-muted" id="incomeAmount"></h6>
+                <div class="status-color">
+                    <span class="card-text">percentage with last month</span>
+                    <span id="incomePercentage"></span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</div>
 @section scripts {
-<script>
-    $(document).ready(function (){
-        $.ajax({
-            url: "/Home/ExpenseInformation",
-            type: "GET",
-            dataType: "json",
-            success: function(data){
-                // Log raw object, a pretty-printed JSON string and a table if it's an array
-                console.log('AJAX success - raw data:', data);
-            },
-            error: function (xhr, status, error) {
-                console.error("Error:", error);
-                try {
-                    var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : xhr.statusText || error;
-                    $("#result").html("Terjadi error saat memanggil API: " + msg);
-                } catch(e) {
-                    $("#result").html("Terjadi error saat memanggil API");
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "/Home/ExpenseInformation",
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    // Log raw object, a pretty-printed JSON string and a table if it's an array
+                    console.log('AJAX success - raw data:', data);
+                    $("#expenseAmount").text("Rp. " + data.currentTotal.toLocaleString('id-ID'));
+                    $("#expensePercentage").text(data.percentageChange + "% ");
+                    if (data.percentageChange > 0) {
+                        $(".status-color").addClass("increase");
+                        $("#expensePercentage").text("increase " + data.percentageChange + "% ");
+                    }
+                    else {
+                        $(".status-color").addClass("decrease");
+                        $("#expensePercentage").text("decrease " + Math.abs(data.percentageChange) + "% ");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                    try {
+                        var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : xhr.statusText || error;
+                        $("#result").html("Terjadi error saat memanggil API: " + msg);
+                    } catch (e) {
+                        $("#result").html("Terjadi error saat memanggil API");
+                    }
                 }
-            }
+            });
         });
-    });
 
-    $(document).ready(function () {
-        $.ajax({
-            url : "/Home/IncomeInformation",
-            type: "GET",
-            dataType : "json",
-            success: function(data){
-                console.log(data.result)
-            },
-            error : function (xhr, status, error){
-                console.log(error)
-            }
+        $(document).ready(function () {
+            $.ajax({
+                url: "/Home/IncomeInformation",
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $("#incomeAmount").text("Rp. " + data.currentTotal.toLocaleString('id-ID'));
+                    $("#incomePercentage").text(data.percentageChange + "% ");
+                },
+                error: function (xhr, status, error) {
+                    console.log(error)
+                }
+            })
         })
-    })
-</script>
+    </script>
 }

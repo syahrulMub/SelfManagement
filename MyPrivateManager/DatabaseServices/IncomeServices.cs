@@ -147,7 +147,7 @@ public class IncomeServices : IIncomeServices
                                 TotalIncome = i.Sum(i => i.Amount)
                             })
                             .ToListAsync();
-        
+
         var result = Enumerable.Range(1, 12)
                             .Select(month => new
                             {
@@ -204,7 +204,7 @@ public class IncomeServices : IIncomeServices
 
         if (!sourceIds.Any())
         {
-             return Enumerable.Repeat(0m, 5).ToList();
+            return Enumerable.Repeat(0m, 5).ToList();
         }
 
         var amounts = Enumerable.Range(0, (int)(lastDayOfMonth - firstDayOfMonth).TotalDays + 1)
@@ -221,20 +221,19 @@ public class IncomeServices : IIncomeServices
 
     {
         var today = DateTime.Now;
+        var previousMonth = new DateTime(today.Year, today.Month, 1).AddMonths(-1);
         var startOfMonth = new DateTime(today.Year, today.Month, 1);
-        var previousMonth  = startOfMonth.AddMonths(-1);
         var endOfMonth = startOfMonth.AddMonths(1);
-        decimal amount = await _dbContext.Incomes.Where(e => e.Source.UserId == userId && e.Date >= startOfMonth && e.Date < endOfMonth)
-                                        .SumAsync(e => e.Amount);
-        decimal previousAmount = await _dbContext.Incomes.Where(e => e.Source.UserId == userId && e.Date >= previousMonth && e.Date < startOfMonth)
-                                        .SumAsync(e => e.Amount);
-
+        var amount = await _dbContext.Incomes.Where(x => x.Source.UserId == userId && x.Date >= startOfMonth && x.Date < endOfMonth)
+                            .SumAsync(x => x.Amount);
+        var previousAmount = await _dbContext.Incomes.Where(x => x.Source.UserId == userId && x.Date >= previousMonth && x.Date < startOfMonth)
+                            .SumAsync(x => x.Amount);
         var percentageChange = previousAmount != 0 ? ((amount - previousAmount) / previousAmount) * 100 : 0;
-
         return new DTOTotalCompareWithPrevious
         {
             CurrentTotal = amount,
             PercentageChange = percentageChange,
         };
+
     }
 }

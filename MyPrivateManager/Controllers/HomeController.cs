@@ -64,7 +64,7 @@ public class HomeController : Controller
         try
         {
             var userId = _userManager.GetUserId(User);
-            var IncomeInformation = _incomeServices.GetTotalIncomesThisMonthAsync(userId);
+            var IncomeInformation = await _incomeServices.GetTotalIncomesThisMonthAsync(userId);
             return Ok(IncomeInformation);
 
         }
